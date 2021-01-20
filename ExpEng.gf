@@ -1,9 +1,6 @@
 concrete ExpEng of Exp = open Prelude, Formal in {
 
-
-
-
-lincat 
+lincat
 
   Comment,
   Module ,
@@ -16,24 +13,19 @@ lincat
   Branch ,
   PTele,
   Label,
-    -- = Str ;
   [AIdent],
   [Decl] ,
-  -- [Exp],
   [Tele],
   [Branch] ,
   [PTele],
   [Label]
-    -- = {hd,tl : Str} ;
     = Str ;
 
 lin
 
   DeclDef a lt e ew = a ++ lt ++ ":" ++ e ++ "=" ++ ew ;
-  
   -- why isn't this generating
   DeclData a t d = "data" ++ a ++ t ++ ": Set where" ++ d ;
-
 
   DeclSplit ai lt e lb = ai ++ lt ++ ":" ++ e ++ "= split" ++ lb ;
   DeclUndef a lt e = a ++ lt ++ ":" ++ e ++ "= undefined" ; -- postulate in agda
@@ -57,18 +49,16 @@ lin
   Snd e = "proj2" ++ e ;
   Pair e el = "(" ++ e ++ "," ++ el ++ ")" ;
   Var a = a ;
---  Var : AIdent -> Exp ;          
 
   U = "U" ;
 
-  
-
---   PTeleC : Exp -> Exp -> Exp -> PTele ;
-
---   GenAIdent : String -> AIdent ;
   X = "x" ;
   Y = "y" ;
   Z = "z" ;
+
+  True = "true" ;
+  False = "false" ;
+  Bool = "bool" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;

@@ -25,15 +25,10 @@ cat
   Label ;
   [AIdent]{0} ;
   [Decl]{1} ; 
-  -- [Tele]{1} ;
   [Tele]{0} ;
   [Branch]{1} ; 
   [PTele]{1} ; 
   [Label]{1} ;
-
-
---want telescopes to be arbitrary length
---[Tele] {n} 
 
 fun
 
@@ -71,8 +66,9 @@ fun
   TeleC : AIdent -> [AIdent] -> Exp -> Tele ;
   PTeleC : Exp -> Exp -> PTele ;
 
-
   X , Y , Z : AIdent ;
+
+  True , False , Bool : AIdent ;
 
   -- how to resolve this amgiuity
   -- GenAIdent : String -> AIdent ;

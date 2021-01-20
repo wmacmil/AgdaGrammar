@@ -1,0 +1,38 @@
+gr -number=10
+DeclSplit Y (BaseTele (TeleC Z (BaseAIdent Z) (App U U))) (IdJ (IdJ (Fst U) (Fun U U) (Snd U) (IdJ U U U U U) (Snd U)) (Fst (Fst U)) (Pair (Snd U) (Pair U U)) (IdJ (Var X) (Fun U U) (Snd U) (Pair U U) (Id U U)) (Id (Pair U U) (IdJ U U U U U))) (BaseBranch (OBranch Y (BaseAIdent Z) (NoWhere U)))
+DeclSplit X (BaseTele (TeleC Z (BaseAIdent Z) (Var X))) (Fst (App (Snd U) (Fst U))) (BaseBranch (OBranch Z (BaseAIdent Z) (NoWhere U)))
+DeclDef Z (BaseTele (TeleC X (BaseAIdent X) (Pair U U))) (Id (App U U) (Id (IdJ U U U U U) (Snd U))) (NoWhere (Id U (Fun U U)))
+DeclSplit Z (BaseTele (TeleC Z (BaseAIdent Y) (Fun U U))) (Lam (BasePTele (PTeleC U U)) (App (Var Z) (App U U))) (BaseBranch (OBranch Y (BaseAIdent Y) (NoWhere U)))
+DeclSplit Y (BaseTele (TeleC Y (BaseAIdent Y) (Snd U))) (Sigma (BasePTele (PTeleC U U)) (Id (App U U) (Var X))) (BaseBranch (OBranch Z (BaseAIdent Z) (NoWhere U)))
+DeclUndef Z (BaseTele (TeleC X (BaseAIdent Y) U)) (Lam (BasePTele (PTeleC U U)) (Var Y))
+DeclSplit X (BaseTele (TeleC Y (BaseAIdent X) (Fst U))) (Pi (BasePTele (PTeleC U U)) (Snd (Pair U U))) (BaseBranch (OBranch X (BaseAIdent Z) (NoWhere U)))
+DeclSplit Y (BaseTele (TeleC Y (BaseAIdent X) (Var Y))) (Id (Var X) (Fun U (App U U))) (BaseBranch (OBranch Y (BaseAIdent Y) (NoWhere U)))
+DeclDef Z (BaseTele (TeleC Z (BaseAIdent Y) (Id U U))) (Lam (BasePTele (PTeleC U U)) (Fst (Var X))) (NoWhere (IdJ (Fst U) (Snd U) (App U U) (Id U U) (Pair U U)))
+DeclUndef Z (BaseTele (TeleC Y (BaseAIdent Y) (App U U))) (Snd (App (Fst U) (Id U U)))
+
+67 msec
+Exp> gr -number=10 -tr | l
+DeclDef X (BaseTele (TeleC Y (BaseAIdent Z) (Snd U))) U (NoWhere (IdJ (Snd U) U U (Id U U) (App U U)))
+DeclDef X (BaseTele (TeleC X (BaseAIdent Y) (Id U U))) (IdJ (Id (Pair U U) (Fun U U)) (Fst (IdJ U U U U U)) (App (Fun U U) (Var Z)) (Pair (Fun U U) (Snd U)) (IdJ (Id U U) U (Var Z) (Id U U) (Snd U))) (NoWhere (Var Z))
+DeclSplit Z (BaseTele (TeleC Z (BaseAIdent Z) (Id U U))) (IdJ (Snd (Fst U)) (Fst (Fst U)) (Var X) (IdJ (Snd U) U (Snd U) (Pair U U) (Snd U)) (Pair (IdJ U U U U U) (Id U U))) (BaseBranch (OBranch Y (BaseAIdent X) (NoWhere U)))
+DeclDef Y (BaseTele (TeleC Z (BaseAIdent Y) U)) (Id (Pair (App U U) (Var Y)) (Fst (Pair U U))) (NoWhere (Fst U))
+DeclSplit Z (BaseTele (TeleC Y (BaseAIdent X) (Fst U))) (App (Fst (Var X)) (Snd (Pair U U))) (BaseBranch (OBranch Y (BaseAIdent Y) (NoWhere U)))
+DeclUndef Z (BaseTele (TeleC Z (BaseAIdent Z) (Pair U U))) (App U (Snd U))
+DeclDef X (BaseTele (TeleC Z (BaseAIdent Y) (App U U))) (Var Z) (NoWhere U)
+DeclUndef X (BaseTele (TeleC X (BaseAIdent X) (Fun U U))) (Sigma (BasePTele (PTeleC U U)) (Var Y))
+DeclDef Y (BaseTele (TeleC X (BaseAIdent Z) (App U U))) (Fun (Id U (Pair U U)) U) (NoWhere (App (Var X) (Fun U U)))
+DeclDef X (BaseTele (TeleC Z (BaseAIdent Y) (Snd U))) (Pair (Id (Pair U U) U) (Pair (Var Y) (App U U))) (NoWhere (App (Pair U U) (Snd U)))
+
+x ( y z : proj2 U ) : U = J proj2 U U U U == U U U
+x ( x y : U == U ) : J ( U , U ) == U -> U proj1 J U U U U U U -> U z ( U -> U , proj2 U ) J U == U U z U == U proj2 U = z
+z ( z z : U == U ) : J proj2 proj1 U proj1 proj1 U x J proj2 U U proj2 U ( U , U ) proj2 U ( J U U U U U , U == U ) = spliit y x -> U
+y ( z y : U ) : ( U U , y ) == proj1 ( U , U ) = proj1 U
+z ( y x : proj1 U ) : proj1 x proj2 ( U , U ) = spliit y y -> U
+z ( z z : ( U , U ) ) : U proj2 U = undefined
+x ( z y : U U ) : z = U
+x ( x x : U -> U ) : ( U : U ) * y = undefined
+y ( x z : U U ) : U == ( U , U ) -> U = x U -> U
+x ( z y : proj2 U ) : ( ( U , U ) == U , ( y , U U ) ) = ( U , U ) proj2 U
+
+43409 msec
+

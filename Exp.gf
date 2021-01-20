@@ -2,12 +2,6 @@ abstract Exp = {
 
 flags startcat = Decl ;
 
---what about layout
---cat [C] {n}
--- = 
---cat ListC ;
---fun BaseC : C -> ...-> C -> ListC ; -- n C ’s
---fun ConsC : C -> ListC -> ListC
 
 -- note, cubical tt doesn't support inductive families, and therefore the datatype (& labels) need to be modified
 
@@ -15,7 +9,7 @@ cat
   Comment ;
   Module  ;
   AIdent ;
-  Imp ;
+  Imp ; --imports, add later
   Decl ; 
   Exp ;
   ExpWhere ;
@@ -27,8 +21,15 @@ cat
   [Decl]{1} ; 
   [Tele]{0} ;
   [Branch]{1} ; 
+  -- [Branch]{0} ; 
   [PTele]{1} ; 
   [Label]{1} ;
+
+  --cat [C] {n}
+  -- =
+  --cat ListC ;
+  --fun BaseC : C -> ...-> C -> ListC ; -- n C ’s
+  --fun ConsC : C -> ListC -> ListC
 
 fun
 
@@ -69,6 +70,8 @@ fun
   X , Y , Z : AIdent ;
 
   True , False , Bool : AIdent ;
+
+  CaseBool : AIdent ;
 
   -- how to resolve this amgiuity
   -- GenAIdent : String -> AIdent ;

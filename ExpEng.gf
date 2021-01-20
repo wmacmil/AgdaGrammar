@@ -1,6 +1,9 @@
 concrete ExpEng of Exp = open Prelude, Formal in {
 
-lincat
+
+
+
+lincat 
 
   Comment,
   Module ,
@@ -13,19 +16,24 @@ lincat
   Branch ,
   PTele,
   Label,
+    -- = Str ;
   [AIdent],
   [Decl] ,
+  -- [Exp],
   [Tele],
   [Branch] ,
   [PTele],
   [Label]
+    -- = {hd,tl : Str} ;
     = Str ;
 
 lin
 
   DeclDef a lt e ew = a ++ lt ++ ":" ++ e ++ "=" ++ ew ;
+  
   -- why isn't this generating
   DeclData a t d = "data" ++ a ++ t ++ ": Set where" ++ d ;
+
 
   DeclSplit ai lt e lb = ai ++ lt ++ ":" ++ e ++ "= split" ++ lb ;
   DeclUndef a lt e = a ++ lt ++ ":" ++ e ++ "= undefined" ; -- postulate in agda
@@ -49,16 +57,23 @@ lin
   Snd e = "proj2" ++ e ;
   Pair e el = "(" ++ e ++ "," ++ el ++ ")" ;
   Var a = a ;
+--  Var : AIdent -> Exp ;          
 
   U = "U" ;
 
+  
+
+--   PTeleC : Exp -> Exp -> Exp -> PTele ;
+
+--   GenAIdent : String -> AIdent ;
   X = "x" ;
   Y = "y" ;
   Z = "z" ;
 
+  Bool = "bool" ;
   True = "true" ;
   False = "false" ;
-  Bool = "bool" ;
+  CaseBool = "caseBool" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;
@@ -69,8 +84,10 @@ lin
 
   -- can split on tt, therefore just needs one arguement
   -- maybe accomodate so split on empty type just gives () 
+  -- BaseBranch = "" ;
   BaseBranch x = x ;
-  ConsBranch x xs = x ++ "\n" ++ xs ;
+  -- ConsBranch x xs = x ++ "\n" ++ xs ;
+  ConsBranch x xs = x ++ "||" ++ xs ;
 
   -- for data constructors
   BaseLabel x = x ;

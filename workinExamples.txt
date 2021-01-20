@@ -1,0 +1,2 @@
+p "data bool : Set where true | false" 
+p "caseBool ( x : U ) ( y z : x ) : bool -> U = split false -> y || true -> z"

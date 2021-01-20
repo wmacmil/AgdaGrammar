@@ -1,0 +1,144 @@
+
+p "data bool : Set where true | false" 
+p "caseBool ( x : U ) ( y z : x ) : bool -> U = split false -> y \n true -> z"
+
+DeclSplit CaseBool (ConsTele (TeleC X BaseAIdent U) (ConsTele (TeleC Y (ConsAIdent Z BaseAIdent) (Var X)) BaseTele)) (Fun (Var Bool) U) (BaseBranch (OBranch False BaseAIdent (NoWhere (App (Var Y) (Fun (Var True) (Var Z))))))
+DeclSplit CaseBool (ConsTele (TeleC X BaseAIdent U) (ConsTele (TeleC Y (ConsAIdent Z BaseAIdent) (Var X)) BaseTele)) (Fun (Var Bool) U) (BaseBranch (OBranch False BaseAIdent (NoWhere (Fun (App (Var Y) (Var True)) (Var Z)))))
+
+0
+
+Exp> p "caseBool ( x : U ) ( y z : x ) : bool -> U = split false -> y || true -> z ||" | tt
+
+* DeclSplit
+    * CaseBool
+      ConsTele
+        * TeleC
+            * X
+              BaseAIdent
+              U
+          ConsTele
+            * TeleC
+                * Y
+                  ConsAIdent
+                    * Z
+                      BaseAIdent
+                  Var
+                    * X
+              BaseTele
+      Fun
+        * Var
+            * Bool
+          U
+      ConsBranch
+        * OBranch
+            * False
+              BaseAIdent
+              NoWhere
+                * Var
+                    * Y
+          ConsBranch
+            * OBranch
+                * True
+                  BaseAIdent
+                  NoWhere
+                    * Var
+                        * Z
+              BaseBranch
+2 msec
+Exp> 0 msec
+
+
+[OBranch 
+  (AIdent ((11,2),"false")) 
+  [] 
+  (NoWhere (Var (AIdent ((11,11),"f"))))
+,OBranch 
+  (AIdent ((12,2),"true")) [] (NoWhere (Var (AIdent ((12,11),"t"))))]
+
+
+
+BaseBranch
+	* OBranch
+			* False
+				BaseAIdent
+				NoWhere
+					1 App
+							* Var
+									* Y
+								Fun
+									* Var
+											* True
+										Var
+											* Z
+					2 Fun
+							* App
+									* Var
+											* Y
+										Var
+											* True
+								Var
+									* Z
+
+
+
+
+[OBranch 
+	(AIdent ((11,2),"false")) 
+	[] 
+	(NoWhere (Var (AIdent ((11,11),"A"))))
+,OBranch 
+	(AIdent ((12,2),"true")) 
+	[] 
+	(NoWhere (Var (AIdent ((12,11),"A"))))
+]
+
+
+    (NoWhere (App (Var Y) (Fun (Var True) (Var Z))))
+!=  (NoWhere (Fun (App (Var Y) (Var True)) (Var Z)))
+
+Exp> p "caseBool ( x : U ) ( y z : x ) : bool -> U = split false -> y \n true -> z" | tt
+
+* DeclSplit
+    * CaseBool
+      ConsTele
+        * TeleC
+            * X
+              BaseAIdent
+              U
+          ConsTele
+            * TeleC
+                * Y
+                  ConsAIdent
+                    * Z
+                      BaseAIdent
+                  Var
+                    * X
+              BaseTele
+      Fun
+        * Var
+            * Bool
+          U
+      BaseBranch
+        * OBranch
+            * False
+              BaseAIdent
+              NoWhere
+                1 App
+                    * Var
+                        * Y
+                      Fun
+                        * Var
+                            * True
+                          Var
+                            * Z
+                2 Fun
+                    * App
+                        * Var
+                            * Y
+                          Var
+                            * True
+                      Var
+                        * Z
+3 msec
+
+

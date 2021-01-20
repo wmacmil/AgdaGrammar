@@ -1,0 +1,68 @@
+
+Exp> gr -number=10 -tr (DeclSplit ? ? ? ?) | l
+DeclSplit True (ConsTele (TeleC False BaseAIdent (Fun (Pair U U) (App U U))) BaseTele) (Snd (Sigma (BasePTele (PTeleC U U)) U)) (ConsBranch (OBranch CaseBool BaseAIdent (NoWhere (Pair U U))) (ConsBranch (OBranch False BaseAIdent (NoWhere U)) BaseBranch))
+DeclSplit False (ConsTele (TeleC X BaseAIdent (Fun (Fst U) (App U U))) BaseTele) (Fst (Pi (BasePTele (PTeleC U U)) (Var CaseBool))) (ConsBranch (OBranch True BaseAIdent (NoWhere (IdJ U U U U U))) (ConsBranch (OBranch CaseBool (ConsAIdent True BaseAIdent) (NoWhere U)) BaseBranch))
+DeclSplit True (ConsTele (TeleC CaseBool (ConsAIdent Y (ConsAIdent True BaseAIdent)) U) (ConsTele (TeleC Z BaseAIdent (Var True)) (ConsTele (TeleC Y BaseAIdent U) BaseTele))) (Var False) (ConsBranch (OBranch False (ConsAIdent True BaseAIdent) (NoWhere U)) BaseBranch)
+DeclSplit CaseBool (ConsTele (TeleC True (ConsAIdent X (ConsAIdent CaseBool BaseAIdent)) U) BaseTele) (Id (App (App (IdJ U U U U U) (Snd U)) (Snd (Pair U U))) (App (App U (Fst U)) (IdJ (Var X) U (Fun U U) (Id U U) U))) BaseBranch
+DeclSplit Z BaseTele (IdJ (Pair (Id (Fun U U) U) (Id (Var Bool) (Var Z))) U (Pair U (IdJ (IdJ U U U U U) U (Fst U) (IdJ U U U U U) (Id U U))) (Let (BaseDecl (DeclSplit Y BaseTele U BaseBranch)) (Fst (App U U))) (Var Y)) (ConsBranch (OBranch X (ConsAIdent True BaseAIdent) (NoWhere (Var Bool))) (ConsBranch (OBranch Bool (ConsAIdent Bool BaseAIdent) (NoWhere U)) BaseBranch))
+DeclSplit X (ConsTele (TeleC CaseBool BaseAIdent (IdJ U (App U U) (Pair U U) (Var False) U)) BaseTele) (Sigma (BasePTele (PTeleC (Fun U U) U)) (Sigma (BasePTele (PTeleC U U)) (App (Pair U U) (App U U)))) (ConsBranch (OBranch CaseBool BaseAIdent (NoWhere (Var Y))) BaseBranch)
+DeclSplit Y BaseTele (Fst (Sigma (BasePTele (PTeleC U U)) (Id (Fun U U) (Fun U U)))) (ConsBranch (OBranch Z (ConsAIdent True BaseAIdent) (NoWhere U)) (ConsBranch (OBranch False (ConsAIdent Z BaseAIdent) (NoWhere U)) BaseBranch))
+DeclSplit CaseBool (ConsTele (TeleC CaseBool BaseAIdent (App (Var True) (App U U))) BaseTele) (Fun (Pi (BasePTele (PTeleC U U)) (App U (App U U))) (Fst U)) BaseBranch
+DeclSplit Z (ConsTele (TeleC True BaseAIdent (Fst (Fst U))) (ConsTele (TeleC CaseBool BaseAIdent U) (ConsTele (TeleC True BaseAIdent U) BaseTele))) (Pair U (Fst (Fun (Fst U) (Pair U U)))) (ConsBranch (OBranch Y (ConsAIdent CaseBool (ConsAIdent Y BaseAIdent)) (NoWhere U)) BaseBranch)
+DeclSplit CaseBool BaseTele (Fun (Pi (BasePTele (PTeleC U U)) (Id (Id U U) (Var X))) (Var CaseBool)) (ConsBranch (OBranch False BaseAIdent (NoWhere (IdJ U U U U U))) (ConsBranch (OBranch Y (ConsAIdent False BaseAIdent) (NoWhere U)) BaseBranch))
+
+true ( false : ( U , U ) -> U U ) : proj2 ( U : U ) * U = split caseBool -> ( U , U ) 
+ false -> U 
+
+false ( x : proj1 U -> U U ) : proj1 ( U : U ) -> caseBool = split true -> J U U U U U 
+ caseBool true -> U 
+
+true ( caseBool y true : U ) ( z : true ) ( y : U ) : false = split false true -> U 
+
+caseBool ( true x caseBool : U ) : J U U U U U proj2 U proj2 ( U , U ) == U proj1 U J x U U -> U U == U U = split
+z : J ( U -> U == U , bool == z ) U ( U , J J U U U U U U proj1 U J U U U U U U == U ) let y : U = split in proj1 U U y = split x true -> bool 
+ bool bool -> U 
+
+x ( caseBool : J U U U ( U , U ) false U ) : ( U -> U : U ) * ( U : U ) * ( U , U ) U U = split caseBool -> y 
+
+y : proj1 ( U : U ) * U -> U == U -> U = split z true -> U 
+ false z -> U 
+
+caseBool ( caseBool : true U U ) : ( U : U ) -> U U U -> proj1 U = split
+z ( true : proj1 proj1 U ) ( caseBool : U ) ( true : U ) : ( U , proj1 proj1 U -> ( U , U ) ) = split y caseBool y -> U 
+
+caseBool : ( U : U ) -> U == U == x -> caseBool = split false -> J U U U U U 
+ y false -> U 
+
+
+30 msec
+Exp> 
+ 
+
+Exp> gr -number=10 -tr (DeclSplit ? ? ? ?) | l
+DeclSplit False (ConsTele (TeleC CaseBool BaseAIdent (Fst (Snd U))) BaseTele) (Fst (Fst (Snd (Pair U U)))) BaseBranch
+DeclSplit True (ConsTele (TeleC X (ConsAIdent True BaseAIdent) U) (ConsTele (TeleC Z BaseAIdent (Fun U U)) BaseTele)) (Pi (ConsPTele (PTeleC (Snd U) (Pair U U)) (BasePTele (PTeleC U U))) (IdJ (Snd (Id U U)) (IdJ (Fst U) (IdJ U U U U U) (Fst U) (Snd U) (App U U)) (IdJ (Var CaseBool) (Fst U) (Var Bool) (IdJ U U U U U) (Snd U)) (Var False) (Fun (Fun U U) (Fst U)))) BaseBranch
+DeclSplit CaseBool (ConsTele (TeleC CaseBool (ConsAIdent X (ConsAIdent Bool BaseAIdent)) (Fst (Id U U))) BaseTele) (Fun (Sigma (BasePTele (PTeleC U U)) (Fst U)) (App (Snd (Snd U)) U)) (ConsBranch (OBranch Y (ConsAIdent True (ConsAIdent Bool BaseAIdent)) (NoWhere (Fst U))) (ConsBranch (OBranch Bool (ConsAIdent CaseBool BaseAIdent) (NoWhere U)) BaseBranch))
+DeclSplit Bool (ConsTele (TeleC CaseBool BaseAIdent (IdJ (App U U) (Id U U) (Snd U) (App U U) (IdJ U U U U U))) BaseTele) (Fst (IdJ (App (App U U) (Snd U)) (Fun (Var True) (Id U U)) (Pair (Fun U U) (Var Bool)) (Pair (Var False) (IdJ U U U U U)) (Fst (Fun U U)))) BaseBranch
+DeclSplit Z (ConsTele (TeleC CaseBool BaseAIdent (App (Var CaseBool) (Pair U U))) BaseTele) (Pi (BasePTele (PTeleC (App U U) (Snd U))) (Lam (BasePTele (PTeleC U U)) (Pair (Fun U U) (App U U)))) BaseBranch
+DeclSplit True (ConsTele (TeleC False (ConsAIdent False (ConsAIdent Z BaseAIdent)) (Fst (Pair U U))) (ConsTele (TeleC X BaseAIdent (Fun U U)) BaseTele)) (App (Pi (BasePTele (PTeleC U U)) (App (Id U U) (Fst U))) (Fst (Id U U))) BaseBranch
+DeclSplit Y BaseTele (IdJ (Fun (Snd (Fun U U)) (App (Id U U) (Id U U))) (App (Id (IdJ U U U U U) (Fun U U)) (App (Var CaseBool) (Fst U))) (Fun U (Snd (Pair U U))) (Fst (IdJ U (Snd U) (Fst U) (Var False) (Id U U))) (Id (App (Id U U) (Fun U U)) (Snd (Pair U U)))) (ConsBranch (OBranch True (ConsAIdent X (ConsAIdent Z BaseAIdent)) (NoWhere (Var X))) (ConsBranch (OBranch Bool (ConsAIdent Bool BaseAIdent) (NoWhere U)) BaseBranch))
+DeclSplit CaseBool (ConsTele (TeleC Bool (ConsAIdent X (ConsAIdent CaseBool BaseAIdent)) (Fun (Fst U) (Snd U))) BaseTele) (Let (ConsDecl (DeclUndef X BaseTele (IdJ U U U U U)) (BaseDecl (DeclUndef CaseBool BaseTele U))) (Pair (Fst (Pair U U)) (Fun U (App U U)))) (ConsBranch (OBranch False BaseAIdent (NoWhere (Pair U U))) BaseBranch)
+DeclSplit Y (ConsTele (TeleC X BaseAIdent (IdJ (Var Y) (IdJ U U U U U) (App U U) (Var Z) (App U U))) BaseTele) (Lam (ConsPTele (PTeleC (IdJ U U U U U) U) (BasePTele (PTeleC U U))) (Fun (Var Y) (App (Id U U) (App U U)))) BaseBranch
+DeclSplit Y (ConsTele (TeleC Z BaseAIdent (Fst U)) BaseTele) (Snd (Snd (Snd U))) BaseBranch
+
+false ( caseBool : proj1 proj2 U ) : proj1 proj1 proj2 ( U , U ) = split
+true ( x true : U ) ( z : U -> U ) : ( proj2 U : ( U , U ) ) ( U : U ) -> J proj2 U == U J proj1 U J U U U U U proj1 U proj2 U U U J caseBool proj1 U bool J U U U U U proj2 U false U -> U -> proj1 U = split
+caseBool ( caseBool x bool : proj1 U == U ) : ( U : U ) * proj1 U -> proj2 proj2 U U = split y true bool -> proj1 U || bool caseBool -> U ||
+bool ( caseBool : J U U U == U proj2 U U U J U U U U U ) : proj1 J U U proj2 U true -> U == U ( U -> U , bool ) ( false , J U U U U U ) proj1 U -> U = split
+z ( caseBool : caseBool ( U , U ) ) : ( U U : proj2 U ) -> \ ( U : U ) -> ( U -> U , U U ) = split
+true ( false false z : proj1 ( U , U ) ) ( x : U -> U ) : ( U : U ) -> U == U proj1 U proj1 U == U = split
+y : J proj2 U -> U -> U == U U == U J U U U U U == U -> U caseBool proj1 U U -> proj2 ( U , U ) proj1 J U proj2 U proj1 U false U == U U == U U -> U == proj2 ( U , U ) = split true x z -> x || bool bool -> U ||
+caseBool ( bool x caseBool : proj1 U -> proj2 U ) : let x : J U U U U U = undefined 
+ caseBool : U = undefined in ( proj1 ( U , U ) , U -> U U ) = split false -> ( U , U ) ||
+y ( x : J y J U U U U U U U z U U ) : \ ( J U U U U U : U ) ( U : U ) -> y -> U == U U U = split
+y ( z : proj1 U ) : proj2 proj2 proj2 U = split
+
+33 msec
+Exp> 
+

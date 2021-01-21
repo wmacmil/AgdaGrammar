@@ -1,16 +1,11 @@
-concrete ExpEng of Exp = open Prelude, Formal in {
-
-
-
+concrete ExpEng of Exp = open Prelude, FormalTwo in {
 
 lincat 
-
   Comment,
   Module ,
   AIdent,
   Imp,
   Decl ,
-  Exp,
   ExpWhere,
   Tele,
   Branch ,
@@ -26,54 +21,32 @@ lincat
   [Label]
     -- = {hd,tl : Str} ;
     = Str ;
+  Exp = TermPrec ;
 
 lin
 
-  DeclDef a lt e ew = a ++ lt ++ ":" ++ e ++ "=" ++ ew ;
-  
-  -- why isn't this generating
+  DeclDef a lt e ew = a ++ lt ++ ":" ++ e.s ++ "=" ++ ew ;
   DeclData a t d = "data" ++ a ++ t ++ ": Set where" ++ d ;
+  DeclSplit ai lt e lb = ai ++ lt ++ ":" ++ e.s ++ "= split" ++ lb ;
+  DeclUndef a lt e = a ++ lt ++ ":" ++ e.s ++ "= undefined" ; -- postulate in agda
 
+  Where e ld = e.s ++ "where" ++ ld ;
+  NoWhere e = e.s ;
 
-  DeclSplit ai lt e lb = ai ++ lt ++ ":" ++ e ++ "= split" ++ lb ;
-  DeclUndef a lt e = a ++ lt ++ ":" ++ e ++ "= undefined" ; -- postulate in agda
-
-  Where e ld = e ++ "where" ++ ld ;
-  NoWhere e = e ;
-
-  Let ld e = "let" ++ ld ++ "in" ++ e ;
-  Lam pt e = "\\" ++ pt ++ "->" ++ e ;
-
-  -- Split e br = "case" ++ e ++ "of" ++ br ; 
-  Fun e1 e2 = e1 ++ "->" ++ e2 ; -- A -> Set
-
-  Pi pt e = pt ++ "->" ++ e ;
-  Sigma pt e = pt ++ "*" ++ e ;
-  App e1 e2 = e1 ++ e2 ;
-  Id e1 e2 = e1 ++ "==" ++ e2 ;
-  -- how to handle eta equlity - probably overloading, right
-  IdJ e1 e2 e3 e4 e5 = "J" ++ e1 ++ e2 ++ e3 ++ e4 ++ e5 ;
-  Fst e = "proj1" ++ e ;
-  Snd e = "proj2" ++ e ;
-  Pair e el = "(" ++ e ++ "," ++ el ++ ")" ;
-  Var a = a ;
---  Var : AIdent -> Exp ;          
-
-  U = "U" ;
-
-  
-
---   PTeleC : Exp -> Exp -> Exp -> PTele ;
-
---   GenAIdent : String -> AIdent ;
-  X = "x" ;
-  Y = "y" ;
-  Z = "z" ;
-
-  Bool = "bool" ;
-  True = "true" ;
-  False = "false" ;
-  CaseBool = "caseBool" ;
+  -- Let ld e = mkPrec 0 ("let" ++ ld ++ "in" ++ (usePrec 0 e.s)) ;
+  Let ld e = mkPrec 0 ("let" ++ ld ++ "in" ++ (usePrec 0 e)) ;
+  Lam pt e = mkPrec 0 ("\\" ++ pt ++ "->" ++ usePrec 0 e) ;
+  Fun = infixr 1 "->" ; -- A -> Set
+  Pi pt e = mkPrec 1 (pt ++ "->" ++ usePrec 1 e) ;
+  Sigma pt e = mkPrec 1 (pt ++ "*" ++ usePrec 1 e) ;
+  App = infixl 2 "" ;
+  Id e1 e2 e3 = mkPrec 3 (usePrec 4 e1 ++ usePrec 4 e2 ++ "==" ++ usePrec 3 e2) ;
+  IdJ e1 e2 e3 e4 e5 = mkPrec 3 ("J" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 4 e3 ++ usePrec 4 e4 ++ usePrec 4 e5) ;
+  Fst e = mkPrec 4 ("proj1" ++ usePrec 4 e) ;
+  Snd e = mkPrec 4 ("proj2" ++ usePrec 4 e) ;
+  Pair e1 e2 = mkPrec 5 (usePrec 0 e1 ++ "," ++ usePrec 0 e2) ; --i got rid of parens
+  Var a = constant a ;
+  U = constant "U" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;
@@ -82,7 +55,6 @@ lin
   BaseDecl x = x ;
   ConsDecl x xs = x ++ "\n" ++ xs ;
 
-  -- can split on tt, therefore just needs one arguement
   -- maybe accomodate so split on empty type just gives () 
   -- BaseBranch = "" ;
   BaseBranch x = x ;
@@ -92,7 +64,6 @@ lin
   -- for data constructors
   BaseLabel x = x ;
   ConsLabel x xs = x ++ "|" ++ xs ; 
-  -- ConsLabel x xs = x ++ xs ; 
 
   BasePTele x = x ;
   ConsPTele x xs = x ++ xs ;
@@ -101,15 +72,23 @@ lin
   ConsTele x xs = x ++ xs ;
 
   OBranch a la ew = a ++ la ++ "->" ++ ew ;
-  TeleC a la e = "(" ++ a ++ la ++ ":" ++ e ++ ")" ;
-  PTeleC e1 e2 = "(" ++ e1 ++ ":" ++ e2 ++ ")" ;
+  TeleC a la e = "(" ++ a ++ la ++ ":" ++ e.s ++ ")" ;
+  PTeleC e1 e2 = "(" ++ top e1 ++ ":" ++ top e2 ++ ")" ;
 
   OLabel a lt = a ++ lt ;
 
-  -- whatsup with this
-  --   Exp> gr | l
-  --     x ( x x : U U ) : ( proj1 U == U , proj2 z ) = proj1 U
-  --     21204 msec
+  --object language syntax, all variables for now
+
+  X = "x" ;
+  Y = "y" ;
+  Z = "z" ;
+  B = "b" ;
+
+  Bool = "bool" ;
+  True = "true" ;
+  False = "false" ;
+  CaseBool = "caseBool" ;
+  IndBool = "indBool" ;
 
 
 }

@@ -3,7 +3,7 @@ abstract Exp = {
 flags startcat = Decl ;
 
 
--- note, cubical tt doesn't support inductive families, and therefore the datatype (& labels) need to be modified
+      -- note, cubical tt doesn't support inductive families, and therefore the datatype (& labels) need to be modified
 
 cat
   Comment ;
@@ -43,13 +43,11 @@ fun
 
   Let : [Decl] -> Exp -> Exp ;
   Lam : [PTele] -> Exp -> Exp ;
-
-  -- Split : Exp -> [Branch] -> Exp ;
   Fun : Exp -> Exp -> Exp ;
   Pi    : [PTele] -> Exp -> Exp ;
   Sigma : [PTele] -> Exp -> Exp ;
   App : Exp -> Exp -> Exp ;
-  Id : Exp -> Exp -> Exp ;
+  Id : Exp -> Exp -> Exp -> Exp ;
   IdJ : Exp -> Exp -> Exp -> Exp -> Exp -> Exp ;
   Fst : Exp -> Exp ;
   Snd : Exp -> Exp ;
@@ -67,11 +65,12 @@ fun
   TeleC : AIdent -> [AIdent] -> Exp -> Tele ;
   PTeleC : Exp -> Exp -> PTele ;
 
-  X , Y , Z : AIdent ;
+  X , Y , Z , B : AIdent ;
 
   True , False , Bool : AIdent ;
 
   CaseBool : AIdent ;
+  IndBool : AIdent ;
 
   -- how to resolve this amgiuity
   -- GenAIdent : String -> AIdent ;

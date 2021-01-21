@@ -1,0 +1,40 @@
+
+p "indBool ( x : bool -> U ) ( y : x false ) ( z : x true ) : ( b : bool ) -> x b = split false -> y || true  -> z"
+
+DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) U)) (ConsTele (TeleC Y BaseAIdent (App (Var X) (Var False))) (ConsTele (TeleC Z BaseAIdent (App (Var X) (Var True))) BaseTele))) (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (App (Var X) (Var B))) (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
+
+9 msec
+Exp> 0 msec
+
+
+
+
+Exp> p "indBool ( x : bool -> U ) ( y : x false ) ( z : x true ) : ( b : bool ) -> x b = split false -> y || true  -> z"
+
+DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) U)) (ConsTele (TeleC Y BaseAIdent (App (Var X) (Var False))) (ConsTele (TeleC Z BaseAIdent (App (Var X) (Var True))) BaseTele))) 
+
+  (App 
+    (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (Var X)) 
+    (Var B)) -- why does this parse occur, and how to prevent it
+    -- perhaps this is where fixity comes into play
+
+  ( b : bool ) -> x b 
+    is interpreted as 
+  (( b : bool ) -> x) b 
+
+  (Pi 
+    (BasePTele (PTeleC (Var B) (Var Bool))) 
+    (App (Var X) (Var B))) 
+
+  (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (App (Var X) (Var B))) -- new
+
+  (Pi 
+    [PTele (Var (AIdent ((19,55),"b"))) (Var (AIdent ((19,59),"bool")))] 
+    (App (Var (AIdent ((19,68),"A"))) (Var (AIdent ((19,70),"b"))))) 
+
+
+    (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
+
+3 msec
+Exp> 0 msec
+

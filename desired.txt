@@ -1,0 +1,12 @@
+data Vec (A : Set) : Nat -> Set where
+  [] : Vec A 0
+  Cons : A -> Vec A n -> Vec a (n+1)
+
+data Bool : Set where
+  true : Bool
+  false : Bool
+
+caseBool ( x : U ) ( y z : x ) : bool -> U 
+caseBool false = y 
+caseBool true = z
+

@@ -54,7 +54,7 @@ fun
   -- Pair : Exp -> [Exp] -> Exp ; -- i think this list is only for the cubical part, so we'll try without for now
   Pair : Exp -> Exp -> Exp ;
   Var : AIdent -> Exp ;          
-  U : Exp ;
+  Univ : Exp ;
   --Hole : HoleIdent -> Exp ; -- need to add holes
 
   OBranch :  AIdent -> [AIdent] -> ExpWhere -> Branch ;
@@ -65,7 +65,8 @@ fun
   TeleC : AIdent -> [AIdent] -> Exp -> Tele ;
   PTeleC : Exp -> Exp -> PTele ;
 
-  X , Y , Z , B : AIdent ;
+  A , B , C , D , E , F , G , H , I , J , K , L , M , N , O , P , Q , R , S , T , U , V , W , X , Y , Z : AIdent ;
+  -- X , Y , Z , B : AIdent ;
 
   True , False , Bool : AIdent ;
 

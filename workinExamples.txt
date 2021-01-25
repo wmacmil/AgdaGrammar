@@ -1,2 +1,4 @@
 p "data bool : Set where true | false" 
-p "caseBool ( x : U ) ( y z : x ) : bool -> U = split false -> y || true -> z"
+p "caseBool ( x : Set ) ( y z : x ) : bool -> Set = split false -> y || true -> z"
+p "indBool ( x : bool -> Set ) ( y : x false ) ( z : x true ) : ( b : bool ) -> x b = split false -> y || true  -> z"
+

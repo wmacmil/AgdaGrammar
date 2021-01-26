@@ -1,4 +1,4 @@
-concrete ExpEng of Exp = open Prelude, FormalTwo in {
+concrete ExpCubicalTT of Exp = open Prelude, FormalTwo in {
 
 lincat 
   Comment,

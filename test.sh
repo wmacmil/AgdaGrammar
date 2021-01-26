@@ -1,1 +1,1 @@
-gf ExpEng.gf < workinExamples.txt
+gf ExpCubicalTT.gf < workinExamples.txt

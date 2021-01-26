@@ -22,8 +22,13 @@ cat
   [Tele]{0} ;
   [Branch]{1} ; 
   -- [Branch]{0} ; 
-  [PTele]{1} ; 
   [Label]{1} ;
+  [PTele]{1} ; 
+  -- [Exp]{1};
+
+  -- I still dont see why [exp] is needed
+  -- also, cant use this list notation for bnfc unless I
+  -- add a second category
 
   --cat [C] {n}
   -- =

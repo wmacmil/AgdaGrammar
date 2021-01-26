@@ -666,7 +666,7 @@ equivfDprod (w1 , w2) (w1' , w2') = f , qinv->isequiv f (f-1 , ff-1 , f-1f)
     ff-1 (r , r) = r
     f-1f : (λ x → f-1 (f x)) ~ (λ z → z)
     f-1f r = r
-  
+
 -- 2.7.3
 etaDprod : {A : Set} {P : A → Set} (z : Σ A (λ x → P x)) → z ≡ (fst z , snd z)
 etaDprod z = r

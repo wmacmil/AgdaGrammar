@@ -1,4 +1,4 @@
-concrete ExpEng of Exp = open Prelude, FormalTwo in {
+concrete ExpAgda of Exp = open Prelude, FormalTwo in {
 
 lincat 
   Comment,

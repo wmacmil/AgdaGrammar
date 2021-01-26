@@ -1,4 +1,4 @@
 p "data bool : Set where true | false" 
 p "caseBool ( x : Set ) ( y z : x ) : bool -> Set = split false -> y || true -> z"
 p "indBool ( x : bool -> Set ) ( y : x false ) ( z : x true ) : ( b : bool ) -> x b = split false -> y || true  -> z"
-
+p "funExt  ( a : Set )   ( b : a -> Set )   ( f g :  ( x : a )  -> b x )   ( p :  ( x : a )  -> ( b x )   ( f x ) == ( g x )  )  : (  ( y : a )  -> b y )  f == g = undefined"

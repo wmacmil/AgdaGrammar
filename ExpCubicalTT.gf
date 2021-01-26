@@ -34,12 +34,14 @@ lin
   NoWhere e = usePrec 0 e ;
 
   Let ld e = mkPrec 0 ("let" ++ ld ++ "in" ++ (usePrec 0 e)) ;
+  Split e lb = mkPrec 0 ("split@" ++ usePrec 0 e ++ "with" ++ lb) ;
   Lam pt e = mkPrec 0 ("\\" ++ pt ++ "->" ++ usePrec 0 e) ;
   Fun = infixr 1 "->" ; -- A -> Set
   Pi pt e = mkPrec 1 (pt ++ "->" ++ usePrec 1 e) ;
   Sigma pt e = mkPrec 1 (pt ++ "*" ++ usePrec 1 e) ;
   App = infixl 2 "" ;
-  Id e1 e2 e3 = mkPrec 3 (usePrec 4 e1 ++ usePrec 4 e2 ++ "==" ++ usePrec 3 e2) ;
+  Id e1 e2 e3 = mkPrec 3 (usePrec 4 e1 ++ usePrec 4 e2 ++ "==" ++ usePrec 3 e3) ;
+  -- Id e1 e2 e3 = mkPrec 3 ("Id" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 3 e3) ;
   IdJ e1 e2 e3 e4 e5 = mkPrec 3 ("J" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 4 e3 ++ usePrec 4 e4 ++ usePrec 4 e5) ;
   Fst e = mkPrec 4 ("proj1" ++ usePrec 4 e) ;
   Snd e = mkPrec 4 ("proj2" ++ usePrec 4 e) ;
@@ -83,6 +85,13 @@ lin
   False = "false" ;
   CaseBool = "caseBool" ;
   IndBool = "indBool" ;
+  FunExt = "funExt" ;
+
+  Nat = "nat" ;
+  Zero = "zero" ;
+  Suc = "suc" ;
+  EqualNat = "equalNat" ;
+
 
   A = "a" ;
   B = "b" ;
@@ -110,5 +119,12 @@ lin
   X = "x" ;
   Y = "y" ;
   Z = "z" ;
+
+  -- data nat = zero | suc (n : nat)
+
+  -- p "funExt  ( a : Set )   ( b : a -> Set )   ( f :  ( x : a )  -> b x )   ( p :  ( x : a )  -> ( b x )   ( f x ) == ( g x )  )  : (  ( y : a )  -> b y )  f == g = undefined
+  -- p "funExt  ( a : Set )   ( b : a -> Set )   ( f g :  ( x : a )  -> b x ) ( p :  ( ( x : a )  -> ( b x ) ) ( f x ) == ( g x )  ) : bool = undefined "
+
+  -- ( p :  ( x : a )  -> ( b x )   ( f x ) == ( g x )  )  : (  ( y : a )  -> b y )  f == g = undefined
 
 }

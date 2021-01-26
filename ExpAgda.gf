@@ -46,6 +46,7 @@ lin
   Pair e1 e2 = mkPrec 5 ("(" ++ usePrec 0 e1 ++ "," ++ usePrec 0 e2 ++ ")") ;
   Var a = constant a ;
   Univ = constant "Set" ;
+  Refl = constant "refl" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;

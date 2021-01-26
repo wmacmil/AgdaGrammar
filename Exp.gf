@@ -46,6 +46,8 @@ fun
   Where : Exp -> [Decl] -> ExpWhere ;
   NoWhere : Exp -> ExpWhere ;
 
+  Split : Exp -> [Branch] -> Exp ;
+  -- ::= "split@" Exp "with" "{" [Branch] "}" ;
   Let : [Decl] -> Exp -> Exp ;
   Lam : [PTele] -> Exp -> Exp ;
   Fun : Exp -> Exp -> Exp ;
@@ -60,6 +62,7 @@ fun
   Pair : Exp -> Exp -> Exp ;
   Var : AIdent -> Exp ;          
   Univ : Exp ;
+  Refl : Exp ;
   --Hole : HoleIdent -> Exp ; -- need to add holes
 
   OBranch :  AIdent -> [AIdent] -> ExpWhere -> Branch ;
@@ -77,6 +80,13 @@ fun
 
   CaseBool : AIdent ;
   IndBool : AIdent ;
+
+  FunExt : AIdent ;
+
+  Nat : AIdent ;
+  Zero : AIdent ;
+  Suc : AIdent ;
+  EqualNat : AIdent ;
 
   -- how to resolve this amgiuity
   -- GenAIdent : String -> AIdent ;

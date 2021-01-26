@@ -1,3 +1,37 @@
+
+funExt (A : U) (B : A -> U) (f g : (x : A) -> B x) (p : (x : A) -> Path (B x) (f x) (g x)) : Path ((y : A) -> B y) f g = undefined
+
+ <i> \(a : A) -> (p a) @ i
+
+
+
+equalNat : nat -> nat -> bool = split
+    zero -> split@(nat -> bool) with
+      zero  -> true
+      suc n -> false
+    suc m -> split@(nat -> bool) with
+      zero  -> false
+      suc n -> equalNat m n
+
+
+DeclSplit 
+	(AIdent ((113,1),"equalNat")) 
+	[] 
+	(Fun (Var (AIdent ((113,12),"nat"))) (Fun (Var (AIdent ((113,19),"nat"))) (Var (AIdent ((113,26),"bool"))))) 
+	[OBranch 
+		(AIdent ((114,5),"zero")) 
+		[] 
+		(NoWhere 
+			(Split (Fun (Var (AIdent ((114,20),"nat"))) (Var (AIdent ((114,27),"bool")))) [OBranch (AIdent ((115,7),"zero")) [] (NoWhere (Var (AIdent ((115,16),"true")))),OBranch (AIdent ((116,7),"suc")) [AIdent ((116,11),"n")] (NoWhere (Var (AIdent ((116,16),"false"))))]))
+	,
+	OBranch (AIdent ((117,5),"suc")) [AIdent ((117,9),"m")] (NoWhere (Split (Fun (Var (AIdent ((117,21),"nat"))) (Var (AIdent ((117,28),"bool")))) [OBranch (AIdent ((118,7),"zero")) [] (NoWhere (Var (AIdent ((118,16),"false")))),OBranch (AIdent ((119,7),"suc")) [AIdent ((119,11),"n")] (NoWhere (App (App (Var (AIdent ((119,16),"equalNat"))) (Var (AIdent ((119,25),"m")))) (Var (AIdent ((119,27),"n")))))]))]
+
+
+
+
+
+
+
 data Vec (A : Set) : Nat -> Set where
   [] : Vec A 0
   Cons : A -> Vec A n -> Vec a (n+1)

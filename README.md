@@ -16,39 +16,37 @@ He made a preliminary GF grammar for parsing [homotopy type theory](https://gith
 ## Contents
 
 - Exp.gf 
-  Abstract syntax specification which essentially encodes Agda's LF + Identity Types.  This is largely a GFification of the non-cubical abstract snytax of the bnfc file for [CubicalTT](https://github.com/mortberg/cubicaltt).
+  + Abstract syntax specification which essentially encodes Agda's LF + Identity Types.  This is largely a GFification of the non-cubical abstract snytax of the bnfc file for [CubicalTT](https://github.com/mortberg/cubicaltt).
 - ExpCubicalTT.gf
-  Concrete syntax representation with syntax similair to CubicalTT.
+  + Concrete syntax representation with syntax similair to CubicalTT.
 - ExpAgda.gf
-  Concrete syntax for Agda.
+  + Concrete syntax for Agda.
 - test.sh
-  test script. currently parses various CubicalTT sentences.
+  + test script. currently parses various CubicalTT sentences.
 - /haskell
-  generating variable list.
+  + generating variable list.
 - /agda
   + Id.agda
-    code which syntactically corresponds to much of chapter 2 of the HoTT book
+    * code which syntactically corresponds to much of chapter 2 of the HoTT book
   + Bool.agda
-    agda code for booleans, to be used for testing
+    * agda code for booleans, to be used for testing
 - /textfiles
-  various manipulations of ASTs as primitive testing mechanism (should eventually be deleted)
+  + various manipulations of ASTs as primitive testing mechanism (should eventually be deleted)
 
 ## TODO
 
 - ExpPigdinEng.gf 
-  Concrete syntax for English, but without RGL and any linguistic nuance.
+  + Concrete syntax for English, but without RGL and any linguistic nuance.
 - ExpEng.gf 
-  Concrete English syntax with RGL.
+  + Concrete English syntax with RGL.
   + \*.latex 
 - More robust testing suite
 - Interface with PGF to manipulate ASTs
 - Pre/Post procesing to deal with whitespace
-
-Test cases. Most if not all of these should soon support both Agda and NL implementations
-  - Booleans
-  - Natural Numbers
-  - Lists
-  - Propositional & FOL
-  - HoTT (as corresponds to the Id.agda file)
-
-Thesis writing itself.
+- Test cases. Most if not all of these should soon support both Agda and NL implementations
+  + Booleans
+  + Natural Numbers
+  + Lists
+  + Propositional & FOL
+  + HoTT (as corresponds to the Id.agda file)
+- Thesis writing itself.

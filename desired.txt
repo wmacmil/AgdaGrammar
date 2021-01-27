@@ -4,12 +4,21 @@ funExt (A : U) (B : A -> U) (f g : (x : A) -> B x) (p : (x : A) -> Path (B x) (f
  <i> \(a : A) -> (p a) @ i
 
 
+Exp> DeclUndef FunExt (ConsTele (TeleC A BaseAIdent Univ) (ConsTele (TeleC B BaseAIdent (Fun (Var A) Univ)) (ConsTele (TeleC F (ConsAIdent G BaseAIdent) (Pi (BasePTele (PTeleC (Var X) (Var A))) (App (Var B) (Var X)))) (ConsTele (TeleC P BaseAIdent (Pi (BasePTele (PTeleC (Var X) (Var A))) (Id (App (Var B) (Var X)) (App (Var F) (Var X)) (App (Var G) (Var X))))) BaseTele)))) (Id (Pi (BasePTele (PTeleC (Var Y) (Var A))) (App (Var B) (Var Y))) (Var F) (Var G))
+
+
+equalNat : nat → nat → bool
+equalNat zero zero = true
+equalNat zero (suc n2) = false
+equalNat (suc n1) zero = false
+equalNat (suc n1) (suc n2) = equalNat n1 n2
+
 
 equalNat : nat -> nat -> bool = split
-    zero -> split@(nat -> bool) with
+    zero -> split@ ( nat -> bool ) with
       zero  -> true
       suc n -> false
-    suc m -> split@(nat -> bool) with
+    suc m -> split@ ( nat -> bool ) with
       zero  -> false
       suc n -> equalNat m n
 

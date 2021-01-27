@@ -48,6 +48,7 @@ lin
   Pair e1 e2 = mkPrec 5 ("(" ++ usePrec 0 e1 ++ "," ++ usePrec 0 e2 ++ ")") ;
   Var a = constant a ;
   Univ = constant "Set" ;
+  Refl = constant "refl" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;
@@ -92,6 +93,8 @@ lin
   Suc = "suc" ;
   EqualNat = "equalNat" ;
 
+  Unit = "unit" ;
+  Top = "top" ;
 
   A = "a" ;
   B = "b" ;
@@ -119,6 +122,13 @@ lin
   X = "x" ;
   Y = "y" ;
   Z = "z" ;
+
+  -- p "equalNat : nat -> nat -> bool = split zero -> split@ ( nat -> bool ) with zero  -> true || suc n -> false || suc m -> split@ ( nat -> bool ) with zero -> false || suc n -> equalNat m n"
+
+  -- p "equalNat : top -> nat -> bool = split unit -> split@ ( nat -> bool ) with zero  -> true || suc n -> false"
+
+  -- || suc m -> split@ ( nat -> bool ) zero -> false || suc n -> equalNat m n"
+
 
   -- data nat = zero | suc (n : nat)
 

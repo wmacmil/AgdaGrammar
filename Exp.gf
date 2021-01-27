@@ -40,6 +40,7 @@ fun
 
   DeclDef : AIdent -> [Tele] -> Exp -> ExpWhere -> Decl ;
   DeclData : AIdent -> [Tele] -> [Label] -> Decl ; 
+  -- data nat : Set where zero | suc ( n : nat )
   DeclSplit : AIdent -> [Tele] -> Exp -> [Branch] -> Decl ;
   DeclUndef : AIdent -> [Tele] -> Exp -> Decl ;
 
@@ -87,6 +88,10 @@ fun
   Zero : AIdent ;
   Suc : AIdent ;
   EqualNat : AIdent ;
+
+
+  Unit : AIdent ;
+  Top : AIdent ;
 
   -- how to resolve this amgiuity
   -- GenAIdent : String -> AIdent ;

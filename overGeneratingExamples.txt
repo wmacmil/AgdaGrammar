@@ -1,0 +1,2 @@
+p "equalNat : nat -> nat -> bool = split zero -> split@ ( nat -> bool ) with zero  -> true || suc n -> false || suc m -> split@ ( nat -> bool ) with zero -> false || suc n -> equalNat m n"
+

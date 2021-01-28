@@ -1,0 +1,39 @@
+                              
+         *  *  *              
+      *           *           
+    *               *         
+   *                          
+   *                          
+   *        * * * * * *       
+   *        *         *       
+    *       * * * *  *        
+      *     *      *          
+         *  *  *              
+                              
+This is GF version 3.10.4. 
+Built on linux/x86_64 with ghc-8.6, flags: interrupt server
+License: see help -license.   
+
+linking ... OK
+
+Languages: ExpCubicalTT
+Exp> DeclData Bool BaseTele (ConsLabel (OLabel True BaseTele) (BaseLabel (OLabel False BaseTele)))
+
+3 msec
+Exp> DeclData Nat BaseTele (ConsLabel (OLabel Zero BaseTele) (BaseLabel (OLabel Suc (ConsTele (TeleC N BaseAIdent (Var Nat)) BaseTele))))
+
+0 msec
+Exp> DeclSplit CaseBool (ConsTele (TeleC X BaseAIdent Univ) (ConsTele (TeleC Y (ConsAIdent Z BaseAIdent) (Var X)) BaseTele)) (Fun (Var Bool) Univ) (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
+
+1 msec
+Exp> DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) Univ)) (ConsTele (TeleC Y BaseAIdent (App (Var X) (Var False))) (ConsTele (TeleC Z BaseAIdent (App (Var X) (Var True))) BaseTele))) (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (App (Var X) (Var B))) (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
+
+2 msec
+Exp> DeclUndef FunExt (ConsTele (TeleC A BaseAIdent Univ) (ConsTele (TeleC B BaseAIdent (Fun (Var A) Univ)) (ConsTele (TeleC F (ConsAIdent G BaseAIdent) (Pi (BasePTele (PTeleC (Var X) (Var A))) (App (Var B) (Var X)))) (ConsTele (TeleC P BaseAIdent (Pi (BasePTele (PTeleC (Var X) (Var A))) (Id (App (Var B) (Var X)) (App (Var F) (Var X)) (App (Var G) (Var X))))) BaseTele)))) (Id (Pi (BasePTele (PTeleC (Var Y) (Var A))) (App (Var B) (Var Y))) (Var F) (Var G))
+
+7 msec
+Exp> DeclDef Foo (ConsTele (TeleC B BaseAIdent (Var Bool)) BaseTele) (Var Bool) (NoWhere (Var B))
+
+1 msec
+Exp> See you.
+0 msec

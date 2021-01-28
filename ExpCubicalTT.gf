@@ -41,7 +41,7 @@ lin
   Sigma pt e = mkPrec 1 (pt ++ "*" ++ usePrec 1 e) ;
   App = infixl 2 "" ;
   Id e1 e2 e3 = mkPrec 3 (usePrec 4 e1 ++ usePrec 4 e2 ++ "==" ++ usePrec 3 e3) ;
-  -- Id e1 e2 e3 = mkPrec 3 ("Id" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 3 e3) ;
+-- for an explicit vs implicit use of parameters, may have to use expressions as records, with a parameter is_implicit
   IdJ e1 e2 e3 e4 e5 = mkPrec 3 ("J" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 4 e3 ++ usePrec 4 e4 ++ usePrec 4 e5) ;
   Fst e = mkPrec 4 ("proj1" ++ usePrec 4 e) ;
   Snd e = mkPrec 4 ("proj2" ++ usePrec 4 e) ;
@@ -96,6 +96,8 @@ lin
   Unit = "unit" ;
   Top = "top" ;
 
+  Foo = "foo" ; 
+
   A = "a" ;
   B = "b" ;
   C = "c" ;
@@ -123,18 +125,8 @@ lin
   Y = "y" ;
   Z = "z" ;
 
-  -- p "equalNat : nat -> nat -> bool = split zero -> split@ ( nat -> bool ) with zero  -> true || suc n -> false || suc m -> split@ ( nat -> bool ) with zero -> false || suc n -> equalNat m n"
+  NegB = "negb" ;
 
-  -- p "equalNat : top -> nat -> bool = split unit -> split@ ( nat -> bool ) with zero  -> true || suc n -> false"
-
-  -- || suc m -> split@ ( nat -> bool ) zero -> false || suc n -> equalNat m n"
-
-
-  -- data nat = zero | suc (n : nat)
-
-  -- p "funExt  ( a : Set )   ( b : a -> Set )   ( f :  ( x : a )  -> b x )   ( p :  ( x : a )  -> ( b x )   ( f x ) == ( g x )  )  : (  ( y : a )  -> b y )  f == g = undefined
-  -- p "funExt  ( a : Set )   ( b : a -> Set )   ( f g :  ( x : a )  -> b x ) ( p :  ( ( x : a )  -> ( b x ) ) ( f x ) == ( g x )  ) : bool = undefined "
-
-  -- ( p :  ( x : a )  -> ( b x )   ( f x ) == ( g x )  )  : (  ( y : a )  -> b y )  f == g = undefined
+  -- p "foo ( b : bool ) : bool = f b where f : bool -> bool = negb"
 
 }

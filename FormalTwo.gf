@@ -34,6 +34,7 @@ resource FormalTwo = open Prelude in {
 
     parenth : Str -> Str = \s -> "(" ++ s ++ ")" ;
     parenthOpt : Str -> Str = \s -> variants {s ; "(" ++ s ++ ")"} ;
+    -- possibly comment this out to change it
 
 --.
 -- low-level things: don't use

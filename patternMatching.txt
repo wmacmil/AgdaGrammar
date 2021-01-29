@@ -1,0 +1,19 @@
+
+
+
+DeclSplit -- caseBool ( x : Set ) ( y z : x ) : bool -> Set = split false -> y || true -> z
+Split     --split@ ( nat -> bool ) with zero  -> true || suc n -> false 
+OBranch   -- suc m -> split@ ( nat -> bool ) with zero -> false || suc n -> equalNat m n
+  -- for splits
+
+
+.......................................[Branch] -> Decl ;
+DeclSplit : AIdent -> [Tele] -> Exp -> [Branch] -> Decl ;
+............name   -> typ Signature -> [Branch] -> Decl ;
+
+want to pass the name along
+
+Split : Exp -> [Branch] -> Exp ;
+OBranch :  AIdent -> [AIdent] -> ExpWhere -> Branch ;
+...........suc    -> argList  -> ExpWhere -> Branch ;
+						

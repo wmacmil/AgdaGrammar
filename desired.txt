@@ -1,4 +1,13 @@
 
+transport : ∀ {A : Set} {P : A → Set} {x y : A} (p : x ≡ y)  → P x → P y
+transport {A} {P} {x} {y} = J D d x y
+  where
+    D : (x y : A) → x ≡ y → Set
+    D x y p =  P x → P y
+    d : (x : A) → D x x r
+    d = λ x → id
+
+
 funExt (A : U) (B : A -> U) (f g : (x : A) -> B x) (p : (x : A) -> Path (B x) (f x) (g x)) : Path ((y : A) -> B y) f g = undefined
 
  <i> \(a : A) -> (p a) @ i

@@ -27,11 +27,11 @@ lin
     c = False
     } ;
 
-  CAnd = {s = and_Conj ; c = mkS (mkCl (mkNP all_Predet these_NP) hold_V)} ;
-  COr = {
-    s = or_Conj ; 
-    c = mkS (mkCl (mkNP (mkNP (mkDet (mkCard at_least_AdN (mkCard "1")))) (mkAdv part_Prep these_NP)) hold_V)
-    } ;
+  And = {s = and_Conj ; c = mkS (mkCl (mkNP all_Predet these_NP) hold_V)} ;
+  -- Or = {
+  --   s = or_Conj ; 
+  --   c = mkS (mkCl (mkNP (mkNP (mkDet (mkCard at_least_AdN (mkCard "1")))) (mkAdv part_Prep these_NP)) hold_V)
+  --   } ;
 
 -- symbolic applications by LaTeX macros
 

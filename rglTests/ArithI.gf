@@ -13,6 +13,7 @@ lincat
 
 lin
 
+  IVar x = {s = mkNP (SymbPN x) ; isSymbolic = True} ;
   VStr s = mkSymb s.s ;
   IInt i = {s = symb i.s ; isSymbolic = True} ;
   If p q = {s = ExtAdvS (mkAdv if_Subj p.s) (mkS then_Adv q.s) ; c = True} ;
@@ -28,10 +29,11 @@ lin
     } ;
 
   And = {s = and_Conj ; c = mkS (mkCl (mkNP all_Predet these_NP) hold_V)} ;
-  -- Or = {
-  --   s = or_Conj ; 
-  --   c = mkS (mkCl (mkNP (mkNP (mkDet (mkCard at_least_AdN (mkCard "1")))) (mkAdv part_Prep these_NP)) hold_V)
-  --   } ;
+
+  Or = {
+    s = or_Conj ; 
+    c = mkS (mkCl (mkNP (mkNP (mkDet (mkCard at_least_AdN (mkCard "1")))) (mkAdv part_Prep these_NP)) hold_V)
+    } ;
 
 -- symbolic applications by LaTeX macros
 
@@ -49,5 +51,6 @@ oper
   bulletConj = lin Conj {s1,s2 = "\\item" ; n = singular} ;
   colonConj = lin Conj {s1 = [] ; s2 = ":" ; n = singular} ;
 
+  -- Arith> p "for all x , for all y , the sum of x and y is even or the sum of x and y is odd" 
 
 }

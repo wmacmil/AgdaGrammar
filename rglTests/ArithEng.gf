@@ -8,7 +8,7 @@ concrete ArithEng of Arith = ArithI with
 
 lin
 
-  PNeg p = {
+  Not p = {
     s = mkS ExtraEng.UncNeg (mkCl
                 (mkVP (mkNP the_Quant (mkCN case_N (mkAdv that_Subj p.s))))) ;
     c = False ---- ?
@@ -20,23 +20,19 @@ oper
   element_N = P.mkN "element" ;
   case_N = P.mkN "case" ;
   then_Adv = P.mkAdv "then" ;
-
   singular = P.singular ; ---
 
 lin
 
   Nat x =
     { s = mkS (mkCl x.s (mkCN (P.mkN "number"))) ; c = False } ;
-
   Odd x =
     { s = mkS (mkCl x.s (mkAP (P.mkA "odd"))) ; c = False } ;
-
   Even x =
     { s = mkS (mkCl x.s (mkAP (P.mkA "even"))) ; c = False } ;
 
-  -- Square = mkFun1 "square" ;
-  -- Sum = mkFun2 "sum" ;
-  -- Product = mkFun2 "product" ;
+  Equal x y =
+    { s = mkS (mkCl x.s (P.mkA2 (P.mkA "equal") to_Prep) y.s) ; c = False } ;
 
   Add x y = {
     s = let f = mkFun2 "sum" in
@@ -72,42 +68,5 @@ lin
       {s = mkSymb  ("\\" + s) ; v = P.mkN2 (P.mkN s)} ;
 
 
-    -- p -cat=Ind "the sum of x and y"
-    --   IFun2 Sum (IVar (VString "x")) (IVar (VString "y"))
-    --   -- IFunC Sum (BaseInd (IVar (VString "x")) (IVar (VString "y")))
-
-  -- IFun1 f x = {
-  --   s = case x.isSymbolic of {
-  --     True  => app1 f.s x.s | app f.v x.s ; -- preferred symbolic, allowed verbal
-  --     False => app f.v x.s
-  --     } ;
-  --   isSymbolic = x.isSymbolic
-  --   } ;
-
-
-
-  -- APred1 f x = mkCl x.s f ;
-  -- APred1 : Pred1 -> Ind -> Atom ;
-
-  -- PAtom a = {s = mkS a ; c = False} ;
- -- AKind k x = mkCl x.s k ;
-  -- Nat = mkCN (P.mkN "number") ;
-
 }
 
-  -- And p1 p2 = { s = "" } ;
-  -- And, Or, If   : Prop -> Prop -> Prop ;
-  -- Not           : Prop -> Prop ;
-  -- Forall, Exist : Var  -> Prop -> Prop ;
-  -- IVar          : Var  -> Ind ;
-  -- IVar x = {s = mkNP (SymbPN x) ; isSymbolic = True} ;
-  -- IVar x = {s = mkNP (SymbPN x) }; -- isSymbolic = True} ; --
-
-  -- VStr s = mkSymb s.s ;
-
-  -- Nat = mkCN (P.mkN "number") ;
-
-  -- IInt           : Int -> Ind ;
-  -- Add, Mul       : Ind -> Ind -> Ind ;
-  -- Nat, Even, Odd : Ind -> Prop ;
-  -- Equal          : Ind -> Ind -> Prop ;

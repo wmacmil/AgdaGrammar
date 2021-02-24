@@ -1,6 +1,6 @@
 concrete ArithSimple of Arith = open
-  SyntaxEng, 
-  SymbolicEng, 
+  SyntaxEng,
+  SymbolicEng,
   SymbolEng,
   SentenceEng,
   (P = ParadigmsEng), ExtraEng, Prelude in {
@@ -8,9 +8,11 @@ concrete ArithSimple of Arith = open
 lincat
 
   Prop = S ;
-  Ind = NP ;
-  -- Ind, Var = NP ;
-  Var = Symb ;
+
+  Ind, Var = NP ;
+
+  -- Ind = NP ;
+  -- Var = Symb ;
 
   Conj = SyntaxEng.Conj  ;
 
@@ -30,13 +32,18 @@ lin
                (mkVP (mkNP the_Quant (mkCN case_N (mkAdv that_Subj p))))) ;
 
 
-  -- Forall x p = mkS (mkAdv for_Prep (mkNP all_Predet x)) p ;
+  Forall x p = mkS (mkAdv for_Prep (mkNP all_Predet x)) p ;
 
   -- Exist x p = mkS (existS (mkNP x (mkRS p))) ;
 
-  Forall v p =
-    ExtAdvS (mkAdv for_Prep (mkNP all_Predet (mkNP (SymbPN v)))) p ;
+  -- Forall v p =
+  --   ExtAdvS (mkAdv for_Prep (mkNP all_Predet (mkNP (SymbPN v)))) p ;
 
+
+  -- "there is an element Foo such that Foo is a number"
+  --        * [      *                                 ]
+
+  -- Exist : Var -> Prop -> Prop
   Exist v p =
     mkS
      (mkCl
@@ -45,21 +52,28 @@ lin
            (mkCN
               (mkCN
                  element_N
-                 (mkNP
-                    (SymbPN v)))
+                 v)
               (mkAP
                  (mkAP such_A)
                  p)))) ;
 
-  -- Exist v p = { 
-  --   s = mkS (mkCl (mkNP a_Quant (mkCN (mkCN element_N (mkNP (SymbPN v))) 
+
+
+
+  -- Exist v p = {
+  --   s = mkS (mkCl (mkNP a_Quant (mkCN (mkCN element_N (mkNP (SymbPN v)))
   --                                  (mkAP (mkAP such_A) p.s)))) ;
 
-  IVar x = mkNP (SymbPN x) ; 
-  VStr s = mkSymb s.s ;
+  -- Github Code
+  -- IVar x = mkNP (SymbPN x) ;
+  -- VStr s = mkSymb s.s ;
 
-  -- IVar x = x ;
-  -- VStr s = symb s ;
+  -- IVar          : Var  -> Ind ;
+  -- VStr          : String -> Var ;
+  --Paper for dummy lang
+  IVar x = x ;
+  VStr s = symb s ;
+
   -- (mkSymb s))
 
   IInt = symb ;

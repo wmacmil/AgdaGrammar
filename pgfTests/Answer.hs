@@ -18,11 +18,13 @@ evalNat gn = case gn of
   GTimes x y -> (evalNat x) * (evalNat y)
   GNumber (GInt i) -> i 
 
+-- evalNat (GNumber (GInt 3))
+-- evalNat (GTimes (GNumber (GInt 3)) (GNumber (GInt 3)))
+
 -- so value should just pipe in evalNat to get a Normal Form?
 value :: GObject -> Int
 value e = case e of
-  GNatObj (GNumber (GInt i)) -> i
-  -- GNumber (GInt i) -> i
+  GNatObj x -> (evalNat x) 
 
 test :: (Int -> Bool) -> GObject -> GAnswer
 test f x = if f (value x) then GYes else GNo

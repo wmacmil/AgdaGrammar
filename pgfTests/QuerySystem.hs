@@ -12,7 +12,7 @@ loop :: (String -> String) -> (String -> String) -> IO ()
 loop trans trans2 = do
   s <- getLine
   if s == "quit" then putStrLn "bye" else do
-    putStrLn $ trans s
+    putStrLn $ ("  " ++ trans s)
     putStrLn $ trans2 s
     loop trans trans2
 

@@ -3,7 +3,16 @@ concrete QueryEng of Query = open Prelude in {
 lincat
   Answer , Question , Object , Nat = SS ;
 
+  -- ListNat = SS ;
+  [Nat] = SS ;
+  Fun2 = SS ;
+
 lin
+
+--Yes : Answer ;
+  Yes = ss "yes" ;
+--No : Answer ;
+  No = ss "no" ;
 
 --IsEven  : Object -> Question ;
   IsEven = mkQuestion "even" ;
@@ -15,23 +24,46 @@ lin
 --NatObj : Nat -> Object ;
   NatObj n = n ;
 
---Plus   : Nat -> Nat -> Nat ;
-  Plus n1 n2 = ss (n1.s ++ "+" ++ n2.s) ;
---Times  : Nat -> Nat -> Nat ;
-  Times n1 n2 = ss (n1.s ++ "*" ++ n2.s) ;
-
-  -- Number : Int -> Nat ;
+--Number : Int -> Nat ;
   Number i = i ;
 
---Yes : Answer ;
-  Yes = ss "yes" ;
---No : Answer ;
-  No = ss "no" ;
+
+  Plus = ss "the sum of" ;
+  Times = ss "the product of" ;
+
+  BinFun f n1 n2 = ss (f.s ++ n1.s ++ "and" ++ n2.s) ;
+
+
+
+  ListFun f ls = ss (f.s ++ ls.s) ;
+
+-- BaseNat : Nat -> ListNat ;
+  BaseNat n1 n2 = ss (n1.s ++ "and" ++ n2.s) ;
+
+  -- ConsNat : Nat -> ListNat -> ListNat ;
+  ConsNat n ls = ss (n.s ++ "," ++ ls.s) ;
+
+  -- p "is the sum of 999 and the sum of 3 and 999 odd ?"
+  --   IsOdd (NatObj (BinFun Plus (Number 999) (BinFun Plus (Number 3) (Number 999))))
+  --shouldn't work now
+  -- p -cat=Nat "the product of 9 , 8 and 7"
+  --   ListFun Times (ConsNat (Number 9) (BaseNat (Number 8) (Number 7)))
+
+  -- ListFun  : Fun2 -> ListNat -> Nat ;
+
+-- --Plus   : Nat -> Nat -> Nat ;
+--   Plus n1 n2 = ss (n1.s ++ "+" ++ n2.s) ;
+-- --Times  : Nat -> Nat -> Nat ;
+--   Times n1 n2 = ss (n1.s ++ "*" ++ n2.s) ;
+
+
 
 oper
   -- SS arg is the object
   mkQuestion : Str -> SS -> SS ;
   mkQuestion str s = ss ("is" ++ s.s ++ str ++ "?") ;
 
-}
+  --generalize this to overload, for instance, are 3 and 4 equal
+  -- does 3 = 4 ?
 
+}

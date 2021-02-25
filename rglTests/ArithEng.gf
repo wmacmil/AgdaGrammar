@@ -8,6 +8,8 @@ concrete ArithEng of Arith = ArithI with
 
 lin
 
+  -- uncneg forces negation to be uncontracted
+  -- is not over isn't
   Not p = {
     s = mkS ExtraEng.UncNeg (mkCl
                 (mkVP (mkNP the_Quant (mkCN case_N (mkAdv that_Subj p.s))))) ;

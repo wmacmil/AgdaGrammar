@@ -45,10 +45,17 @@ data GAnswer =
  | GYes 
   deriving Show
 
+data GFun2 =
+   GPlus 
+ | GTimes 
+  deriving Show
+
+newtype GListNat = GListNat [GNat] deriving Show
+
 data GNat =
-   GNumber GInt 
- | GPlus GNat GNat 
- | GTimes GNat GNat 
+   GBinFun GFun2 GNat GNat 
+ | GListFun GFun2 GListNat 
+ | GNumber GInt 
   deriving Show
 
 data GObject = GNatObj GNat 
@@ -73,16 +80,40 @@ instance Gf GAnswer where
 
       _ -> error ("no Answer " ++ show t)
 
-instance Gf GNat where
-  gf (GNumber x1) = mkApp (mkCId "Number") [gf x1]
-  gf (GPlus x1 x2) = mkApp (mkCId "Plus") [gf x1, gf x2]
-  gf (GTimes x1 x2) = mkApp (mkCId "Times") [gf x1, gf x2]
+instance Gf GFun2 where
+  gf GPlus = mkApp (mkCId "Plus") []
+  gf GTimes = mkApp (mkCId "Times") []
 
   fg t =
     case unApp t of
+      Just (i,[]) | i == mkCId "Plus" -> GPlus 
+      Just (i,[]) | i == mkCId "Times" -> GTimes 
+
+
+      _ -> error ("no Fun2 " ++ show t)
+
+instance Gf GListNat where
+  gf (GListNat [x1,x2]) = mkApp (mkCId "BaseNat") [gf x1, gf x2]
+  gf (GListNat (x:xs)) = mkApp (mkCId "ConsNat") [gf x, gf (GListNat xs)]
+  fg t =
+    GListNat (fgs t) where
+     fgs t = case unApp t of
+      Just (i,[x1,x2]) | i == mkCId "BaseNat" -> [fg x1, fg x2]
+      Just (i,[x1,x2]) | i == mkCId "ConsNat" -> fg x1 : fgs x2
+
+
+      _ -> error ("no ListNat " ++ show t)
+
+instance Gf GNat where
+  gf (GBinFun x1 x2 x3) = mkApp (mkCId "BinFun") [gf x1, gf x2, gf x3]
+  gf (GListFun x1 x2) = mkApp (mkCId "ListFun") [gf x1, gf x2]
+  gf (GNumber x1) = mkApp (mkCId "Number") [gf x1]
+
+  fg t =
+    case unApp t of
+      Just (i,[x1,x2,x3]) | i == mkCId "BinFun" -> GBinFun (fg x1) (fg x2) (fg x3)
+      Just (i,[x1,x2]) | i == mkCId "ListFun" -> GListFun (fg x1) (fg x2)
       Just (i,[x1]) | i == mkCId "Number" -> GNumber (fg x1)
-      Just (i,[x1,x2]) | i == mkCId "Plus" -> GPlus (fg x1) (fg x2)
-      Just (i,[x1,x2]) | i == mkCId "Times" -> GTimes (fg x1) (fg x2)
 
 
       _ -> error ("no Nat " ++ show t)

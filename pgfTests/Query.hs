@@ -1,5 +1,7 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Query where
 
+import Data.Data
 import PGF hiding (Tree)
 ----------------------------------------------------
 -- automatic translation from GF to Haskell
@@ -9,7 +11,7 @@ class Gf a where
   gf :: a -> Expr
   fg :: Expr -> a
 
-newtype GString = GString String deriving Show
+newtype GString = GString String deriving (Show,Data)
 
 instance Gf GString where
   gf (GString x) = mkStr x
@@ -18,7 +20,7 @@ instance Gf GString where
       Just x  ->  GString x
       Nothing -> error ("no GString " ++ show t)
 
-newtype GInt = GInt Int deriving Show
+newtype GInt = GInt Int deriving (Show,Data)
 
 instance Gf GInt where
   gf (GInt x) = mkInt x
@@ -27,7 +29,7 @@ instance Gf GInt where
       Just x  ->  GInt x
       Nothing -> error ("no GInt " ++ show t)
 
-newtype GFloat = GFloat Double deriving Show
+newtype GFloat = GFloat Double deriving (Show,Data)
 
 instance Gf GFloat where
   gf (GFloat x) = mkFloat x
@@ -43,29 +45,29 @@ instance Gf GFloat where
 data GAnswer =
    GNo 
  | GYes 
-  deriving Show
+  deriving (Show,Data)
 
 data GFun2 =
    GPlus 
  | GTimes 
-  deriving Show
+  deriving (Show,Data)
 
-newtype GListNat = GListNat [GNat] deriving Show
+newtype GListNat = GListNat [GNat] deriving (Show,Data)
 
 data GNat =
    GBinFun GFun2 GNat GNat 
  | GListFun GFun2 GListNat 
  | GNumber GInt 
-  deriving Show
+  deriving (Show,Data)
 
 data GObject = GNatObj GNat 
-  deriving Show
+  deriving (Show,Data)
 
 data GQuestion =
    GIsEven GObject 
  | GIsOdd GObject 
  | GIsPrime GObject 
-  deriving Show
+  deriving (Show,Data)
 
 
 instance Gf GAnswer where

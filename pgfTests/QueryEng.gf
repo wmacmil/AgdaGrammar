@@ -27,36 +27,23 @@ lin
 --Number : Int -> Nat ;
   Number i = i ;
 
-
   Plus = ss "the sum of" ;
   Times = ss "the product of" ;
 
   BinFun f n1 n2 = ss (f.s ++ n1.s ++ "and" ++ n2.s) ;
 
-
-
+--ListFun  : Fun2 -> ListNat -> Nat ;
   ListFun f ls = ss (f.s ++ ls.s) ;
 
--- BaseNat : Nat -> ListNat ;
+--BaseNat : Nat -> ListNat ;
   BaseNat n1 n2 = ss (n1.s ++ "and" ++ n2.s) ;
 
-  -- ConsNat : Nat -> ListNat -> ListNat ;
+--ConsNat : Nat -> ListNat -> ListNat ;
   ConsNat n ls = ss (n.s ++ "," ++ ls.s) ;
 
-  -- p "is the sum of 999 and the sum of 3 and 999 odd ?"
-  --   IsOdd (NatObj (BinFun Plus (Number 999) (BinFun Plus (Number 3) (Number 999))))
-  --shouldn't work now
+  ----test cases
   -- p -cat=Nat "the product of 9 , 8 and 7"
   --   ListFun Times (ConsNat (Number 9) (BaseNat (Number 8) (Number 7)))
-
-  -- ListFun  : Fun2 -> ListNat -> Nat ;
-
--- --Plus   : Nat -> Nat -> Nat ;
---   Plus n1 n2 = ss (n1.s ++ "+" ++ n2.s) ;
--- --Times  : Nat -> Nat -> Nat ;
---   Times n1 n2 = ss (n1.s ++ "*" ++ n2.s) ;
-
-
 
 oper
   -- SS arg is the object

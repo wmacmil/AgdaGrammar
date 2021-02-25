@@ -6,26 +6,29 @@ import Query
 transfer :: Tree -> Tree
 transfer = gf . answer . fg
 
+transfer2 :: Tree -> Tree
+transfer2 = gf . iden . fg
+
+iden :: GQuestion -> GQuestion
+iden gq = gq
+
+-- transfer :: Mode -> Tree -> Tree
+-- transfer m = gf . trans . fg where
+--   trans = case m of
+--     MNone -> id
+--     MAns  -> answer
+--     -- MMinimalize -> minimalize
+--     -- MMaximize   -> maximize
+
+data Mode = MNone | MAns deriving Show -- |  MMaximize | MMinimalize deriving Show
+
+
+
 answer :: GQuestion -> GAnswer
 answer p = case p of
   GIsOdd x -> test odd x
   GIsEven x -> test even x
   GIsPrime x -> test prime x
-
--- evalNat :: GNat -> Int
--- evalNat gn = case gn of
---   GPlus  x y -> (evalNat x) + (evalNat y)
---   GTimes x y -> (evalNat x) * (evalNat y)
---   GNumber (GInt i) -> i 
---
-  
-  -- BinFun : Fun2 -> Nat -> Nat -> Nat ;
-
-  -- GPConjs co (GListProp ps) -> foldl1 (GPConj co) (map minimalizeP ps)
-  --
-  --   ListFun  : Fun2 -> [Nat] -> Nat ;
-
-
 
 evalNat :: GNat -> Int
 evalNat gn = case gn of

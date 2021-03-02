@@ -1,0 +1,132 @@
+Hey Aarne-
+
+I'm running into technical difficulties trying to define a simpler example of the aggregation and expansion functions in my dummy Query.gf file (available on my AgdaGrammar github). 
+
+So far, I'm able to get the so-called easy direction, namely, from a list to its more verbose form:
+
+    $ ./query
+    is the sum of 3 , 4 and 5 prime ?
+      no
+      is the sum of 3 and the sum of 4 and 5 prime ?
+    quit
+    bye
+
+I'm trying to now write the reverse direction, to have a list tree come out of nesting of the binary functions.  I'm taking inspiration from your cade paper code, and basically trying to copy a skeleton from you *optimize* function, but then I don't inheret the instance of equality.
+
+Ideally, I'm trying to get this code to work 
+
+  -- -- optimize :: forall c. Tree c -> Tree c
+  -- compressNat :: forall c. Tree c -> Tree c
+  -- compressNat n = case n of
+  --   GBinFun f x y -> mergeFun f x y
+  --   _ -> n
+    
+  -- mergeFun :: GFun2 -> GNat -> GNat -> GListNat
+  -- mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
+  --   where
+  --     getF :: GNat -> [GNat]
+  --     getF n = case n of
+  --       GBinFun f2 n1 n2 | f1 == f2 -> getF n1 ++ getF n2
+  --       _ -> [n]
+
+But then I get the error
+
+
+    wmacmil@w:~/thesis/gf/exp/pgfTests$ ghci Answer.hs
+    GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? for help
+    [1 of 2] Compiling Query            ( Query.hs, interpreted )
+    [2 of 2] Compiling Answer           ( Answer.hs, interpreted )
+
+    Answer.hs:57:26: error:
+        • No instance for (Eq GFun2) arising from a use of ‘==’
+        • In the expression: f1 == f2
+          In a stmt of a pattern guard for
+                         a case alternative:
+            f1 == f2
+          In a case alternative:
+              GBinFun f2 n1 n2 | f1 == f2 -> getF n1 ++ getF n2
+       |
+    57 |       GBinFun f2 n1 n2 | f1 == f2 -> getF n1 ++ getF n2
+       |                          ^^^^^^^^
+    Failed, one module loaded.
+
+This shoudl be rememedied by adding the *--haskell=gadt* flag in the Makefile, but then this causes the cod eto break further down - this error I don't understand at all, and my PGF/Haskell skills are basically at a point where I can't make any more progress without explicit help from an expert.  As an emphasizing remark, this is the vanilla Answer.hs code from the GF book, appended with my own goals of created a mini extended grammar.  Do you have any tips or suggestions for moving forward?  
+
+
+    wmacmil@w:~/thesis/gf/exp/pgfTests$ make
+    gf -make -f haskell --haskell=gadt QueryEng.gf
+    linking ... OK
+    Writing Query.pgf...
+    Writing Query.hs...
+    ghc --make -o query QuerySystem.hs
+    [1 of 3] Compiling Query            ( Query.hs, Query.o )
+
+    Query.hs:173:38: error:
+        • Couldn't match type ‘[Tree a0]’ with ‘Tree GFun2_’
+          Expected type: m GFun2
+            Actual type: m [Tree a0]
+        • In the second argument of ‘a’, namely
+            ‘foldr (a . a (r (:)) . f) (r []) x1’
+          In the first argument of ‘a’, namely
+            ‘r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1’
+          In the expression:
+            r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1
+              `a` foldr (a . a (r (:)) . f) (r []) x2
+        |
+    173 |     GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
+        |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    Query.hs:173:71: error:
+        • Couldn't match type ‘GFun2_’ with ‘Tree a0’
+          Expected type: Tree (Tree a0)
+            Actual type: GFun2
+        • In the third argument of ‘foldr’, namely ‘x1’
+          In the second argument of ‘a’, namely
+            ‘foldr (a . a (r (:)) . f) (r []) x1’
+          In the first argument of ‘a’, namely
+            ‘r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1’
+        |
+    173 |     GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
+        |                                                                       ^^
+
+    Query.hs:173:78: error:
+        • Couldn't match type ‘[Tree a1]’ with ‘Tree GListNat_’
+          Expected type: m GListNat
+            Actual type: m [Tree a1]
+        • In the second argument of ‘a’, namely
+            ‘foldr (a . a (r (:)) . f) (r []) x2’
+          In the expression:
+            r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1
+              `a` foldr (a . a (r (:)) . f) (r []) x2
+          In a case alternative:
+              GListFun x1 x2
+                -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1
+                     `a` foldr (a . a (r (:)) . f) (r []) x2
+        |
+    173 |     GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
+        |                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    Query.hs:173:111: error:
+        • Couldn't match type ‘GListNat_’ with ‘Tree a1’
+          Expected type: Tree (Tree a1)
+            Actual type: GListNat
+        • In the third argument of ‘foldr’, namely ‘x2’
+          In the second argument of ‘a’, namely
+            ‘foldr (a . a (r (:)) . f) (r []) x2’
+          In the expression:
+            r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1
+              `a` foldr (a . a (r (:)) . f) (r []) x2
+        |
+    173 |     GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
+        |                                                                                                               ^^
+    make: *** [Makefile:3: all] Error 1
+    wmacmil@w:~/thesis/gf/exp/pgfTests$ vim Makefile
+    wmacmil@w:~/thesis/gf/exp/pgfTests$ make
+    gf -make -f haskell --haskel=data QueryEng.gf
+    unrecognized option `--haskel=data'
+
+
+    You may want to try --help.
+    make: *** [Makefile:2: all] Error 1
+    wmacmil@w:~/thesis/gf/exp/pgfTests$ vim Makefile
+

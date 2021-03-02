@@ -1,7 +1,7 @@
 module Main where
 
 import PGF
-import Answer (transfer,transfer2,Mode)
+import Answer (transfer,transfer2)
 
 main :: IO ()
 main = do

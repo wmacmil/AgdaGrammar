@@ -8,13 +8,6 @@ import Control.Lens (toListOf, over, Traversal')
 transfer :: Tree -> Tree
 transfer = gf . answer . fg
 
-transfer2 :: Tree -> Tree
-transfer2 = gf . expandNatQuestion . fg
--- transfer2 = gf . iden . fg
-
-iden :: GQuestion -> GQuestion
-iden gq = gq
-
 -- transfer :: Mode -> Tree -> Tree
 -- transfer m = gf . trans . fg where
 --   trans = case m of
@@ -22,37 +15,38 @@ iden gq = gq
 --     MAns  -> answer
 --     -- MMinimalize -> minimalize
 --     -- MMaximize   -> maximize
---
 
-expandNatQuestion :: GQuestion -> GQuestion
-expandNatQuestion q = over template expandNat q
 
--- expandNatQuestion q = case q of
---   GIsOdd x -> GIsOdd (expandNatObj x)
---   GIsEven x -> GIsEven (expandNatObj x)
---   GIsPrime x -> GIsPrime (expandNatObj x)
+iden :: GQuestion -> GQuestion
+iden gq = gq
 
--- expandNatObj :: GObject -> GObject
--- expandNatObj o = over template expandNat o
--- -- expandNatObj o = case o of
--- --   GNatObj x -> GNatObj (expandNat x)
+transfer2 :: Tree -> Tree
+transfer2 = gf . iden . fg
+-- transfer2 = gf . expandNatQuestion . fg
+
+-- expandNatQuestion :: GQuestion -> GQuestion
+-- expandNatQuestion q = over template expandNat q
   
-expandNat :: GNat -> GNat
-expandNat n = case n of
-  GListFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandNat xs) --arbitrary, could use foldl1
-  GBinFun f x y -> GBinFun f (expandNat x) (expandNat y)
-  x -> x
+-- expandNat :: GNat -> GNat
+-- expandNat n = case n of
+--   GListFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandNat xs) --arbitrary, could use foldl1
+--   GBinFun f x y -> GBinFun f (expandNat x) (expandNat y)
+--   x -> x
 
--- compressNat :: GNat -> GNat
+-- -- optimize :: forall c. Tree c -> Tree c
+-- compressNat :: forall c. Tree c -> Tree c
+-- compressNat n = case n of
+--   GBinFun f x y -> mergeFun f x y
+--   _ -> n
+  
+-- mergeFun :: GFun2 -> GNat -> GNat -> GListNat
+-- mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
+--   where
+--     getF :: GNat -> [GNat]
+--     getF n = case n of
+--       GBinFun f2 n1 n2 | f1 == f2 -> getF n1 ++ getF n2
+--       _ -> [n]
 
--- expandNatList :: GFun2 -> GListNat -> GNat
--- expandNatList f2 ls = 
---   case ls of 
---     GBaseNat n1 n2 -> GBinFun f2 n1 n2
---     -- can't do recursive nesting? (expandNatList n1) (expandNatList 
---     GConsNat n1 ns -> GBinFun f2 n1 (expandNatList f2 ls)
-
-data Mode = MNone | MAns deriving Show -- |  MMaximize | MMinimalize deriving Show
 
 answer :: GQuestion -> GAnswer
 answer p = case p of

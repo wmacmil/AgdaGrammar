@@ -8,37 +8,22 @@ concrete QueryEngRgl of Query = open
 
 lincat
   Answer = Text ;
-  -- Question = QS ; -- QCl ; --or QS ?
-  Question = Utt ; -- QCl ; --or QS ?
-  -- can make compound questions after this
-
   Object , Nat = NP ;
-
-  -- ListNat = SS ;
+  Question = Utt ;
   [Nat] = [NP] ;
   Fun2 = N ;
 
 lin
 
-  -- Query> p -cat=Answer "yes ."
-
   Yes = yesno yes_Utt ;
   No = yesno no_Utt ;
 
-  -- mkUtt (mkQS conditionalTense anteriorAnt negativePol (mkQCl who_IP sleep_V))
-  -- mkUtt (mkQS (mkCl she_NP sleep_V))
-
 --IsEven  : Object -> Question ;
-
-  IsEven obj = mkUtt (mkQS (mkCl obj (mkAP (P.mkA "even")))) ;
-
-  -- Even x =
-  --   mkS (mkCl x (mkAP (P.mkA "even"))) ;
-
--- --IsOdd   : Object -> Question ;
---   IsOdd = mkQuestion "odd" ;
--- --IsPrime : Object -> Question ;
---   IsPrime = mkQuestion "prime" ;
+--IsOdd   : Object -> Question ;
+--IsPrime : Object -> Question ;
+  IsEven = isNumericProp "even" ;
+  IsOdd = isNumericProp "odd" ;
+  IsPrime = isNumericProp "prime" ;
 
 --NatObj : Nat -> Object ;
   NatObj n = n ;
@@ -46,18 +31,19 @@ lin
 --Number : Int -> Nat ;
   Number = symb ;
 
-  -- IInt = symb ;
-  -- Plus  = app (P.mkN2 (P.mkN "sum")) ;
   Plus  = P.mkN "sum" ;
   Times = P.mkN "product" ;
 
-  BinFun f n1 n2 = app (P.mkN2 f) n1 n2 ;
+  BinFun f = app (P.mkN2 f) ;
+p
+--ListFun  : Fun2 -> ListNat -> Nat ;
+  ListFun f ls = app (P.mkN2 f) (mkNP and_Conj ls) ;
 
--- --ListFun  : Fun2 -> ListNat -> Nat ;
---   ListFun f ls = ss (f.s ++ ls.s) ;
+  -- mkUtt (mkNP or_Conj (mkListNP (mkNP this_Det woman_N) (mkListNP (mkNP john_PN) i_NP)))
 
--- --BaseNat : Nat -> ListNat ;
---   BaseNat n1 n2 = ss (n1.s ++ "and" ++ n2.s) ;
+--BaseNat : Nat -> ListNat ;
+  BaseNat = mkListNP ; -- ss (n1.s ++ "and" ++ n2.s) ;
+  ConsNat = mkListNP ; -- ss (n1.s ++ "and" ++ n2.s) ;
 
 -- --ConsNat : Nat -> ListNat -> ListNat ;
 --   ConsNat n ls = ss (n.s ++ "," ++ ls.s) ;
@@ -66,20 +52,15 @@ lin
 --   -- p -cat=Nat "the product of 9 , 8 and 7"
 --   --   ListFun Times (ConsNat (Number 9) (BaseNat (Number 8) (Number 7)))
 
--- oper
---   -- SS arg is the object
---   mkQuestion : Str -> SS -> SS ;
---   mkQuestion str s = ss ("is" ++ s.s ++ str ++ "?") ;
-
 --   --generalize this to overload, for instance, are 3 and 4 equal
 --   -- does 3 = 4 ?
-
--- }
 
 oper
   yesno : Utt -> Text ;
   yesno utt = mkText (mkPhr utt) fullStopPunct ;
 
+  isNumericProp : Str -> NP -> Utt ; 
+  isNumericProp even obj = mkUtt (mkQS (mkCl obj (mkAP (P.mkA even)))) ;
   -- mkBin : Str  -> ?
   -- mkBin sum = app (P.mkN2 (P.mkN sum)) ;
 }

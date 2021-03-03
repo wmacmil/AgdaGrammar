@@ -58,7 +58,9 @@ data GFloat_
 
 data Tree :: * -> * where
   GNo :: Tree GAnswer_
+  GNoIsEven :: GObject -> Tree GAnswer_
   GYes :: Tree GAnswer_
+  GYesIsEven :: GObject -> Tree GAnswer_
   GPlus :: Tree GFun2_
   GTimes :: Tree GFun2_
   GListNat :: [GNat] -> Tree GListNat_
@@ -76,7 +78,9 @@ data Tree :: * -> * where
 instance Eq (Tree a) where
   i == j = case (i,j) of
     (GNo,GNo) -> and [ ]
+    (GNoIsEven x1,GNoIsEven y1) -> and [ x1 == y1 ]
     (GYes,GYes) -> and [ ]
+    (GYesIsEven x1,GYesIsEven y1) -> and [ x1 == y1 ]
     (GPlus,GPlus) -> and [ ]
     (GTimes,GTimes) -> and [ ]
     (GListNat x1,GListNat y1) -> and [x == y | (x,y) <- zip x1 y1]
@@ -94,12 +98,16 @@ instance Eq (Tree a) where
 
 instance Gf GAnswer where
   gf GNo = mkApp (mkCId "No") []
+  gf (GNoIsEven x1) = mkApp (mkCId "NoIsEven") [gf x1]
   gf GYes = mkApp (mkCId "Yes") []
+  gf (GYesIsEven x1) = mkApp (mkCId "YesIsEven") [gf x1]
 
   fg t =
     case unApp t of
       Just (i,[]) | i == mkCId "No" -> GNo 
+      Just (i,[x1]) | i == mkCId "NoIsEven" -> GNoIsEven (fg x1)
       Just (i,[]) | i == mkCId "Yes" -> GYes 
+      Just (i,[x1]) | i == mkCId "YesIsEven" -> GYesIsEven (fg x1)
 
 
       _ -> error ("no Answer " ++ show t)
@@ -169,6 +177,8 @@ instance Gf GQuestion where
 
 instance Compos Tree where
   compos r a f t = case t of
+    GNoIsEven x1 -> r GNoIsEven `a` f x1
+    GYesIsEven x1 -> r GYesIsEven `a` f x1
     GBinFun x1 x2 x3 -> r GBinFun `a` f x1 `a` f x2 `a` f x3
     GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
     GNumber x1 -> r GNumber `a` f x1

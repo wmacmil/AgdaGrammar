@@ -15,6 +15,9 @@ fun
   Yes : Answer ;
   No : Answer ;
 
+  YesIsEven : Object -> Answer ;
+  NoIsEven : Object -> Answer ;
+
   IsEven  : Object -> Question ;
   IsOdd   : Object -> Question ;
   IsPrime : Object -> Question ;

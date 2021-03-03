@@ -18,6 +18,12 @@ lin
   Yes = yesno yes_Utt ;
   No = yesno no_Utt ;
 
+  -- so need to add a polarity field for yes_Utt
+--YesIsEven : Object -> Answer ;
+  YesIsEven = yesno yes_Utt "even" ;
+--NoIsEven : Object -> Answer ;
+  -- NoIsEven obj = yesno no_Utt obj ;
+
 --IsEven  : Object -> Question ;
 --IsOdd   : Object -> Question ;
 --IsPrime : Object -> Question ;
@@ -27,7 +33,7 @@ lin
 
 --NatObj : Nat -> Object ;
   NatObj n = n ;
-
+  
 --Number : Int -> Nat ;
   Number = symb ;
 
@@ -35,32 +41,42 @@ lin
   Times = P.mkN "product" ;
 
   BinFun f = app (P.mkN2 f) ;
-p
+
 --ListFun  : Fun2 -> ListNat -> Nat ;
   ListFun f ls = app (P.mkN2 f) (mkNP and_Conj ls) ;
 
-  -- mkUtt (mkNP or_Conj (mkListNP (mkNP this_Det woman_N) (mkListNP (mkNP john_PN) i_NP)))
-
---BaseNat : Nat -> ListNat ;
-  BaseNat = mkListNP ; -- ss (n1.s ++ "and" ++ n2.s) ;
-  ConsNat = mkListNP ; -- ss (n1.s ++ "and" ++ n2.s) ;
-
--- --ConsNat : Nat -> ListNat -> ListNat ;
---   ConsNat n ls = ss (n.s ++ "," ++ ls.s) ;
-
---   ----test cases
---   -- p -cat=Nat "the product of 9 , 8 and 7"
---   --   ListFun Times (ConsNat (Number 9) (BaseNat (Number 8) (Number 7)))
-
---   --generalize this to overload, for instance, are 3 and 4 equal
---   -- does 3 = 4 ?
+--BaseNat : Nat -> Nat -> ListNat ;
+--ConsNat : Nat -> ListNat -> ListNat ;
+  BaseNat = mkListNP ;
+  ConsNat = mkListNP ;
 
 oper
-  yesno : Utt -> Text ;
-  yesno utt = mkText (mkPhr utt) fullStopPunct ;
 
-  isNumericProp : Str -> NP -> Utt ; 
+  -- yesno : Utt -> Text ;
+  -- yesno utt = mkText (mkPhr utt) fullStopPunct ;
+
+  yesno = overload {
+    yesno : Utt -> Text
+      = \utt -> mkText (mkPhr utt) fullStopPunct ;
+    yesno : Utt -> Str -> NP -> Text =
+      \utt -> \str -> \obj ->
+      mkText
+        (mkPhr utt)
+        fullStopPunct
+        (mkText
+          (mkPhr (mkCl obj (mkAP (P.mkA str)))) fullStopPunct ) ;
+  } ;
+
+  -- isNumericCl : Str -> NP -> Utt ;
+  -- isNumericCl even obj = mkCl obj (mkAP (P.mkA even)) ;
+
+  isNumericProp : Str -> NP -> Utt ;
   isNumericProp even obj = mkUtt (mkQS (mkCl obj (mkAP (P.mkA even)))) ;
+
   -- mkBin : Str  -> ?
   -- mkBin sum = app (P.mkN2 (P.mkN sum)) ;
+
+  -- mkText (mkPhr (mkQS (mkCl she_NP sleep_V))) questMarkPunct (mkText (mkPhr yes_Utt) fullStopPunct)
+  -- mkText (mkPhr yes_Utt) questMarkPunct
+
 }

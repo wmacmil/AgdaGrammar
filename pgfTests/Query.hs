@@ -1,4 +1,5 @@
-{-# LANGUAGE GADTs, FlexibleInstances, KindSignatures, RankNTypes, TypeSynonymInstances #-}
+{-# OPTIONS_GHC -fglasgow-exts #-}
+{-# LANGUAGE GADTs #-}
 module Query where
 
 import Control.Monad.Identity
@@ -65,7 +66,7 @@ data Tree :: * -> * where
   GTimes :: Tree GFun2_
   GListNat :: [GNat] -> Tree GListNat_
   GBinFun :: GFun2 -> GNat -> GNat -> Tree GNat_
-  GListFun :: GFun2 -> GListNat -> Tree GNat_
+  GLstFun :: GFun2 -> GListNat -> Tree GNat_
   GNumber :: GInt -> Tree GNat_
   GNatObj :: GNat -> Tree GObject_
   GIsEven :: GObject -> Tree GQuestion_
@@ -85,7 +86,7 @@ instance Eq (Tree a) where
     (GTimes,GTimes) -> and [ ]
     (GListNat x1,GListNat y1) -> and [x == y | (x,y) <- zip x1 y1]
     (GBinFun x1 x2 x3,GBinFun y1 y2 y3) -> and [ x1 == y1 , x2 == y2 , x3 == y3 ]
-    (GListFun x1 x2,GListFun y1 y2) -> and [ x1 == y1 , x2 == y2 ]
+    (GLstFun x1 x2,GLstFun y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GNumber x1,GNumber y1) -> and [ x1 == y1 ]
     (GNatObj x1,GNatObj y1) -> and [ x1 == y1 ]
     (GIsEven x1,GIsEven y1) -> and [ x1 == y1 ]
@@ -138,13 +139,13 @@ instance Gf GListNat where
 
 instance Gf GNat where
   gf (GBinFun x1 x2 x3) = mkApp (mkCId "BinFun") [gf x1, gf x2, gf x3]
-  gf (GListFun x1 x2) = mkApp (mkCId "ListFun") [gf x1, gf x2]
+  gf (GLstFun x1 x2) = mkApp (mkCId "LstFun") [gf x1, gf x2]
   gf (GNumber x1) = mkApp (mkCId "Number") [gf x1]
 
   fg t =
     case unApp t of
       Just (i,[x1,x2,x3]) | i == mkCId "BinFun" -> GBinFun (fg x1) (fg x2) (fg x3)
-      Just (i,[x1,x2]) | i == mkCId "ListFun" -> GListFun (fg x1) (fg x2)
+      Just (i,[x1,x2]) | i == mkCId "LstFun" -> GLstFun (fg x1) (fg x2)
       Just (i,[x1]) | i == mkCId "Number" -> GNumber (fg x1)
 
 
@@ -180,7 +181,7 @@ instance Compos Tree where
     GNoIsEven x1 -> r GNoIsEven `a` f x1
     GYesIsEven x1 -> r GYesIsEven `a` f x1
     GBinFun x1 x2 x3 -> r GBinFun `a` f x1 `a` f x2 `a` f x3
-    GListFun x1 x2 -> r GListFun `a` foldr (a . a (r (:)) . f) (r []) x1 `a` foldr (a . a (r (:)) . f) (r []) x2
+    GLstFun x1 x2 -> r GLstFun `a` f x1 `a` f x2
     GNumber x1 -> r GNumber `a` f x1
     GNatObj x1 -> r GNatObj `a` f x1
     GIsEven x1 -> r GIsEven `a` f x1

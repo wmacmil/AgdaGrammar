@@ -1,11 +1,11 @@
 module Answer where
 
-import PGF (Tree)
+import PGF (Expr)
 import Query
-import Data.Data.Lens (template)
-import Control.Lens (toListOf, over, Traversal')
+--import Data.Data.Lens (template)
+--import Control.Lens (toListOf, over, Traversal')
 
-transfer :: Tree -> Tree
+transfer :: Expr -> Expr
 transfer = gf . answer . fg
 
 -- transfer :: Mode -> Tree -> Tree
@@ -20,7 +20,7 @@ transfer = gf . answer . fg
 iden :: GQuestion -> GQuestion
 iden gq = gq
 
-transfer2 :: Tree -> Tree
+transfer2 :: Expr -> Expr
 transfer2 = gf . iden . fg
 -- transfer2 = gf . expandNatQuestion . fg
 
@@ -58,8 +58,8 @@ evalNat :: GNat -> Int
 evalNat gn = case gn of
   GBinFun GPlus  x y -> (evalNat x) + (evalNat y)
   GBinFun GTimes x y -> (evalNat x) * (evalNat y)
-  GListFun GPlus (GListNat xs) -> foldl (+) 0 (map evalNat xs)
-  GListFun GTimes (GListNat xs) -> foldl (*) 1 (map evalNat xs)
+  GLstFun GPlus (GListNat xs) -> foldl (+) 0 (map evalNat xs)
+  GLstFun GTimes (GListNat xs) -> foldl (*) 1 (map evalNat xs)
   GNumber (GInt i) -> i 
 
 -- fold the list with the operator

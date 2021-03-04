@@ -33,7 +33,7 @@ lin
   BinFun f n1 n2 = ss (f.s ++ n1.s ++ "and" ++ n2.s) ;
 
 --ListFun  : Fun2 -> ListNat -> Nat ;
-  ListFun f ls = ss (f.s ++ ls.s) ;
+  LstFun f ls = ss (f.s ++ ls.s) ;
 
 --BaseNat : Nat -> ListNat ;
   BaseNat n1 n2 = ss (n1.s ++ "and" ++ n2.s) ;

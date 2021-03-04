@@ -9,4 +9,4 @@ all:
 
 	# gf -make -f haskell --haskell=gadt  QueryEng.gf
 	gf -make -output-format=haskell --haskell=gadt  QueryEng.gf
-	ghc --make -o query2 QuerySystem2.hs
+	ghc --make -XGADTs -o query2 QuerySystem2.hs

@@ -31,7 +31,7 @@ fun
 
   BinFun : Fun2 -> Nat -> Nat -> Nat ;
 
-  ListFun  : Fun2 -> [Nat] -> Nat ;
+  LstFun  : Fun2 -> [Nat] -> Nat ;
 
   -- BaseNat : Nat -> Nat -> ListNat ;
   -- ConsNat : Nat -> ListNat -> ListNat ;

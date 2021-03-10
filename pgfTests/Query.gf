@@ -4,23 +4,21 @@ flags startcat=Question ;
 
 cat
   Answer ; Question ; Object ; Nat ;
-
-
-  -- ListNat ; --{2}
   [Nat]{2};
   Fun2 ;
+  NumPred ;
 
 fun
 
   Yes : Answer ;
   No : Answer ;
 
-  YesIsEven : Object -> Answer ;
-  NoIsEven : Object -> Answer ;
+  YesIsNumPred : NumPred -> Object -> Answer ;
+  NoIsNumPred  : NumPred -> Object -> Answer ;
 
-  IsEven  : Object -> Question ;
-  IsOdd   : Object -> Question ;
-  IsPrime : Object -> Question ;
+  Even , Odd, Prime : NumPred ;
+
+  IsNumPred : NumPred -> Object -> Question ;
 
   NatObj : Nat -> Object ;
 
@@ -39,11 +37,21 @@ fun
   -----------------------------------------
   -- but why not just have it unary so it just appends an and at the end -- i think it has to do with commas
 
+  --TODO
+  -- note this is somewhat of a musing daydream as well as concrete things that should be done
+  -- add more types, say bool and String
+  -- Aarne distinguishes Kinds and Preds in Cade, but in Agda these aren't concrete distinctions
+  --add logic layer
+  -- Mersenne Prime, Sophie Germain prime, etc.
+  -- Then can include things like amicable number (pairs of numbers), coprime numbers, etc.
+  -- primality isn't defined inductively, but 
+  -- https://github.com/agda/agda-stdlib/blob/master/src/Data/Nat/Primality.agda
+  -- proof by reflection comes in
+
   -- could further refine this by including
   -- Cat NatProp ;
   -- Even , Odd , Prime : NatProp ;
   -- IsProp : NatProp -> Object -> Question ;
-
   -- could even further refine using depedent types
   -- where one then introduces Kinds (Nat, Int, Vector Space) and
   -- and then have Props, Objections and questions depedent on Kind

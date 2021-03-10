@@ -1,10 +1,9 @@
 concrete QueryEngRgl of Query = open
   SyntaxEng,
   SymbolicEng,
-  -- SymbolEng,
-  SentenceEng,
   ConstructorsEng,
-  (P = ParadigmsEng), ExtraEng, Prelude in {
+  ParadigmsEng,
+  Prelude in {
 
 lincat
   Answer = Text ;
@@ -12,71 +11,74 @@ lincat
   Question = Utt ;
   [Nat] = [NP] ;
   Fun2 = N ;
+  NumPred = AP ;
+
 
 lin
+
+--Even , Odd, Prime : NumPred ;
+  Even = numprop "even" ;
+  Odd = numprop "odd" ;
+  Prime = numprop "prime" ;
+
+--YesIsNumPred : NumPred -> Object -> Answer ;
+--NoIsNumPred : NumPred -> Object -> Answer ;
+  YesIsNumPred = yesno Pos yes_Utt ;
+  NoIsNumPred = yesno Neg no_Utt ;
 
   Yes = yesno yes_Utt ;
   No = yesno no_Utt ;
 
-  -- so need to add a polarity field for yes_Utt
---YesIsEven : Object -> Answer ;
-  YesIsEven = yesno yes_Utt "even" ;
---NoIsEven : Object -> Answer ;
-  -- NoIsEven obj = yesno no_Utt obj ;
-
---IsEven  : Object -> Question ;
---IsOdd   : Object -> Question ;
---IsPrime : Object -> Question ;
-  IsEven = isNumericProp "even" ;
-  IsOdd = isNumericProp "odd" ;
-  IsPrime = isNumericProp "prime" ;
+--IsNumPred : NumPred -> Object -> Question ;
+  IsNumPred = isNumericPred ;
 
 --NatObj : Nat -> Object ;
   NatObj n = n ;
-  
+
 --Number : Int -> Nat ;
   Number = symb ;
 
-  Plus  = P.mkN "sum" ;
-  Times = P.mkN "product" ;
+  Plus  = mkN "sum" ;
+  Times = mkN "product" ;
 
-  BinFun f = app (P.mkN2 f) ;
+  BinFun f = app (mkN2 f) ;
 
 --ListFun  : Fun2 -> ListNat -> Nat ;
-  ListFun f ls = app (P.mkN2 f) (mkNP and_Conj ls) ;
+  LstFun f ls = app (mkN2 f) (mkNP and_Conj ls) ;
 
 --BaseNat : Nat -> Nat -> ListNat ;
 --ConsNat : Nat -> ListNat -> ListNat ;
   BaseNat = mkListNP ;
   ConsNat = mkListNP ;
 
+param Polr = Pos | Neg ;
+
 oper
 
-  -- yesno : Utt -> Text ;
-  -- yesno utt = mkText (mkPhr utt) fullStopPunct ;
+  polrTrans : Polr -> Pol ;
+  polrTrans p = case p of {
+    Pos => positivePol ;
+    Neg => negativePol 
+  } ;
 
   yesno = overload {
     yesno : Utt -> Text
       = \utt -> mkText (mkPhr utt) fullStopPunct ;
-    yesno : Utt -> Str -> NP -> Text =
-      \utt -> \str -> \obj ->
+    yesno : Polr -> Utt -> AP -> NP -> Text =
+      \pol, utt, even, obj ->
       mkText
         (mkPhr utt)
         fullStopPunct
         (mkText
-          (mkPhr (mkCl obj (mkAP (P.mkA str)))) fullStopPunct ) ;
+          (mkPhr (mkS (polrTrans pol) (mkCl obj even))) fullStopPunct )
   } ;
 
-  -- isNumericCl : Str -> NP -> Utt ;
-  -- isNumericCl even obj = mkCl obj (mkAP (P.mkA even)) ;
+  --refactor to include question mark
+  isNumericPred : AP -> NP -> Utt ;
+  isNumericPred even obj = mkUtt (mkQS (mkCl obj even)) ;
 
-  isNumericProp : Str -> NP -> Utt ;
-  isNumericProp even obj = mkUtt (mkQS (mkCl obj (mkAP (P.mkA even)))) ;
-
-  -- mkBin : Str  -> ?
-  -- mkBin sum = app (P.mkN2 (P.mkN sum)) ;
-
-  -- mkText (mkPhr (mkQS (mkCl she_NP sleep_V))) questMarkPunct (mkText (mkPhr yes_Utt) fullStopPunct)
-  -- mkText (mkPhr yes_Utt) questMarkPunct
+  -- number propery
+  numprop : Str -> AP ;
+  numprop even = mkAP (mkA even) ;
 
 }

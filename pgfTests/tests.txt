@@ -1,0 +1,4 @@
+is 3 prime 
+is the sum of 3 and 4 prime 
+is the sum of 3 and the sum of 4 and 5 prime 
+is the sum of 3 , 4 and 5 prime 

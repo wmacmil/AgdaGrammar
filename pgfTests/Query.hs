@@ -1,5 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, FlexibleInstances, KindSignatures, RankNTypes, TypeSynonymInstances #-}
 module Query where
 
 import Control.Monad.Identity
@@ -46,6 +45,8 @@ type GListNat = Tree GListNat_
 data GListNat_
 type GNat = Tree GNat_
 data GNat_
+type GNumPred = Tree GNumPred_
+data GNumPred_
 type GObject = Tree GObject_
 data GObject_
 type GQuestion = Tree GQuestion_
@@ -59,19 +60,20 @@ data GFloat_
 
 data Tree :: * -> * where
   GNo :: Tree GAnswer_
-  GNoIsEven :: GObject -> Tree GAnswer_
+  GNoIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
   GYes :: Tree GAnswer_
-  GYesIsEven :: GObject -> Tree GAnswer_
+  GYesIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
   GPlus :: Tree GFun2_
   GTimes :: Tree GFun2_
   GListNat :: [GNat] -> Tree GListNat_
   GBinFun :: GFun2 -> GNat -> GNat -> Tree GNat_
   GLstFun :: GFun2 -> GListNat -> Tree GNat_
   GNumber :: GInt -> Tree GNat_
+  GEven :: Tree GNumPred_
+  GOdd :: Tree GNumPred_
+  GPrime :: Tree GNumPred_
   GNatObj :: GNat -> Tree GObject_
-  GIsEven :: GObject -> Tree GQuestion_
-  GIsOdd :: GObject -> Tree GQuestion_
-  GIsPrime :: GObject -> Tree GQuestion_
+  GIsNumPred :: GNumPred -> GObject -> Tree GQuestion_
   GString :: String -> Tree GString_
   GInt :: Int -> Tree GInt_
   GFloat :: Double -> Tree GFloat_
@@ -79,19 +81,20 @@ data Tree :: * -> * where
 instance Eq (Tree a) where
   i == j = case (i,j) of
     (GNo,GNo) -> and [ ]
-    (GNoIsEven x1,GNoIsEven y1) -> and [ x1 == y1 ]
+    (GNoIsNumPred x1 x2,GNoIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GYes,GYes) -> and [ ]
-    (GYesIsEven x1,GYesIsEven y1) -> and [ x1 == y1 ]
+    (GYesIsNumPred x1 x2,GYesIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GPlus,GPlus) -> and [ ]
     (GTimes,GTimes) -> and [ ]
     (GListNat x1,GListNat y1) -> and [x == y | (x,y) <- zip x1 y1]
     (GBinFun x1 x2 x3,GBinFun y1 y2 y3) -> and [ x1 == y1 , x2 == y2 , x3 == y3 ]
     (GLstFun x1 x2,GLstFun y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GNumber x1,GNumber y1) -> and [ x1 == y1 ]
+    (GEven,GEven) -> and [ ]
+    (GOdd,GOdd) -> and [ ]
+    (GPrime,GPrime) -> and [ ]
     (GNatObj x1,GNatObj y1) -> and [ x1 == y1 ]
-    (GIsEven x1,GIsEven y1) -> and [ x1 == y1 ]
-    (GIsOdd x1,GIsOdd y1) -> and [ x1 == y1 ]
-    (GIsPrime x1,GIsPrime y1) -> and [ x1 == y1 ]
+    (GIsNumPred x1 x2,GIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GString x, GString y) -> x == y
     (GInt x, GInt y) -> x == y
     (GFloat x, GFloat y) -> x == y
@@ -99,16 +102,16 @@ instance Eq (Tree a) where
 
 instance Gf GAnswer where
   gf GNo = mkApp (mkCId "No") []
-  gf (GNoIsEven x1) = mkApp (mkCId "NoIsEven") [gf x1]
+  gf (GNoIsNumPred x1 x2) = mkApp (mkCId "NoIsNumPred") [gf x1, gf x2]
   gf GYes = mkApp (mkCId "Yes") []
-  gf (GYesIsEven x1) = mkApp (mkCId "YesIsEven") [gf x1]
+  gf (GYesIsNumPred x1 x2) = mkApp (mkCId "YesIsNumPred") [gf x1, gf x2]
 
   fg t =
     case unApp t of
       Just (i,[]) | i == mkCId "No" -> GNo 
-      Just (i,[x1]) | i == mkCId "NoIsEven" -> GNoIsEven (fg x1)
+      Just (i,[x1,x2]) | i == mkCId "NoIsNumPred" -> GNoIsNumPred (fg x1) (fg x2)
       Just (i,[]) | i == mkCId "Yes" -> GYes 
-      Just (i,[x1]) | i == mkCId "YesIsEven" -> GYesIsEven (fg x1)
+      Just (i,[x1,x2]) | i == mkCId "YesIsNumPred" -> GYesIsNumPred (fg x1) (fg x2)
 
 
       _ -> error ("no Answer " ++ show t)
@@ -151,6 +154,20 @@ instance Gf GNat where
 
       _ -> error ("no Nat " ++ show t)
 
+instance Gf GNumPred where
+  gf GEven = mkApp (mkCId "Even") []
+  gf GOdd = mkApp (mkCId "Odd") []
+  gf GPrime = mkApp (mkCId "Prime") []
+
+  fg t =
+    case unApp t of
+      Just (i,[]) | i == mkCId "Even" -> GEven 
+      Just (i,[]) | i == mkCId "Odd" -> GOdd 
+      Just (i,[]) | i == mkCId "Prime" -> GPrime 
+
+
+      _ -> error ("no NumPred " ++ show t)
+
 instance Gf GObject where
   gf (GNatObj x1) = mkApp (mkCId "NatObj") [gf x1]
 
@@ -162,15 +179,11 @@ instance Gf GObject where
       _ -> error ("no Object " ++ show t)
 
 instance Gf GQuestion where
-  gf (GIsEven x1) = mkApp (mkCId "IsEven") [gf x1]
-  gf (GIsOdd x1) = mkApp (mkCId "IsOdd") [gf x1]
-  gf (GIsPrime x1) = mkApp (mkCId "IsPrime") [gf x1]
+  gf (GIsNumPred x1 x2) = mkApp (mkCId "IsNumPred") [gf x1, gf x2]
 
   fg t =
     case unApp t of
-      Just (i,[x1]) | i == mkCId "IsEven" -> GIsEven (fg x1)
-      Just (i,[x1]) | i == mkCId "IsOdd" -> GIsOdd (fg x1)
-      Just (i,[x1]) | i == mkCId "IsPrime" -> GIsPrime (fg x1)
+      Just (i,[x1,x2]) | i == mkCId "IsNumPred" -> GIsNumPred (fg x1) (fg x2)
 
 
       _ -> error ("no Question " ++ show t)
@@ -178,15 +191,13 @@ instance Gf GQuestion where
 
 instance Compos Tree where
   compos r a f t = case t of
-    GNoIsEven x1 -> r GNoIsEven `a` f x1
-    GYesIsEven x1 -> r GYesIsEven `a` f x1
+    GNoIsNumPred x1 x2 -> r GNoIsNumPred `a` f x1 `a` f x2
+    GYesIsNumPred x1 x2 -> r GYesIsNumPred `a` f x1 `a` f x2
     GBinFun x1 x2 x3 -> r GBinFun `a` f x1 `a` f x2 `a` f x3
     GLstFun x1 x2 -> r GLstFun `a` f x1 `a` f x2
     GNumber x1 -> r GNumber `a` f x1
     GNatObj x1 -> r GNatObj `a` f x1
-    GIsEven x1 -> r GIsEven `a` f x1
-    GIsOdd x1 -> r GIsOdd `a` f x1
-    GIsPrime x1 -> r GIsPrime `a` f x1
+    GIsNumPred x1 x2 -> r GIsNumPred `a` f x1 `a` f x2
     GListNat x1 -> r GListNat `a` foldr (a . a (r (:)) . f) (r []) x1
     _ -> r t
 

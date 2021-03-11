@@ -14,9 +14,9 @@ loop :: (String -> String) -> (String -> String) -> (String -> String) -> IO ()
 loop trans trans2 trans3 = do
   s <- getLine
   if s == "quit" then putStrLn "bye" else do
-    putStrLn $ ("  " ++ trans s)
-    putStrLn $ ("  " ++ trans2 s)
-    putStrLn $ ("  " ++ trans3 s)
+    putStrLn $ ("  Simple:      " ++ trans s)
+    putStrLn $ ("  Verbose:     " ++ trans2 s)
+    putStrLn $ ("  Compressed:  " ++ trans3 s)
     loop trans trans2 trans3
 
 translate :: (Tree -> Tree) -> PGF -> String -> String

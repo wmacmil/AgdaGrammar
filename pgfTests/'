@@ -3,7 +3,7 @@ module Answer where
 
 import qualified PGF (Tree, showExpr)
 -- import PGF (Expr)
-import PGF hiding (Tree, showExpr)
+-- import PGF hiding (Tree, showExpr)
 import Query
 
 -- transfer :: Expr -> Expr
@@ -15,12 +15,10 @@ iden :: GQuestion -> GQuestion
 iden gq = gq
 
 transfer2 :: PGF.Tree -> PGF.Tree
--- transfer2 = gf . expandNatQuestion . fg
-transfer2 = gf . vAnswer . fg
+transfer2 = gf . expandNatQuestion . fg
 
 transfer3 :: PGF.Tree -> PGF.Tree
-transfer3 = gf . cAnswer . fg
--- transfer3 = gf . compressNatQuestion . fg
+transfer3 = gf . compressNatQuestion . fg
 
 -- stack test --file-watch
 -- cabal test suite
@@ -28,15 +26,15 @@ transfer3 = gf . cAnswer . fg
 expandNatQuestion :: GQuestion -> GQuestion
 expandNatQuestion = composOp (expandNat)
 
-compressNatQuestion :: GQuestion -> GQuestion
-compressNatQuestion = composOp (compressNat)
-
 -- expandNat :: GNat -> GNat -- the composOp no longer works with this restricted type sig
 expandNat :: Tree a -> Tree a
 expandNat n = case n of
   GLstFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandNat xs)
   GBinFun f x y -> GBinFun f (expandNat x) (expandNat y)
   x -> composOp expandNat x
+
+compressNatQuestion :: GQuestion -> GQuestion
+compressNatQuestion = composOp (compressNat)
 
 compressNat :: Tree a -> Tree a
 compressNat n = case n of
@@ -54,43 +52,12 @@ mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
 aggregate :: GFun2 -> GListNat -> GNat
 aggregate f l = GLstFun f l
 
-cAnswer :: GQuestion -> GAnswer
-cAnswer q = case q of
-  GIsNumPred GOdd x -> cTest GOdd odd x
-  GIsNumPred GEven x -> cTest GEven even x
-  GIsNumPred GPrime x -> cTest GPrime prime x
-
-cTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-cTest p f obj =
-  if f (value obj)
-  then GYesIsNumPred p (composOp compressNat obj)
-  else GNoIsNumPred p (composOp compressNat obj)
-
---v as in verbose
-vAnswer :: GQuestion -> GAnswer
-vAnswer q = case q of
-  GIsNumPred GOdd x -> vTest GOdd odd x
-  GIsNumPred GEven x -> vTest GEven even x
-  GIsNumPred GPrime x -> vTest GPrime prime x
-
-vTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-vTest p f obj =
-  if f (value obj)
-  then GYesIsNumPred p (composOp (expandNat) obj)
-  else GNoIsNumPred p (composOp (expandNat) obj)
-
-test :: (Int -> Bool) -> GObject -> GAnswer
-test f x = if f (value x) then GYes else GNo
 
 answer :: GQuestion -> GAnswer
 answer p = case p of
   GIsNumPred GOdd x -> test odd x
   GIsNumPred GEven x -> test even x
   GIsNumPred GPrime x -> test prime x
-
-value :: GObject -> Int
-value e = case e of
-  GNatObj x -> (evalNat x)
 
 evalNat :: GNat -> Int
 evalNat gn = case gn of
@@ -100,6 +67,12 @@ evalNat gn = case gn of
   GLstFun GTimes (GListNat xs) -> foldl (*) 1 (map evalNat xs)
   GNumber (GInt i) -> i
 
+value :: GObject -> Int
+value e = case e of
+  GNatObj x -> (evalNat x)
+
+test :: (Int -> Bool) -> GObject -> GAnswer
+test f x = if f (value x) then GYes else GNo
 
 -- could optimize so that one could, for instance, regonize if it is the product of two number
 prime :: Int -> Bool

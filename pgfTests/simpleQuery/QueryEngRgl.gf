@@ -7,7 +7,7 @@ concrete QueryEngRgl of Query = open
   Prelude in {
 
 lincat
-  Answer = Polr => Text ;
+  Answer = Text ;
   Object , Nat = NP ;
   Question = Utt ;
   [Nat] = [NP] ;
@@ -18,17 +18,6 @@ lincat
   Conj = SyntaxEng.Conj  ;
 
 lin
-
-  -- YesNo = table  {Pos => yesno no_Utt ; Neg => yesno yes_Utt  } ;
-  -- YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;
-  YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;
-
-  -- Yesnoisnumpred x y = Table {Pos => yesno Pos yes_Utt x y ; Neg => yesno Neg no_Utt x y } ;
-
-  --Yesisnumpred : numpred -> Object -> Answer ;
-  --NoIsNumPred : NumPred -> Object -> Answer ;
-  -- YesIsNumPred = yesno Pos yes_Utt ;
-  -- NoIsNumPred = yesno Neg no_Utt ;
 
   -- PropQuest : Prop -> Question ;
 
@@ -41,7 +30,7 @@ lin
 
 --If : Prop -> Prop -> Prop ;
   If p q = mkS (ConstructorsEng.mkAdv if_Subj p) (mkS then_Adv q) ;
-  
+
   -- Not           : Prop -> Prop ;
   Not p =
     mkS
@@ -63,11 +52,11 @@ lin
 
 --YesIsNumPred : NumPred -> Object -> Answer ;
 --NoIsNumPred : NumPred -> Object -> Answer ;
-  -- YesIsNumPred = yesno Pos yes_Utt ;
-  -- NoIsNumPred = yesno Neg no_Utt ;
+  YesIsNumPred = yesno Pos yes_Utt ;
+  NoIsNumPred = yesno Neg no_Utt ;
 
-  -- Yes = yesno yes_Utt ;
-  -- No = yesno no_Utt ;
+  Yes = yesno yes_Utt ;
+  No = yesno no_Utt ;
 
 --IsNumPred : NumPred -> Object -> Question ;
   IsNumPred = isNumericPred ;

@@ -17,7 +17,7 @@ fun
   -- so how to abstract the question and answer layers
   --when to introduce variables?
 
-  -- PropQuest : Prop -> Question ;
+  PropQuest : Prop -> Question ;
 
   IsNumProp : NumPred -> Object -> Prop ;
 
@@ -26,9 +26,6 @@ fun
   PConj : Conj -> Prop -> Prop -> Prop ;
 
   And, Or : Conj ;
-
-  YesNo : Answer ; --simple
-  YesNoIsNumPred : NumPred -> Object -> Answer ; --explanatory
 
   --- added ---
 
@@ -44,6 +41,17 @@ fun
   -- so how to abstract the question and answer layers
   --when to introduce variables?
 
+  YesNo : Answer ;
+
+  PropQuest : Prop -> Question ;
+
+  IsNumProp : NumPred -> Object -> Prop ;
+
+  If            : Prop -> Prop -> Prop ;
+  Not           : Prop -> Prop ;
+  PConj : Conj -> Prop -> Prop -> Prop ;
+
+  And, Or : Conj ;
 
   NatObj : Nat -> Object ;
 

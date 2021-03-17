@@ -39,6 +39,8 @@ instance Gf GFloat where
 
 type GAnswer = Tree GAnswer_
 data GAnswer_
+type GConj = Tree GConj_
+data GConj_
 type GFun2 = Tree GFun2_
 data GFun2_
 type GListNat = Tree GListNat_
@@ -49,6 +51,8 @@ type GNumPred = Tree GNumPred_
 data GNumPred_
 type GObject = Tree GObject_
 data GObject_
+type GProp = Tree GProp_
+data GProp_
 type GQuestion = Tree GQuestion_
 data GQuestion_
 type GString = Tree GString_
@@ -63,6 +67,8 @@ data Tree :: * -> * where
   GNoIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
   GYes :: Tree GAnswer_
   GYesIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
+  GAnd :: Tree GConj_
+  GOr :: Tree GConj_
   GPlus :: Tree GFun2_
   GTimes :: Tree GFun2_
   GListNat :: [GNat] -> Tree GListNat_
@@ -73,7 +79,12 @@ data Tree :: * -> * where
   GOdd :: Tree GNumPred_
   GPrime :: Tree GNumPred_
   GNatObj :: GNat -> Tree GObject_
+  GIf :: GProp -> GProp -> Tree GProp_
+  GIsNumProp :: GNumPred -> GObject -> Tree GProp_
+  GNot :: GProp -> Tree GProp_
+  GPConj :: GConj -> GProp -> GProp -> Tree GProp_
   GIsNumPred :: GNumPred -> GObject -> Tree GQuestion_
+  GPropQuest :: GProp -> Tree GQuestion_
   GString :: String -> Tree GString_
   GInt :: Int -> Tree GInt_
   GFloat :: Double -> Tree GFloat_
@@ -84,6 +95,8 @@ instance Eq (Tree a) where
     (GNoIsNumPred x1 x2,GNoIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GYes,GYes) -> and [ ]
     (GYesIsNumPred x1 x2,GYesIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
+    (GAnd,GAnd) -> and [ ]
+    (GOr,GOr) -> and [ ]
     (GPlus,GPlus) -> and [ ]
     (GTimes,GTimes) -> and [ ]
     (GListNat x1,GListNat y1) -> and [x == y | (x,y) <- zip x1 y1]
@@ -94,7 +107,12 @@ instance Eq (Tree a) where
     (GOdd,GOdd) -> and [ ]
     (GPrime,GPrime) -> and [ ]
     (GNatObj x1,GNatObj y1) -> and [ x1 == y1 ]
+    (GIf x1 x2,GIf y1 y2) -> and [ x1 == y1 , x2 == y2 ]
+    (GIsNumProp x1 x2,GIsNumProp y1 y2) -> and [ x1 == y1 , x2 == y2 ]
+    (GNot x1,GNot y1) -> and [ x1 == y1 ]
+    (GPConj x1 x2 x3,GPConj y1 y2 y3) -> and [ x1 == y1 , x2 == y2 , x3 == y3 ]
     (GIsNumPred x1 x2,GIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
+    (GPropQuest x1,GPropQuest y1) -> and [ x1 == y1 ]
     (GString x, GString y) -> x == y
     (GInt x, GInt y) -> x == y
     (GFloat x, GFloat y) -> x == y
@@ -115,6 +133,18 @@ instance Gf GAnswer where
 
 
       _ -> error ("no Answer " ++ show t)
+
+instance Gf GConj where
+  gf GAnd = mkApp (mkCId "And") []
+  gf GOr = mkApp (mkCId "Or") []
+
+  fg t =
+    case unApp t of
+      Just (i,[]) | i == mkCId "And" -> GAnd 
+      Just (i,[]) | i == mkCId "Or" -> GOr 
+
+
+      _ -> error ("no Conj " ++ show t)
 
 instance Gf GFun2 where
   gf GPlus = mkApp (mkCId "Plus") []
@@ -178,12 +208,30 @@ instance Gf GObject where
 
       _ -> error ("no Object " ++ show t)
 
+instance Gf GProp where
+  gf (GIf x1 x2) = mkApp (mkCId "If") [gf x1, gf x2]
+  gf (GIsNumProp x1 x2) = mkApp (mkCId "IsNumProp") [gf x1, gf x2]
+  gf (GNot x1) = mkApp (mkCId "Not") [gf x1]
+  gf (GPConj x1 x2 x3) = mkApp (mkCId "PConj") [gf x1, gf x2, gf x3]
+
+  fg t =
+    case unApp t of
+      Just (i,[x1,x2]) | i == mkCId "If" -> GIf (fg x1) (fg x2)
+      Just (i,[x1,x2]) | i == mkCId "IsNumProp" -> GIsNumProp (fg x1) (fg x2)
+      Just (i,[x1]) | i == mkCId "Not" -> GNot (fg x1)
+      Just (i,[x1,x2,x3]) | i == mkCId "PConj" -> GPConj (fg x1) (fg x2) (fg x3)
+
+
+      _ -> error ("no Prop " ++ show t)
+
 instance Gf GQuestion where
   gf (GIsNumPred x1 x2) = mkApp (mkCId "IsNumPred") [gf x1, gf x2]
+  gf (GPropQuest x1) = mkApp (mkCId "PropQuest") [gf x1]
 
   fg t =
     case unApp t of
       Just (i,[x1,x2]) | i == mkCId "IsNumPred" -> GIsNumPred (fg x1) (fg x2)
+      Just (i,[x1]) | i == mkCId "PropQuest" -> GPropQuest (fg x1)
 
 
       _ -> error ("no Question " ++ show t)
@@ -197,7 +245,12 @@ instance Compos Tree where
     GLstFun x1 x2 -> r GLstFun `a` f x1 `a` f x2
     GNumber x1 -> r GNumber `a` f x1
     GNatObj x1 -> r GNatObj `a` f x1
+    GIf x1 x2 -> r GIf `a` f x1 `a` f x2
+    GIsNumProp x1 x2 -> r GIsNumProp `a` f x1 `a` f x2
+    GNot x1 -> r GNot `a` f x1
+    GPConj x1 x2 x3 -> r GPConj `a` f x1 `a` f x2 `a` f x3
     GIsNumPred x1 x2 -> r GIsNumPred `a` f x1 `a` f x2
+    GPropQuest x1 -> r GPropQuest `a` f x1
     GListNat x1 -> r GListNat `a` foldr (a . a (r (:)) . f) (r []) x1
     _ -> r t
 

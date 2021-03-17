@@ -7,7 +7,8 @@ concrete QueryEngRgl of Query = open
   Prelude in {
 
 lincat
-  Answer = Polr => Text ;
+  -- Answer = Polr => Text ;
+  Answer = Text ;
   Object , Nat = NP ;
   Question = Utt ;
   [Nat] = [NP] ;
@@ -19,18 +20,20 @@ lincat
 
 lin
 
-  -- YesNo = table  {Pos => yesno no_Utt ; Neg => yesno yes_Utt  } ;
-  -- YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;
-  YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;
+  -- logic --
 
-  -- Yesnoisnumpred x y = Table {Pos => yesno Pos yes_Utt x y ; Neg => yesno Neg no_Utt x y } ;
+  -- so can turn a S back into a Cl 
 
-  --Yesisnumpred : numpred -> Object -> Answer ;
-  --NoIsNumPred : NumPred -> Object -> Answer ;
-  -- YesIsNumPred = yesno Pos yes_Utt ;
-  -- NoIsNumPred = yesno Neg no_Utt ;
+  -- mkCl : Adv -> S -> Cl
 
-  -- PropQuest : Prop -> Question ;
+
+-- is it the case that _PROP_
+--PropQuest : Prop -> Question ;
+  PropQuest p =
+    mkUtt (mkQS (theCaseThat p)) ;
+
+  -- isNumericPred : AP -> NP -> Utt ;
+  -- isNumericPred even obj = mkUtt (mkQS (mkCl obj even)) ;
 
 --IsNumProp : NumPred -> Object -> Prop ;
   IsNumProp odd obj = mkS (mkCl obj odd) ;
@@ -42,12 +45,14 @@ lin
 --If : Prop -> Prop -> Prop ;
   If p q = mkS (ConstructorsEng.mkAdv if_Subj p) (mkS then_Adv q) ;
   
-  -- Not           : Prop -> Prop ;
+  -- is it the case that it is not the case that 999 is even
+  -- can now be normalized
+
+--Not : Prop -> Prop ;
   Not p =
     mkS
       ExtraEng.UncNeg
-      (mkCl
-         (mkVP (mkNP the_Quant (mkCN case_N (ConstructorsEng.mkAdv that_Subj p))))) ;
+      (theCaseThat p) ;
 
 --PConj : Conj -> Prop -> Prop -> Prop ;
   PConj = mkS ;
@@ -56,21 +61,25 @@ lin
   And = and_Conj ;
   Or = or_Conj ;
 
+-- Question Answer -- 
+
+--YesIsNumPred : NumPred -> Object -> Answer ;
+--NoIsNumPred : NumPred -> Object -> Answer ;
+  YesIsNumPred = yesno Pos yes_Utt ;
+  NoIsNumPred = yesno Neg no_Utt ;
+
+  Yes = yesno yes_Utt ;
+  No = yesno no_Utt ;
+
+------ Natural Number Domain -------
+
+--IsNumPred : NumPred -> Object -> Question ;
+  IsNumPred = isNumericPred ;
+
 --Even , Odd, Prime : NumPred ;
   Even = numprop "even" ;
   Odd = numprop "odd" ;
   Prime = numprop "prime" ;
-
---YesIsNumPred : NumPred -> Object -> Answer ;
---NoIsNumPred : NumPred -> Object -> Answer ;
-  -- YesIsNumPred = yesno Pos yes_Utt ;
-  -- NoIsNumPred = yesno Neg no_Utt ;
-
-  -- Yes = yesno yes_Utt ;
-  -- No = yesno no_Utt ;
-
---IsNumPred : NumPred -> Object -> Question ;
-  IsNumPred = isNumericPred ;
 
 --NatObj : Nat -> Object ;
   NatObj n = n ;
@@ -124,5 +133,16 @@ oper
   then_Adv = ParadigmsEng.mkAdv "then" ;
   such_A = mkA "such" ;
   case_N = mkN "case" ;
+  
+  theCaseThat : S -> Cl ;
+  theCaseThat p = (mkCl (mkVP (mkNP the_Quant (mkCN case_N (ConstructorsEng.mkAdv that_Subj p))))) ;
+
+  -- all for this failed thing, ask inari
+  -- YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;
+  -- Yesnoisnumpred x y = Table {Pos => yesno Pos yes_Utt x y ; Neg => yesno Neg no_Utt x y } ;
+  --Yesisnumpred : numpred -> Object -> Answer ;
+  --NoIsNumPred : NumPred -> Object -> Answer ;
+  -- YesIsNumPred = yesno Pos yes_Utt ;
+  -- NoIsNumPred = yesno Neg no_Utt ;
 
 }

@@ -2,7 +2,3 @@
 *.hi
 *.o
 *.swp
-pgfTests/*.gfo
-pgfTests/*.hi
-pgfTests/*.o
-pgfTests/*.swp

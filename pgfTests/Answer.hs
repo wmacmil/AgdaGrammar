@@ -11,10 +11,12 @@ transfer :: PGF.Tree -> PGF.Tree
 transfer = gf . answer . fg
 
 transfer2 :: PGF.Tree -> PGF.Tree
-transfer2 = gf . vAnswer . fg
+transfer2 = gf . iden . fg
+-- transfer2 = gf . vAnswer . fg
 
 transfer3 :: PGF.Tree -> PGF.Tree
-transfer3 = gf . cAnswer . fg
+transfer3 = gf . iden . fg
+-- transfer3 = gf . cAnswer . fg
 
 -- for testing
 iden :: GQuestion -> GQuestion
@@ -44,39 +46,6 @@ mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
 aggregate :: GFun2 -> GListNat -> GNat
 aggregate f l = GLstFun f l
 
--- data AnswerType = Simple | Verbose | Compressed
---   deriving (Eq, Show)
--- responseType :: AnswerType -> GAnswer
--- responseType Simple     = _
--- responseType Verbose    = _
--- responseType Compressed = _
--- -- (composOp compressNat obj)
--- test' :: AnswerType -> (Int -> Bool) -> GObject -> GAnswer
--- test' Simple f x = g f x GYes GNo -- answerQ f x GYes GNo -- if f (value x) then GYes else GNo
--- test' Verbose f x = g f x  -- if f (value x) then GYes else GNo
--- test' Compressed f x = g f x --if f (value x) then GYes else GNo
---   where
---     answerQ f x yes no = if f (value x) then yes else no
-
-data AnswerType = Verbose | Compressed
-  deriving (Eq, Show)
-
--- cvAnswer :: AnswerType -> GQuestion -> GAnswer
--- cvAnswer cOrv q = case q of
---   GIsNumPred GOdd x -> cvTest cOrv GOdd odd x
---   GIsNumPred GEven x -> cvTest cOrv GEven even x
---   GIsNumPred GPrime x -> cvTest cOrv GPrime prime x
-
-cvTest :: AnswerType -> GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-cvTest Verbose p f obj = helper expandNat p f obj 
-cvTest Compressed p f obj = helper compressNat p f obj 
-
--- why is the type inference wrong here 
-helper :: forall a.  (Tree a -> Tree a) -> GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-helper cv p f obj =
-  if f (value obj)
-  then GYesIsNumPred p (composOp cv obj)
-  else GNoIsNumPred p (composOp cv obj)
 
 cAnswer :: GQuestion -> GAnswer
 cAnswer q = case q of
@@ -111,6 +80,44 @@ answer p = case p of
   GIsNumPred GOdd x -> test odd x
   GIsNumPred GEven x -> test even x
   GIsNumPred GPrime x -> test prime x
+  GPropQuest prop -> testProp (evalProp prop)
+
+-- >>> three = (GNumber (GInt 3))
+-- >>> prime3 = (GIsNumProp GEven (GNatObj three))
+-- >>> evalProp prime3
+-- False
+-- >>> gf $ testProp (evalProp prime3 )
+-- EFun No
+-- >>> prime3q = GPropQuest prime3
+-- >>> answer3even = answer prime3q
+-- >>> gf $ prime3q
+-- EApp (EFun PropQuest) (EApp (EApp (EFun IsNumProp) (EFun Even)) (EApp (EFun NatObj) (EApp (EFun Number) (ELit (LInt 3)))))
+-- >>> gf $ answer3even
+-- EFun No
+-- >>> gr <- readPGF "Query.pgf"
+-- >>> eng = head $ languages gr
+-- >>> linearize gr eng $ gf $ prime3q
+-- "is it the case that 3 is even"
+
+testProp :: Bool -> GAnswer
+testProp b = if b == True then GYes else GNo
+
+testB :: (Int -> Bool) -> GObject -> Bool
+testB f x = f (value x)
+
+--the evaluation logic
+
+evalProp :: GProp -> Bool
+evalProp p = case p of
+  GIsNumProp GOdd obj -> testB odd obj
+  GIsNumProp GEven obj -> testB even obj
+  GIsNumProp GPrime obj -> testB prime obj
+  GIf p1 p2 -> not (evalProp p1) || (evalProp p2)
+  GNot p -> not (evalProp p)
+  GPConj c p1 p2 ->
+    case c of
+      GAnd -> (evalProp p1) && (evalProp p2)
+      GOr -> (evalProp p1) || (evalProp p2)
 
 value :: GObject -> Int
 value e = case e of
@@ -123,7 +130,6 @@ evalNat gn = case gn of
   GLstFun GPlus (GListNat xs) -> foldl (+) 0 (map evalNat xs)
   GLstFun GTimes (GListNat xs) -> foldl (*) 1 (map evalNat xs)
   GNumber (GInt i) -> i
-
 
 -- could optimize so that one could, for instance, regonize if it is the product of two number
 prime :: Int -> Bool
@@ -189,3 +195,38 @@ prime x = elem x primes where
 
 -- stack test --file-watch
 -- cabal test suite
+
+----Stuff that didn't work----
+
+-- data AnswerType = Simple | Verbose | Compressed
+--   deriving (Eq, Show)
+-- responseType :: AnswerType -> GAnswer
+-- responseType Simple     = _
+-- responseType Verbose    = _
+-- responseType Compressed = _
+-- -- (composOp compressNat obj)
+-- test' :: AnswerType -> (Int -> Bool) -> GObject -> GAnswer
+-- test' Simple f x = g f x GYes GNo -- answerQ f x GYes GNo -- if f (value x) then GYes else GNo
+-- test' Verbose f x = g f x  -- if f (value x) then GYes else GNo
+-- test' Compressed f x = g f x --if f (value x) then GYes else GNo
+--   where
+--     answerQ f x yes no = if f (value x) then yes else no
+---- data AnswerType = Verbose | Compressed
+----   deriving (Eq, Show)
+--
+---- cvAnswer :: AnswerType -> GQuestion -> GAnswer
+---- cvAnswer cOrv q = case q of
+----   GIsNumPred GOdd x -> cvTest cOrv GOdd odd x
+----   GIsNumPred GEven x -> cvTest cOrv GEven even x
+----   GIsNumPred GPrime x -> cvTest cOrv GPrime prime x
+--
+---- cvTest :: AnswerType -> GNumPred -> (Int -> Bool) -> GObject -> GAnswer
+---- cvTest Verbose p f obj = helper expandNat p f obj
+---- cvTest Compressed p f obj = helper compressNat p f obj
+--
+---- -- why is the type inference wrong here
+---- helper :: forall a.  (Tree a -> Tree a) -> GNumPred -> (Int -> Bool) -> GObject -> GAnswer
+---- helper cv p f obj =
+----   if f (value obj)
+----   then GYesIsNumPred p (composOp cv obj)
+----   else GNoIsNumPred p (composOp cv obj)

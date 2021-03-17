@@ -24,7 +24,10 @@ lin
 
   -- so can turn a S back into a Cl 
 
-  -- mkCl : Adv -> S -> Cl
+--YesProp : Prop -> Answer ;
+--NoProp : Prop -> Answer ;
+  YesProp p = yesno yes_Utt p ;
+  NoProp p = yesno no_Utt (negate p) ;
 
 
 -- is it the case that _PROP_
@@ -44,7 +47,7 @@ lin
 
 --If : Prop -> Prop -> Prop ;
   If p q = mkS (ConstructorsEng.mkAdv if_Subj p) (mkS then_Adv q) ;
-  
+
   -- is it the case that it is not the case that 999 is even
   -- can now be normalized
 
@@ -119,7 +122,14 @@ oper
         (mkPhr utt)
         fullStopPunct
         (mkText
-          (mkPhr (mkS (polrTrans pol) (mkCl obj even))) fullStopPunct )
+          (mkPhr (mkS (polrTrans pol) (mkCl obj even))) fullStopPunct ) ;
+    yesno : Utt -> S -> Text =
+      \utt, s ->
+      mkText
+        (mkPhr utt)
+        fullStopPunct
+        (mkText
+          (mkPhr s) fullStopPunct )
   } ;
 
   --refactor to include question mark
@@ -136,6 +146,12 @@ oper
   
   theCaseThat : S -> Cl ;
   theCaseThat p = (mkCl (mkVP (mkNP the_Quant (mkCN case_N (ConstructorsEng.mkAdv that_Subj p))))) ;
+
+  negate : S -> S ;
+  negate s =
+    (mkS
+       ExtraEng.UncNeg
+       (theCaseThat s)) ;
 
   -- all for this failed thing, ask inari
   -- YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;

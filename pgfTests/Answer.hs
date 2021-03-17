@@ -11,8 +11,8 @@ transfer :: PGF.Tree -> PGF.Tree
 transfer = gf . answer . fg
 
 transfer2 :: PGF.Tree -> PGF.Tree
-transfer2 = gf . iden . fg
--- transfer2 = gf . vAnswer . fg
+-- transfer2 = gf . iden . fg
+transfer2 = gf . vAnswer . fg
 
 transfer3 :: PGF.Tree -> PGF.Tree
 transfer3 = gf . iden . fg
@@ -65,12 +65,19 @@ vAnswer q = case q of
   GIsNumPred GOdd x -> vTest GOdd odd x
   GIsNumPred GEven x -> vTest GEven even x
   GIsNumPred GPrime x -> vTest GPrime prime x
+  GPropQuest prop -> vTestProp (evalProp prop) prop
 
 vTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
 vTest p f obj =
   if f (value obj)
   then GYesIsNumPred p (composOp expandNat obj)
   else GNoIsNumPred p (composOp expandNat obj)
+
+vTestProp :: Bool -> GProp -> GAnswer
+vTestProp b prop =
+  if b == True
+  then GYesProp (composOp expandNat prop)
+  else GNoProp (composOp expandNat prop)
 
 test :: (Int -> Bool) -> GObject -> GAnswer
 test f x = if f (value x) then GYes else GNo
@@ -82,30 +89,11 @@ answer p = case p of
   GIsNumPred GPrime x -> test prime x
   GPropQuest prop -> testProp (evalProp prop)
 
--- >>> three = (GNumber (GInt 3))
--- >>> prime3 = (GIsNumProp GEven (GNatObj three))
--- >>> evalProp prime3
--- False
--- >>> gf $ testProp (evalProp prime3 )
--- EFun No
--- >>> prime3q = GPropQuest prime3
--- >>> answer3even = answer prime3q
--- >>> gf $ prime3q
--- EApp (EFun PropQuest) (EApp (EApp (EFun IsNumProp) (EFun Even)) (EApp (EFun NatObj) (EApp (EFun Number) (ELit (LInt 3)))))
--- >>> gf $ answer3even
--- EFun No
--- >>> gr <- readPGF "Query.pgf"
--- >>> eng = head $ languages gr
--- >>> linearize gr eng $ gf $ prime3q
--- "is it the case that 3 is even"
-
 testProp :: Bool -> GAnswer
 testProp b = if b == True then GYes else GNo
 
 testB :: (Int -> Bool) -> GObject -> Bool
 testB f x = f (value x)
-
---the evaluation logic
 
 evalProp :: GProp -> Bool
 evalProp p = case p of
@@ -139,6 +127,24 @@ prime x = elem x primes where
   sieve [] = []
 
 --------------------------testing----------------------------------
+
+--for propositional extension
+-- >>> three = (GNumber (GInt 3))
+-- >>> prime3 = (GIsNumProp GEven (GNatObj three))
+-- >>> evalProp prime3
+-- False
+-- >>> gf $ testProp (evalProp prime3 )
+-- EFun No
+-- >>> prime3q = GPropQuest prime3
+-- >>> answer3even = answer prime3q
+-- >>> gf $ prime3q
+-- EApp (EFun PropQuest) (EApp (EApp (EFun IsNumProp) (EFun Even)) (EApp (EFun NatObj) (EApp (EFun Number) (ELit (LInt 3)))))
+-- >>> gf $ answer3even
+-- EFun No
+-- >>> gr <- readPGF "Query.pgf"
+-- >>> eng = head $ languages gr
+-- >>> linearize gr eng $ gf $ prime3q
+-- "is it the case that 3 is even"
 
   -- merging
 -- >>> gr <- readPGF "Query.pgf"

@@ -17,6 +17,9 @@ fun
   -- so how to abstract the question and answer layers
   --when to introduce variables?
 
+  YesProp : Prop -> Answer ;
+  NoProp : Prop -> Answer ;
+
   PropQuest : Prop -> Question ;
 
   IsNumProp : NumPred -> Object -> Prop ;
@@ -40,11 +43,6 @@ fun
   NoIsNumPred  : NumPred -> Object -> Answer ;
 
   IsNumPred : NumPred -> Object -> Question ;
-
-  -- (boolean valued) prop logic
-  -- so how to abstract the question and answer layers
-  --when to introduce variables?
-
 
   NatObj : Nat -> Object ;
 

@@ -45,6 +45,8 @@ type GFun2 = Tree GFun2_
 data GFun2_
 type GListNat = Tree GListNat_
 data GListNat_
+type GListNumPred = Tree GListNumPred_
+data GListNumPred_
 type GNat = Tree GNat_
 data GNat_
 type GNumPred = Tree GNumPred_
@@ -72,10 +74,12 @@ data Tree :: * -> * where
   GPlus :: Tree GFun2_
   GTimes :: Tree GFun2_
   GListNat :: [GNat] -> Tree GListNat_
+  GListNumPred :: [GNumPred] -> Tree GListNumPred_
   GBinFun :: GFun2 -> GNat -> GNat -> Tree GNat_
   GLstFun :: GFun2 -> GListNat -> Tree GNat_
   GNumber :: GInt -> Tree GNat_
   GEven :: Tree GNumPred_
+  GLstNumProp :: GConj -> GListNumPred -> Tree GNumPred_
   GOdd :: Tree GNumPred_
   GPrime :: Tree GNumPred_
   GNatObj :: GNat -> Tree GObject_
@@ -99,10 +103,12 @@ instance Eq (Tree a) where
     (GPlus,GPlus) -> and [ ]
     (GTimes,GTimes) -> and [ ]
     (GListNat x1,GListNat y1) -> and [x == y | (x,y) <- zip x1 y1]
+    (GListNumPred x1,GListNumPred y1) -> and [x == y | (x,y) <- zip x1 y1]
     (GBinFun x1 x2 x3,GBinFun y1 y2 y3) -> and [ x1 == y1 , x2 == y2 , x3 == y3 ]
     (GLstFun x1 x2,GLstFun y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GNumber x1,GNumber y1) -> and [ x1 == y1 ]
     (GEven,GEven) -> and [ ]
+    (GLstNumProp x1 x2,GLstNumProp y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GOdd,GOdd) -> and [ ]
     (GPrime,GPrime) -> and [ ]
     (GNatObj x1,GNatObj y1) -> and [ x1 == y1 ]
@@ -168,6 +174,18 @@ instance Gf GListNat where
 
       _ -> error ("no ListNat " ++ show t)
 
+instance Gf GListNumPred where
+  gf (GListNumPred [x1,x2]) = mkApp (mkCId "BaseNumPred") [gf x1, gf x2]
+  gf (GListNumPred (x:xs)) = mkApp (mkCId "ConsNumPred") [gf x, gf (GListNumPred xs)]
+  fg t =
+    GListNumPred (fgs t) where
+     fgs t = case unApp t of
+      Just (i,[x1,x2]) | i == mkCId "BaseNumPred" -> [fg x1, fg x2]
+      Just (i,[x1,x2]) | i == mkCId "ConsNumPred" -> fg x1 : fgs x2
+
+
+      _ -> error ("no ListNumPred " ++ show t)
+
 instance Gf GNat where
   gf (GBinFun x1 x2 x3) = mkApp (mkCId "BinFun") [gf x1, gf x2, gf x3]
   gf (GLstFun x1 x2) = mkApp (mkCId "LstFun") [gf x1, gf x2]
@@ -184,12 +202,14 @@ instance Gf GNat where
 
 instance Gf GNumPred where
   gf GEven = mkApp (mkCId "Even") []
+  gf (GLstNumProp x1 x2) = mkApp (mkCId "LstNumProp") [gf x1, gf x2]
   gf GOdd = mkApp (mkCId "Odd") []
   gf GPrime = mkApp (mkCId "Prime") []
 
   fg t =
     case unApp t of
       Just (i,[]) | i == mkCId "Even" -> GEven 
+      Just (i,[x1,x2]) | i == mkCId "LstNumProp" -> GLstNumProp (fg x1) (fg x2)
       Just (i,[]) | i == mkCId "Odd" -> GOdd 
       Just (i,[]) | i == mkCId "Prime" -> GPrime 
 
@@ -240,6 +260,7 @@ instance Compos Tree where
     GBinFun x1 x2 x3 -> r GBinFun `a` f x1 `a` f x2 `a` f x3
     GLstFun x1 x2 -> r GLstFun `a` f x1 `a` f x2
     GNumber x1 -> r GNumber `a` f x1
+    GLstNumProp x1 x2 -> r GLstNumProp `a` f x1 `a` f x2
     GNatObj x1 -> r GNatObj `a` f x1
     GIf x1 x2 -> r GIf `a` f x1 `a` f x2
     GIsNumProp x1 x2 -> r GIsNumProp `a` f x1 `a` f x2
@@ -247,6 +268,7 @@ instance Compos Tree where
     GPConj x1 x2 x3 -> r GPConj `a` f x1 `a` f x2 `a` f x3
     GPropQuest x1 -> r GPropQuest `a` f x1
     GListNat x1 -> r GListNat `a` foldr (a . a (r (:)) . f) (r []) x1
+    GListNumPred x1 -> r GListNumPred `a` foldr (a . a (r (:)) . f) (r []) x1
     _ -> r t
 
 class Compos t where

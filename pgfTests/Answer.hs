@@ -28,7 +28,31 @@ expandNat :: Tree a -> Tree a
 expandNat n = case n of
   GLstFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandNat xs)
   GBinFun f x y -> GBinFun f (expandNat x) (expandNat y)
+  GIsNumProp (GLstNumProp c (GListNumPred xs)) n
+    -> foldr1 (GPConj c) (map (\x -> GIsNumProp x (expandNat n)) (map expandNat xs)) -- do really need expandNats everywhere
+  GIsNumProp x n -> GIsNumProp x (expandNat n)
   x -> composOp expandNat x
+
+-- is it the case that 3 is prime , odd and even
+--   Simple:      no .
+--   Verbose:     no . it is not the case that 3 is prime , odd and even .
+
+-- Query> p -cat=Prop "3 is even or odd"
+-- IsNumProp (LstNumProp Or (BaseNumPred Even Odd)) (NatObj (Number 3))
+-- Query> p -cat=Prop "3 is even or 3 is odd"
+-- PConj Or (IsNumProp Even (NatObj (Number 3))) (IsNumProp Odd (NatObj (Number 3)))
+
+-- x is even or odd
+  
+-- -- assumes everything inside is binary conjunctions
+-- -- >>> mergeCong 
+-- mergeConj :: GConj -> GProp -> GProp -> GListProp
+-- mergeConj co p q = GListProp (getConj p ++ getConj q)
+--  where
+--   getConj :: GProp -> [GProp]
+--   getConj p = case p of
+--     GPConj ko p1 p2 | ko == co -> getConj p1 ++ getConj p2
+--     _ -> [p]
 
 compressNat :: Tree a -> Tree a
 compressNat n = case n of
@@ -46,19 +70,9 @@ mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
 aggregate :: GFun2 -> GListNat -> GNat
 aggregate f l = GLstFun f l
 
-
 cAnswer :: GQuestion -> GAnswer
 cAnswer q = case q of
-  -- GIsNumPred GOdd x -> cTest GOdd odd x
-  -- GIsNumPred GEven x -> cTest GEven even x
-  -- GIsNumPred GPrime x -> cTest GPrime prime x
   GPropQuest prop -> cTestProp (evalProp prop) prop
-
--- cTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
--- cTest p f obj =
---   if f (value obj)
---   then GYesIsNumPred p (composOp compressNat obj)
---   else GNoIsNumPred p (composOp compressNat obj)
 
 cTestProp :: Bool -> GProp -> GAnswer
 cTestProp b prop =
@@ -69,16 +83,7 @@ cTestProp b prop =
 --v as in verbose
 vAnswer :: GQuestion -> GAnswer
 vAnswer q = case q of
-  -- GIsNumPred GOdd x -> vTest GOdd odd x
-  -- GIsNumPred GEven x -> vTest GEven even x
-  -- GIsNumPred GPrime x -> vTest GPrime prime x
   GPropQuest prop -> vTestProp (evalProp prop) prop
-
--- vTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
--- vTest p f obj =
---   if f (value obj)
---   then GYesIsNumPred p (composOp expandNat obj)
---   else GNoIsNumPred p (composOp expandNat obj)
 
 vTestProp :: Bool -> GProp -> GAnswer
 vTestProp b prop =
@@ -91,9 +96,6 @@ test f x = if f (value x) then GYes else GNo
 
 answer :: GQuestion -> GAnswer
 answer p = case p of
-  -- GIsNumPred GOdd x -> test odd x
-  -- GIsNumPred GEven x -> test even x
-  -- GIsNumPred GPrime x -> test prime x
   GPropQuest prop -> testProp (evalProp prop)
 
 testProp :: Bool -> GAnswer
@@ -107,12 +109,28 @@ evalProp p = case p of
   GIsNumProp GOdd obj -> testB odd obj
   GIsNumProp GEven obj -> testB even obj
   GIsNumProp GPrime obj -> testB prime obj
+  GIsNumProp (GLstNumProp c (GListNumPred [])) obj -> 
+    case c of
+      GAnd -> True
+      GOr -> False
+  -- GIsNumProp (GLstNumProp c (GListNumPred [x])) obj -> evalProp (GIsNumProp x obj)
+  -- GIsNumProp (GLstNumProp c (GListNumPred (x : x' : xs))) obj -> 
+  GIsNumProp (GLstNumProp c (GListNumPred (x : xs))) obj -> 
+    let xo = evalProp (GIsNumProp x obj) 
+        xso = evalProp (GIsNumProp (GLstNumProp c (GListNumPred (xs))) obj) in
+        -- x'o = evalProp (GIsNumProp x' obj) in
+    case c of
+      GAnd -> (&&) xo xso -- (testB _ _) _
+      GOr -> (||) xo xso
   GIf p1 p2 -> not (evalProp p1) || (evalProp p2)
   GNot p -> not (evalProp p)
   GPConj c p1 p2 ->
     case c of
       GAnd -> (evalProp p1) && (evalProp p2)
       GOr -> (evalProp p1) || (evalProp p2)
+
+  -- IsNumProp : NumPred -> Object -> Prop ;
+  -- LstNumProp : Conj -> [NumPred] -> NumPred ;
 
 value :: GObject -> Int
 value e = case e of

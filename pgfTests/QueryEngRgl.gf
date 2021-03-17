@@ -14,6 +14,7 @@ lincat
   [Nat] = [NP] ;
   Fun2 = N ;
   NumPred = AP ;
+  [NumPred] = [AP] ;
 
   Prop = S ;
   Conj = SyntaxEng.Conj  ;
@@ -41,9 +42,7 @@ lin
 --IsNumProp : NumPred -> Object -> Prop ;
   IsNumProp odd obj = mkS (mkCl obj odd) ;
 
-  -- Odd x =
-  --   mkS (mkCl x (mkAP (P.mkA "odd"))) ;
-  --from yesno (mkPhr (mkS (polrTrans pol) (mkCl obj even))) fullStopPunct )
+  LstNumProp = mkAP ;
 
 --If : Prop -> Prop -> Prop ;
   If p q = mkS (ConstructorsEng.mkAdv if_Subj p) (mkS then_Adv q) ;
@@ -68,8 +67,8 @@ lin
 
 --YesIsNumPred : NumPred -> Object -> Answer ;
 --NoIsNumPred : NumPred -> Object -> Answer ;
-  YesIsNumPred = yesno Pos yes_Utt ;
-  NoIsNumPred = yesno Neg no_Utt ;
+  -- YesIsNumPred = yesno Pos yes_Utt ;
+  -- NoIsNumPred = yesno Neg no_Utt ;
 
   Yes = yesno yes_Utt ;
   No = yesno no_Utt ;
@@ -77,7 +76,7 @@ lin
 ------ Natural Number Domain -------
 
 --IsNumPred : NumPred -> Object -> Question ;
-  IsNumPred = isNumericPred ;
+  -- IsNumPred = isNumericPred ;
 
 --Even , Odd, Prime : NumPred ;
   Even = numprop "even" ;
@@ -100,6 +99,9 @@ lin
 
 --BaseNat : Nat -> Nat -> ListNat ;
 --ConsNat : Nat -> ListNat -> ListNat ;
+  BaseNumPred = mkListAP ;
+  ConsNumPred = mkListAP ;
+
   BaseNat = mkListNP ;
   ConsNat = mkListNP ;
 

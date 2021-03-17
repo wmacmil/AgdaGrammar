@@ -7,6 +7,7 @@ cat
   [Nat]{2};
   Fun2 ;
   NumPred ;
+  [NumPred]{2};
 
   Conj;
   Prop;
@@ -23,6 +24,8 @@ fun
   PropQuest : Prop -> Question ;
 
   IsNumProp : NumPred -> Object -> Prop ;
+  -- LstNumProp : [NumPred] -> Object -> Prop ;
+  LstNumProp : Conj -> [NumPred] -> NumPred ;
 
   If            : Prop -> Prop -> Prop ;
   Not           : Prop -> Prop ;
@@ -31,6 +34,8 @@ fun
   And, Or : Conj ;
 
   --- added ---
+
+  -- ShortAns : Answer ;
 
   Yes : Answer ;
   No : Answer ;
@@ -60,6 +65,14 @@ fun
   -- but why not just have it unary so it just appends an and at the end -- i think it has to do with commas
 
   --TODO
+  -- can also do a curry
+  -- if a then if b then c --> if a and b then c
+  -- if n is even then if n is prime then n = 2
+  -- if n is even and if n if prime then n = 2
+  -- if n is even and prime then n = 2
+  -- if n is an even prime then n = 2
+  -- 2 is the only prime
+  
   -- note this is somewhat of a musing daydream as well as concrete things that should be done
   -- add more types, say bool and String
   -- Aarne distinguishes Kinds and Preds in Cade, but in Agda these aren't concrete distinctions

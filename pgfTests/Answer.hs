@@ -15,8 +15,8 @@ transfer2 :: PGF.Tree -> PGF.Tree
 transfer2 = gf . vAnswer . fg
 
 transfer3 :: PGF.Tree -> PGF.Tree
-transfer3 = gf . iden . fg
--- transfer3 = gf . cAnswer . fg
+-- transfer3 = gf . iden . fg
+transfer3 = gf . cAnswer . fg
 
 -- for testing
 iden :: GQuestion -> GQuestion
@@ -49,29 +49,36 @@ aggregate f l = GLstFun f l
 
 cAnswer :: GQuestion -> GAnswer
 cAnswer q = case q of
-  GIsNumPred GOdd x -> cTest GOdd odd x
-  GIsNumPred GEven x -> cTest GEven even x
-  GIsNumPred GPrime x -> cTest GPrime prime x
+  -- GIsNumPred GOdd x -> cTest GOdd odd x
+  -- GIsNumPred GEven x -> cTest GEven even x
+  -- GIsNumPred GPrime x -> cTest GPrime prime x
+  GPropQuest prop -> cTestProp (evalProp prop) prop
 
-cTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-cTest p f obj =
-  if f (value obj)
-  then GYesIsNumPred p (composOp compressNat obj)
-  else GNoIsNumPred p (composOp compressNat obj)
+-- cTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
+-- cTest p f obj =
+--   if f (value obj)
+--   then GYesIsNumPred p (composOp compressNat obj)
+--   else GNoIsNumPred p (composOp compressNat obj)
+
+cTestProp :: Bool -> GProp -> GAnswer
+cTestProp b prop =
+  if b == True
+  then GYesProp (composOp compressNat prop)
+  else GNoProp (composOp compressNat prop)
 
 --v as in verbose
 vAnswer :: GQuestion -> GAnswer
 vAnswer q = case q of
-  GIsNumPred GOdd x -> vTest GOdd odd x
-  GIsNumPred GEven x -> vTest GEven even x
-  GIsNumPred GPrime x -> vTest GPrime prime x
+  -- GIsNumPred GOdd x -> vTest GOdd odd x
+  -- GIsNumPred GEven x -> vTest GEven even x
+  -- GIsNumPred GPrime x -> vTest GPrime prime x
   GPropQuest prop -> vTestProp (evalProp prop) prop
 
-vTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
-vTest p f obj =
-  if f (value obj)
-  then GYesIsNumPred p (composOp expandNat obj)
-  else GNoIsNumPred p (composOp expandNat obj)
+-- vTest :: GNumPred -> (Int -> Bool) -> GObject -> GAnswer
+-- vTest p f obj =
+--   if f (value obj)
+--   then GYesIsNumPred p (composOp expandNat obj)
+--   else GNoIsNumPred p (composOp expandNat obj)
 
 vTestProp :: Bool -> GProp -> GAnswer
 vTestProp b prop =
@@ -84,9 +91,9 @@ test f x = if f (value x) then GYes else GNo
 
 answer :: GQuestion -> GAnswer
 answer p = case p of
-  GIsNumPred GOdd x -> test odd x
-  GIsNumPred GEven x -> test even x
-  GIsNumPred GPrime x -> test prime x
+  -- GIsNumPred GOdd x -> test odd x
+  -- GIsNumPred GEven x -> test even x
+  -- GIsNumPred GPrime x -> test prime x
   GPropQuest prop -> testProp (evalProp prop)
 
 testProp :: Bool -> GAnswer

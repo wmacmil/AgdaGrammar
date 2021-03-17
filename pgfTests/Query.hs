@@ -64,10 +64,8 @@ data GFloat_
 
 data Tree :: * -> * where
   GNo :: Tree GAnswer_
-  GNoIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
   GNoProp :: GProp -> Tree GAnswer_
   GYes :: Tree GAnswer_
-  GYesIsNumPred :: GNumPred -> GObject -> Tree GAnswer_
   GYesProp :: GProp -> Tree GAnswer_
   GAnd :: Tree GConj_
   GOr :: Tree GConj_
@@ -85,7 +83,6 @@ data Tree :: * -> * where
   GIsNumProp :: GNumPred -> GObject -> Tree GProp_
   GNot :: GProp -> Tree GProp_
   GPConj :: GConj -> GProp -> GProp -> Tree GProp_
-  GIsNumPred :: GNumPred -> GObject -> Tree GQuestion_
   GPropQuest :: GProp -> Tree GQuestion_
   GString :: String -> Tree GString_
   GInt :: Int -> Tree GInt_
@@ -94,10 +91,8 @@ data Tree :: * -> * where
 instance Eq (Tree a) where
   i == j = case (i,j) of
     (GNo,GNo) -> and [ ]
-    (GNoIsNumPred x1 x2,GNoIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GNoProp x1,GNoProp y1) -> and [ x1 == y1 ]
     (GYes,GYes) -> and [ ]
-    (GYesIsNumPred x1 x2,GYesIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GYesProp x1,GYesProp y1) -> and [ x1 == y1 ]
     (GAnd,GAnd) -> and [ ]
     (GOr,GOr) -> and [ ]
@@ -115,7 +110,6 @@ instance Eq (Tree a) where
     (GIsNumProp x1 x2,GIsNumProp y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GNot x1,GNot y1) -> and [ x1 == y1 ]
     (GPConj x1 x2 x3,GPConj y1 y2 y3) -> and [ x1 == y1 , x2 == y2 , x3 == y3 ]
-    (GIsNumPred x1 x2,GIsNumPred y1 y2) -> and [ x1 == y1 , x2 == y2 ]
     (GPropQuest x1,GPropQuest y1) -> and [ x1 == y1 ]
     (GString x, GString y) -> x == y
     (GInt x, GInt y) -> x == y
@@ -124,19 +118,15 @@ instance Eq (Tree a) where
 
 instance Gf GAnswer where
   gf GNo = mkApp (mkCId "No") []
-  gf (GNoIsNumPred x1 x2) = mkApp (mkCId "NoIsNumPred") [gf x1, gf x2]
   gf (GNoProp x1) = mkApp (mkCId "NoProp") [gf x1]
   gf GYes = mkApp (mkCId "Yes") []
-  gf (GYesIsNumPred x1 x2) = mkApp (mkCId "YesIsNumPred") [gf x1, gf x2]
   gf (GYesProp x1) = mkApp (mkCId "YesProp") [gf x1]
 
   fg t =
     case unApp t of
       Just (i,[]) | i == mkCId "No" -> GNo 
-      Just (i,[x1,x2]) | i == mkCId "NoIsNumPred" -> GNoIsNumPred (fg x1) (fg x2)
       Just (i,[x1]) | i == mkCId "NoProp" -> GNoProp (fg x1)
       Just (i,[]) | i == mkCId "Yes" -> GYes 
-      Just (i,[x1,x2]) | i == mkCId "YesIsNumPred" -> GYesIsNumPred (fg x1) (fg x2)
       Just (i,[x1]) | i == mkCId "YesProp" -> GYesProp (fg x1)
 
 
@@ -233,12 +223,10 @@ instance Gf GProp where
       _ -> error ("no Prop " ++ show t)
 
 instance Gf GQuestion where
-  gf (GIsNumPred x1 x2) = mkApp (mkCId "IsNumPred") [gf x1, gf x2]
   gf (GPropQuest x1) = mkApp (mkCId "PropQuest") [gf x1]
 
   fg t =
     case unApp t of
-      Just (i,[x1,x2]) | i == mkCId "IsNumPred" -> GIsNumPred (fg x1) (fg x2)
       Just (i,[x1]) | i == mkCId "PropQuest" -> GPropQuest (fg x1)
 
 
@@ -247,9 +235,7 @@ instance Gf GQuestion where
 
 instance Compos Tree where
   compos r a f t = case t of
-    GNoIsNumPred x1 x2 -> r GNoIsNumPred `a` f x1 `a` f x2
     GNoProp x1 -> r GNoProp `a` f x1
-    GYesIsNumPred x1 x2 -> r GYesIsNumPred `a` f x1 `a` f x2
     GYesProp x1 -> r GYesProp `a` f x1
     GBinFun x1 x2 x3 -> r GBinFun `a` f x1 `a` f x2 `a` f x3
     GLstFun x1 x2 -> r GLstFun `a` f x1 `a` f x2
@@ -259,7 +245,6 @@ instance Compos Tree where
     GIsNumProp x1 x2 -> r GIsNumProp `a` f x1 `a` f x2
     GNot x1 -> r GNot `a` f x1
     GPConj x1 x2 x3 -> r GPConj `a` f x1 `a` f x2 `a` f x3
-    GIsNumPred x1 x2 -> r GIsNumPred `a` f x1 `a` f x2
     GPropQuest x1 -> r GPropQuest `a` f x1
     GListNat x1 -> r GListNat `a` foldr (a . a (r (:)) . f) (r []) x1
     _ -> r t

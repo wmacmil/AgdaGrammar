@@ -30,19 +30,15 @@ fun
 
   And, Or : Conj ;
 
-  -- ignore for now
-  -- YesNo : Answer ; --simple
-  -- YesNoIsNumPred : NumPred -> Object -> Answer ; --explanatory
-
   --- added ---
 
   Yes : Answer ;
   No : Answer ;
 
-  YesIsNumPred : NumPred -> Object -> Answer ;
-  NoIsNumPred  : NumPred -> Object -> Answer ;
+  -- YesIsNumPred : NumPred -> Object -> Answer ;
+  -- NoIsNumPred  : NumPred -> Object -> Answer ;
 
-  IsNumPred : NumPred -> Object -> Question ;
+  -- IsNumPred : NumPred -> Object -> Question ;
 
   NatObj : Nat -> Object ;
 

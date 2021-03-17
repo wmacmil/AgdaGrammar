@@ -33,6 +33,26 @@ expandNat n = case n of
   GIsNumProp x n -> GIsNumProp x (expandNat n)
   x -> composOp expandNat x
 
+
+  -- expanding
+-- >>> gr <- readPGF "Query.pgf"
+-- >>> cat = startCat gr
+-- >>> -- sum345 = "is it the case that the sum of 3 , 4 and 5 is prime"
+-- >>> sum345 = "is it the case that 3 is prime , odd and even"
+-- >>> treeS345 = head $ head $ parseAll gr cat sum345
+-- >>> eng = head $ languages gr
+-- >>> eng 
+-- QueryEngRgl
+-- >>> foo = fg $ treeS345 :: GQuestion
+-- >>> bar' = gf $ expandNat foo
+-- >>> bar' 
+-- >>> linearize gr eng bar'
+-- "is the sum of 3 and the sum of 4 and 5 prime"
+--
+--
+-- >>> treeS345
+-- >>> PGF.showExpr [] treeS345
+
 -- is it the case that 3 is prime , odd and even
 --   Simple:      no .
 --   Verbose:     no . it is not the case that 3 is prime , odd and even .
@@ -44,15 +64,6 @@ expandNat n = case n of
 
 -- x is even or odd
   
--- -- assumes everything inside is binary conjunctions
--- -- >>> mergeCong 
--- mergeConj :: GConj -> GProp -> GProp -> GListProp
--- mergeConj co p q = GListProp (getConj p ++ getConj q)
---  where
---   getConj :: GProp -> [GProp]
---   getConj p = case p of
---     GPConj ko p1 p2 | ko == co -> getConj p1 ++ getConj p2
---     _ -> [p]
 
 compressNat :: Tree a -> Tree a
 compressNat n = case n of
@@ -113,12 +124,9 @@ evalProp p = case p of
     case c of
       GAnd -> True
       GOr -> False
-  -- GIsNumProp (GLstNumProp c (GListNumPred [x])) obj -> evalProp (GIsNumProp x obj)
-  -- GIsNumProp (GLstNumProp c (GListNumPred (x : x' : xs))) obj -> 
   GIsNumProp (GLstNumProp c (GListNumPred (x : xs))) obj -> 
     let xo = evalProp (GIsNumProp x obj) 
         xso = evalProp (GIsNumProp (GLstNumProp c (GListNumPred (xs))) obj) in
-        -- x'o = evalProp (GIsNumProp x' obj) in
     case c of
       GAnd -> (&&) xo xso -- (testB _ _) _
       GOr -> (||) xo xso

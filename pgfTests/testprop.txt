@@ -17,3 +17,5 @@ is it the case that 3 is prime , odd and even
 is it the case that 3 is prime , odd or even
 is it the case that 3 is prime , odd and even or odd
 is it the case that if 3 is prime , odd and even then 4 is prime and even
+
+is it the case that if the sum of 3 , 4 and 5 is prime , odd and even then 4 is prime and even

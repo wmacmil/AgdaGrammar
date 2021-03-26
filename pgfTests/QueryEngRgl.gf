@@ -17,13 +17,14 @@ lincat
   [NumPred] = [AP] ;
 
   Prop = S ;
+  [Prop] = [S] ; 
+
+  -- Prop = { prop = AP ; ob = NP } ; -- but then need to refactor, but need to do anyways
   Conj = SyntaxEng.Conj  ;
 
 lin
 
   -- logic --
-
-  -- so can turn a S back into a Cl 
 
 --YesProp : Prop -> Answer ;
 --NoProp : Prop -> Answer ;
@@ -63,7 +64,7 @@ lin
   And = and_Conj ;
   Or = or_Conj ;
 
--- Question Answer -- 
+-- Question Answer --
 
 --YesIsNumPred : NumPred -> Object -> Answer ;
 --NoIsNumPred : NumPred -> Object -> Answer ;
@@ -112,7 +113,7 @@ oper
   polrTrans : Polr -> Pol ;
   polrTrans p = case p of {
     Pos => positivePol ;
-    Neg => negativePol 
+    Neg => negativePol
   } ;
 
   yesno = overload {
@@ -145,7 +146,7 @@ oper
   then_Adv = ParadigmsEng.mkAdv "then" ;
   such_A = mkA "such" ;
   case_N = mkN "case" ;
-  
+
   theCaseThat : S -> Cl ;
   theCaseThat p = (mkCl (mkVP (mkNP the_Quant (mkCN case_N (ConstructorsEng.mkAdv that_Subj p))))) ;
 

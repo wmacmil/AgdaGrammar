@@ -11,12 +11,13 @@ cat
 
   Conj;
   Prop;
+  [Prop]{2};
 
 fun
 
-  -- (boolean valued) prop logic
-  -- so how to abstract the question and answer layers
-  --when to introduce variables?
+  --E means extended
+
+  --so at the syntax level of semantics (PGF tree abstraction) one is essentially taking for granted and using theorems of propositional logic in order to generate trees.
 
   YesProp : Prop -> Answer ;
   NoProp : Prop -> Answer ;
@@ -24,8 +25,8 @@ fun
   PropQuest : Prop -> Question ;
 
   IsNumProp : NumPred -> Object -> Prop ;
-  -- LstNumProp : [NumPred] -> Object -> Prop ;
-  LstNumProp : Conj -> [NumPred] -> NumPred ;
+  LstNumProp : Conj -> [NumPred] -> NumPred ; -- E
+  LstProp : Conj  -> [Prop] -> Prop ; -- E
 
   If            : Prop -> Prop -> Prop ;
   Not           : Prop -> Prop ;
@@ -40,18 +41,13 @@ fun
   Yes : Answer ;
   No : Answer ;
 
-  -- YesIsNumPred : NumPred -> Object -> Answer ;
-  -- NoIsNumPred  : NumPred -> Object -> Answer ;
-
-  -- IsNumPred : NumPred -> Object -> Question ;
-
   NatObj : Nat -> Object ;
 
   -- all arith below
   Even , Odd, Prime : NumPred ; --Pred
 
   BinFun : Fun2 -> Nat -> Nat -> Nat ;
-  LstFun  : Fun2 -> [Nat] -> Nat ;
+  LstFun  : Fun2 -> [Nat] -> Nat ; -- E
 
   Plus : Fun2 ;
   Times : Fun2 ;

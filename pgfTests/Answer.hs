@@ -22,48 +22,16 @@ transfer3 = gf . cAnswer . fg
 iden :: GQuestion -> GQuestion
 iden gq = gq
 
--- expandNat :: GNat -> GNat
+-- expandT :: GNat -> GNat
 -- the composOp no longer works with this restricted type sig
-expandNat :: Tree a -> Tree a
-expandNat n = case n of
-  GLstFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandNat xs)
-  GBinFun f x y -> GBinFun f (expandNat x) (expandNat y)
+expandT :: Tree a -> Tree a
+expandT n = case n of
+  GLstFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandT xs)
+  GBinFun f x y -> GBinFun f (expandT x) (expandT y)
   GIsNumProp (GLstNumProp c (GListNumPred xs)) n
-    -> foldr1 (GPConj c) (map (\x -> GIsNumProp x (expandNat n)) (map expandNat xs)) -- do really need expandNats everywhere
-  GIsNumProp x n -> GIsNumProp x (expandNat n)
-  x -> composOp expandNat x
-
-
-  -- expanding
--- >>> gr <- readPGF "Query.pgf"
--- >>> cat = startCat gr
--- >>> -- sum345 = "is it the case that the sum of 3 , 4 and 5 is prime"
--- >>> sum345 = "is it the case that 3 is prime , odd and even"
--- >>> treeS345 = head $ head $ parseAll gr cat sum345
--- >>> eng = head $ languages gr
--- >>> eng 
--- QueryEngRgl
--- >>> foo = fg $ treeS345 :: GQuestion
--- >>> bar' = gf $ expandNat foo
--- >>> bar' 
--- >>> linearize gr eng bar'
--- "is the sum of 3 and the sum of 4 and 5 prime"
---
---
--- >>> treeS345
--- >>> PGF.showExpr [] treeS345
-
--- is it the case that 3 is prime , odd and even
---   Simple:      no .
---   Verbose:     no . it is not the case that 3 is prime , odd and even .
-
--- Query> p -cat=Prop "3 is even or odd"
--- IsNumProp (LstNumProp Or (BaseNumPred Even Odd)) (NatObj (Number 3))
--- Query> p -cat=Prop "3 is even or 3 is odd"
--- PConj Or (IsNumProp Even (NatObj (Number 3))) (IsNumProp Odd (NatObj (Number 3)))
-
--- x is even or odd
-  
+    -> foldr1 (GPConj c) (map (\x -> GIsNumProp x (expandT n)) (map expandT xs)) -- do really need expandNats everywhere
+  GIsNumProp x n -> GIsNumProp x (expandT n)
+  x -> composOp expandT x
 
 compressNat :: Tree a -> Tree a
 compressNat n = case n of
@@ -92,15 +60,16 @@ cTestProp b prop =
   else GNoProp (composOp compressNat prop)
 
 --v as in verbose
+-- why did i have to do this
 vAnswer :: GQuestion -> GAnswer
 vAnswer q = case q of
-  GPropQuest prop -> vTestProp (evalProp prop) prop
+  GPropQuest prop -> vTestProp (evalProp prop) (expandT prop)
 
 vTestProp :: Bool -> GProp -> GAnswer
 vTestProp b prop =
   if b == True
-  then GYesProp (composOp expandNat prop)
-  else GNoProp (composOp expandNat prop)
+  then GYesProp (composOp expandT prop)
+  else GNoProp (composOp expandT prop)
 
 test :: (Int -> Bool) -> GObject -> GAnswer
 test f x = if f (value x) then GYes else GNo
@@ -120,12 +89,12 @@ evalProp p = case p of
   GIsNumProp GOdd obj -> testB odd obj
   GIsNumProp GEven obj -> testB even obj
   GIsNumProp GPrime obj -> testB prime obj
-  GIsNumProp (GLstNumProp c (GListNumPred [])) obj -> 
+  GIsNumProp (GLstNumProp c (GListNumPred [])) obj ->
     case c of
       GAnd -> True
       GOr -> False
-  GIsNumProp (GLstNumProp c (GListNumPred (x : xs))) obj -> 
-    let xo = evalProp (GIsNumProp x obj) 
+  GIsNumProp (GLstNumProp c (GListNumPred (x : xs))) obj ->
+    let xo = evalProp (GIsNumProp x obj)
         xso = evalProp (GIsNumProp (GLstNumProp c (GListNumPred (xs))) obj) in
     case c of
       GAnd -> (&&) xo xso -- (testB _ _) _
@@ -160,6 +129,21 @@ prime x = elem x primes where
   sieve [] = []
 
 --------------------------testing----------------------------------
+
+   -- expanding difficulties with predicates, run this in the repl
+-- >>> gr <- readPGF "Query.pgf"
+-- >>> cat = startCat gr
+-- >>> -- sum345 = "is it the case that the sum of 3 , 4 and 5 is prime"
+-- >>> sum345 = "is it the case that 3 is prime , odd and even"
+-- >>> treeS345 = head $ head $ parseAll gr cat sum345
+-- >>> eng = head $ languages gr
+-- >>> foo = fg $ treeS345 :: GQuestion
+-- >>> bar' = gf $ expandT foo
+-- >>> linearize gr eng bar'
+-- "is it the case that 3 is prime and 3 is odd and 3 is even"
+--
+-- >>> treeS345
+-- >>> PGF.showExpr [] treeS345
 
 --for propositional extension
 -- >>> three = (GNumber (GInt 3))
@@ -197,7 +181,7 @@ prime x = elem x primes where
 -- >>> treeS345 = head $ head $ parseAll gr cat sum345
 -- >>> eng = head $ languages gr
 -- >>> foo = fg $ treeS345 :: GQuestion
--- >>> bar' = gf $ expandNat foo
+-- >>> bar' = gf $ expandT foo
 -- >>> linearize gr eng bar'
 -- "is the sum of 3 and the sum of 4 and 5 prime"
 --
@@ -221,7 +205,7 @@ prime x = elem x primes where
 -- >>> cat = startCat gr
 -- >>> bn2 = (GListNat [(GNumber (GInt 4)),(GNumber (GInt 5))])
 -- >>> bn3 = (GListNat [(GNumber (GInt 3)),(GNumber (GInt 4)),(GNumber (GInt 5))])
--- >>> expanded = gf $ expandNat (GLstFun GPlus bn3)
+-- >>> expanded = gf $ expandT (GLstFun GPlus bn3)
 -- >>> expanded
 -- EApp (EApp (EApp (EFun BinFun) (EFun Plus)) (EApp (EFun Number) (ELit (LInt 3)))) (EApp (EApp (EApp (EFun BinFun) (EFun Plus)) (EApp (EFun Number) (ELit (LInt 4)))) (EApp (EFun Number) (ELit (LInt 5))))
 -- >>> :i gr
@@ -260,7 +244,7 @@ prime x = elem x primes where
 ----   GIsNumPred GPrime x -> cvTest cOrv GPrime prime x
 --
 ---- cvTest :: AnswerType -> GNumPred -> (Int -> Bool) -> GObject -> GAnswer
----- cvTest Verbose p f obj = helper expandNat p f obj
+---- cvTest Verbose p f obj = helper expandT p f obj
 ---- cvTest Compressed p f obj = helper compressNat p f obj
 --
 ---- -- why is the type inference wrong here

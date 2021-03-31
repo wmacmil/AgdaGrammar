@@ -16,11 +16,11 @@ lincat
   NumPred = AP ;
   [NumPred] = [AP] ;
 
-  Prop = S ;
-  [Prop] = [S] ; 
+  Prop = { s : S ; c : Compl } ;
+  [Prop] = { s : [S] ; c : Compl } ;
 
   -- Prop = { prop = AP ; ob = NP } ; -- but then need to refactor, but need to do anyways
-  Conj = SyntaxEng.Conj  ;
+  Conj = { s : SyntaxEng.Conj ; c : S }  ;
 
 lin
 
@@ -28,41 +28,59 @@ lin
 
 --YesProp : Prop -> Answer ;
 --NoProp : Prop -> Answer ;
-  YesProp p = yesno yes_Utt p ;
-  NoProp p = yesno no_Utt (negate p) ;
+  YesProp p = yesno yes_Utt p.s ;
+  NoProp p = yesno no_Utt (negate p.s) ;
 
 
 -- is it the case that _PROP_
 --PropQuest : Prop -> Question ;
   PropQuest p =
-    mkUtt (mkQS (theCaseThat p)) ;
+    mkUtt (mkQS (theCaseThat p.s)) ;
 
   -- isNumericPred : AP -> NP -> Utt ;
   -- isNumericPred even obj = mkUtt (mkQS (mkCl obj even)) ;
 
 --IsNumProp : NumPred -> Object -> Prop ;
-  IsNumProp odd obj = mkS (mkCl obj odd) ;
+  IsNumProp odd obj = { s = mkS (mkCl obj odd) ; c = Simp } ;
 
-  LstNumProp = mkAP ;
+--LstNumProp : Conj -> [NumPred] -> NumPred ; -- E
+  LstNumProp c = mkAP c.s ;
+
+  --LstProp : Conj  -> [Prop] -> Prop ; -- E
+  LstProp c ps = case ps.c of {
+    -- Com  => {s = mkS colonConj c.c (mkS bulletConj ps.s) ; c = Simp } ;
+    _Simp => {s = mkS c.s ps.s ; c = Com }
+    } ;
+
 
 --If : Prop -> Prop -> Prop ;
-  If p q = mkS (ConstructorsEng.mkAdv if_Subj p) (mkS then_Adv q) ;
+  If p q = { s = mkS (ConstructorsEng.mkAdv if_Subj p.s) (mkS then_Adv q.s) ; c = Com } ;
+  -- PImpl p q = {s = ExtAdvS (mkAdv if_Subj p.s) (mkS then_Adv q.s) ; c = True} ;
 
   -- is it the case that it is not the case that 999 is even
   -- can now be normalized
 
 --Not : Prop -> Prop ;
   Not p =
-    mkS
-      ExtraEng.UncNeg
-      (theCaseThat p) ;
+    {
+      s = mkS
+        ExtraEng.UncNeg
+        (theCaseThat p.s) ;
+      c = Simp
+    } ;
 
 --PConj : Conj -> Prop -> Prop -> Prop ;
-  PConj = mkS ;
+  PConj c p1 p2 = { s = mkS c.s p1.s p2.s ; c = Com } ;
 
---And, Or : Conj ;
-  And = and_Conj ;
-  Or = or_Conj ;
+--And, or : Conj ;
+  -- And = and_Conj ;
+  -- Or = or_Conj ;
+
+  And = {s = and_Conj ; c = mkS (mkCl (mkNP all_Predet these_NP) hold_V)} ;
+  Or = {
+    s = or_Conj ;
+    c = mkS (mkCl (mkNP (mkNP (mkDet (mkCard at_least_AdN (mkCard "1")))) (ConstructorsEng.mkAdv part_Prep these_NP)) hold_V)
+    } ;
 
 -- Question Answer --
 
@@ -103,12 +121,25 @@ lin
   BaseNumPred = mkListAP ;
   ConsNumPred = mkListAP ;
 
+  BaseProp p q = {s = mkListS p.s q.s ; c = orC p.c q.c} ;
+  ConsProp p ps = {s = mkListS p.s ps.s ; c = orC p.c ps.c} ;
+
   BaseNat = mkListNP ;
   ConsNat = mkListNP ;
 
-param Polr = Pos | Neg ;
+param
+  Polr = Pos | Neg ;
+  Compl = Simp | Com ; -- True == Com
 
 oper
+  if_then_elseC : (A : Type) -> Compl -> A -> A -> A = \_,c,d,e -> 
+    case c of {
+      Com => d ;  
+      Simp => e
+    } ;
+
+  orC  : (_,_ : Compl) -> Compl = \a,b -> if_then_elseC Compl a Com b ;
+
 
   polrTrans : Polr -> Pol ;
   polrTrans p = case p of {
@@ -146,6 +177,7 @@ oper
   then_Adv = ParadigmsEng.mkAdv "then" ;
   such_A = mkA "such" ;
   case_N = mkN "case" ;
+  hold_V = mkV "hold" "held" "held" ;
 
   theCaseThat : S -> Cl ;
   theCaseThat p = (mkCl (mkVP (mkNP the_Quant (mkCN case_N (ConstructorsEng.mkAdv that_Subj p))))) ;
@@ -155,6 +187,9 @@ oper
     (mkS
        ExtraEng.UncNeg
        (theCaseThat s)) ;
+
+  bulletConj = lin Conj {s1,s2 = "\\item" ; n = singular} ;
+  colonConj = lin Conj {s1 = [] ; s2 = ":" ; n = singular} ;
 
   -- all for this failed thing, ask inari
   -- YesNo = table  {Pos => yesno yes_Utt ; Neg => yesno no_Utt} ;

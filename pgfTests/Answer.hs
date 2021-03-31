@@ -6,32 +6,79 @@ import qualified PGF (Tree, showExpr)
 import PGF hiding (Tree, showExpr)
 import Query
 
+-- for testing
+iden :: GQuestion -> GQuestion
+iden gq = gq
+
+-- transferAll :: [Expr -> Expr] [ PGF.Tree -> PGF.Tree ]
+transferAll :: [ PGF.Tree -> PGF.Tree ]
+-- transferAll = map (\y -> gf . y) $ map (\x -> x . fg) answers
+transferAll = map (gf .) $ map (. fg) answers
+
+answers :: [GQuestion -> GAnswer]
+-- answers = [answer, vAnswer, cAnswer]
+answers = [answer, vAnswer]
+
 -- transfer :: Expr -> Expr
 transfer :: PGF.Tree -> PGF.Tree
 transfer = gf . answer . fg
+
+answer :: GQuestion -> GAnswer
+answer p = case p of
+  GPropQuest prop -> testProp (evalProp prop)
+
+-- begin verbose
 
 transfer2 :: PGF.Tree -> PGF.Tree
 -- transfer2 = gf . iden . fg
 transfer2 = gf . vAnswer . fg
 
-transfer3 :: PGF.Tree -> PGF.Tree
--- transfer3 = gf . iden . fg
-transfer3 = gf . cAnswer . fg
+--v as in verbose
+-- why did i have to do this
+vAnswer :: GQuestion -> GAnswer
+vAnswer q = case q of
+  GPropQuest prop -> vTestProp (evalProp prop) (expandT prop)
 
--- for testing
-iden :: GQuestion -> GQuestion
-iden gq = gq
+vTestProp :: Bool -> GProp -> GAnswer
+vTestProp b prop =
+  if b == True
+  then GYesProp (composOp expandT prop)
+  else GNoProp (composOp expandT prop)
 
 -- expandT :: GNat -> GNat
 -- the composOp no longer works with this restricted type sig
+-- do really need expandNats everywhere
+  -- ask aarne
+  -- GBinFun f x y -> GBinFun f (expandT x) (expandT y) 
+  -- GIsNumProp x n -> GIsNumProp x (expandT n)
 expandT :: Tree a -> Tree a
 expandT n = case n of
   GLstFun f (GListNat xs) -> foldr1 (GBinFun f) (map expandT xs)
-  GBinFun f x y -> GBinFun f (expandT x) (expandT y)
   GIsNumProp (GLstNumProp c (GListNumPred xs)) n
-    -> foldr1 (GPConj c) (map (\x -> GIsNumProp x (expandT n)) (map expandT xs)) -- do really need expandNats everywhere
-  GIsNumProp x n -> GIsNumProp x (expandT n)
+    -> foldr1
+         (GPConj c)
+         (map (\x -> GIsNumProp x (expandT n)) (map expandT xs))
+  GLstProp c (GListProp xs)
+    -> foldr1 (GPConj c) (map expandT xs)
   x -> composOp expandT x
+
+-- end verbose --
+-- begin compress --
+
+transfer3 :: PGF.Tree -> PGF.Tree
+transfer3 = gf . iden . fg
+-- transfer3 = gf . cAnswer . fg
+
+
+cAnswer :: GQuestion -> GAnswer
+cAnswer q = case q of
+  GPropQuest prop -> cTestProp (evalProp prop) prop
+
+cTestProp :: Bool -> GProp -> GAnswer
+cTestProp b prop =
+  if b == True
+  then GYesProp (composOp compressNat prop)
+  else GNoProp (composOp compressNat prop)
 
 compressNat :: Tree a -> Tree a
 compressNat n = case n of
@@ -48,35 +95,6 @@ mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
 
 aggregate :: GFun2 -> GListNat -> GNat
 aggregate f l = GLstFun f l
-
-cAnswer :: GQuestion -> GAnswer
-cAnswer q = case q of
-  GPropQuest prop -> cTestProp (evalProp prop) prop
-
-cTestProp :: Bool -> GProp -> GAnswer
-cTestProp b prop =
-  if b == True
-  then GYesProp (composOp compressNat prop)
-  else GNoProp (composOp compressNat prop)
-
---v as in verbose
--- why did i have to do this
-vAnswer :: GQuestion -> GAnswer
-vAnswer q = case q of
-  GPropQuest prop -> vTestProp (evalProp prop) (expandT prop)
-
-vTestProp :: Bool -> GProp -> GAnswer
-vTestProp b prop =
-  if b == True
-  then GYesProp (composOp expandT prop)
-  else GNoProp (composOp expandT prop)
-
-test :: (Int -> Bool) -> GObject -> GAnswer
-test f x = if f (value x) then GYes else GNo
-
-answer :: GQuestion -> GAnswer
-answer p = case p of
-  GPropQuest prop -> testProp (evalProp prop)
 
 testProp :: Bool -> GAnswer
 testProp b = if b == True then GYes else GNo
@@ -105,9 +123,10 @@ evalProp p = case p of
     case c of
       GAnd -> (evalProp p1) && (evalProp p2)
       GOr -> (evalProp p1) || (evalProp p2)
-
-  -- IsNumProp : NumPred -> Object -> Prop ;
-  -- LstNumProp : Conj -> [NumPred] -> NumPred ;
+  GLstProp c (GListProp xs) ->
+    case c of
+      GAnd -> foldr1 (&&) (map evalProp xs)
+      GOr -> foldr1 (||) (map evalProp xs)
 
 value :: GObject -> Int
 value e = case e of

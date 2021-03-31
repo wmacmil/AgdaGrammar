@@ -1,0 +1,2 @@
+is it the case that 3 is prime 
+is it the case that 3 is odd 

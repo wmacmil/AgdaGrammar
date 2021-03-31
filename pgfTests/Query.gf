@@ -1,6 +1,7 @@
 abstract Query = {
 
 flags startcat=Question ;
+-- flags startcat=Prop ;
 
 cat
   Answer ; Question ; Object ; Nat ;

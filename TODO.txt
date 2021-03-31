@@ -1,0 +1,88 @@
+A string to PGF pipeline for local and global testing
+- local : does this auxilliary function work?
+- global : how do changes to either the grammar, or the evaluation (PGF side)
+  make a change on test cases difference 
+
+-- also , need to start anticipating ambiguous parses, and how to deal with
+those at the testing level.  (count parses, correct and wrong ones)
+
+--also , remember what inari was showing a while back with the grammar
+inference system for legal documents (the included NL grammar categories) (so
+can we construct an algorithm not just to generate GF code based of sentence
+structure, but to internalize a theorem in PGF once it has been proved in agda)
+
+start to think about adding an rgl layer to my grammar, especially once it is
+able to be tested correctly
+
+one of the problems (which a proper use of GF dependent types would
+hypothetically solve) is the failure to generate meaningful strings (and
+therefore, with some kind of Quickcheck mechanism, would yield uncheckable (or
+ill defined checks)) making it a headache to try to a priori filter out bad
+tests 
+
+one could however, start with some kind of haskell language where the actual
+AST is represented (think cubical), transform the PGF AST representation to the
+actual AST, and then generate expressions with that). i should ask someone
+
+like how does one actually test the evaluation, typechecker, etc of a real PL?
+type theory, in some sense, provides a framework for proving theorems about
+these things -- e.g. that you have basic coherence theorems regarding, for
+instance,  
+ - denotational and operational semantics 
+ - operational semantics and typing judgements
+ - bidirectional type checker, that the inference and checking algorithms are
+   compatible 
+
+But how does one actually go about "testing" a PL, other than having
+programmers raise issues and report bugs on github?
+
+Also, I'm now interested in how the two semantics interact - i.e.
+
+so the boolean condition for the answer actually becomes boolean conditions,
+each of which may influence the linguistic form -- two axes in this dummy
+example,  concise <-> complete
+
+  Question : Is 3 prime or odd ?
+  Answer(s) : 
+  - 3 is prime or 3 is odd
+  - 3 is prime 
+  - 3 is odd 
+  - 3 is prime and odd
+  -- could even expand this 
+  Question : Is 3 prime, odd, or even ?
+  Answer : 
+  - 3 is prime or 3 is odd
+  - 3 is prime 
+  - 3 is odd 
+  - 3 is prime and odd
+  - 3 is prime and odd , but 3 is not even
+-- combinatorial explosion of ways to answer 
+  (i.e. possible answers)
+-- think of this with proofs as well, like all the proofs that a proposition is true 
+  (returning the normal form is obviously the best way)
+
+also, the program could upon an ambiguous question, ask the user to clarify given normalized forms of a given tree
+(and one could make this into a binary decision diagram)
+
+is 3 even or 4 odd and 5 prime 
+is (3 even or 4 odd) and 5 prime  --> False
+is 3 even or (4 odd and 5 prime) --> True
+-- 
+Please clarify : are you asking if 
+both the following hold  
+- 3 even or 4 odd
+- 5 is prime
+or either of the following hold
+- 3 is even
+- 4 odd and 5 prime 
+
+whereas 
+  is 3 even or 4 odd or 5 prime 
+  is invariant by the associativity of or
+  so one can just answer in the normalized form
+
+parse -> 
+  if multiple parses do one of the following
+   - ask for clarification
+   - choose a parse based of some predefined criteria
+   - treat all parses seperately  

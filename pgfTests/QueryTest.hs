@@ -1,10 +1,7 @@
 module Main where
 
 import PGF
-import Answer (transfer,transfer2,transfer3)
-
-
--- >>> main 
+import Answer (transferAll)
 
 -- how to ignore comments and whitespace?
 -- algorithm : ignore whitespace, filter out comments but reinsert them after, 
@@ -12,7 +9,6 @@ import Answer (transfer,transfer2,transfer3)
 -- (i) evaluation
 -- (ii) translation in one direction
   -- maybe come up with a naming convention?
-
 
 -- main :: IO ()
 main = do
@@ -23,11 +19,18 @@ main = do
     (\(s,n) -> do
        putStrLn $ ("Question " ++ show n)
        putStrLn $ s
-       putStrLn $ ("  Simple : " ++ ((translate transfer gr) s))
-       putStrLn $ ("  Verbose : " ++ ((translate transfer2 gr) s))
+       putStrLns answerDescriptions gr s
        putStrLn $ ""
     )
     ss
+  where
+    putStrLns :: [String] -> PGF -> String -> IO [()]
+    putStrLns ss pgf s = mapM putStrLn (zipWith (++) ss (translateAll transferAll pgf s))
+    answerDescriptions :: [String]
+    answerDescriptions = map (\x -> "  " ++ x ++ " : ") ["Simple","Verbose","Compressed"]
+
+translateAll :: [Tree -> Tree] -> PGF -> String -> [String]
+translateAll trs gr s = map (\x -> translate x gr s) trs
 
 translate :: (Tree -> Tree) -> PGF -> String -> String
 translate tr gr s =

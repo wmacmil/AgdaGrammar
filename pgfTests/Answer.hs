@@ -10,14 +10,12 @@ import Query
 iden :: GQuestion -> GQuestion
 iden gq = gq
 
--- transferAll :: [Expr -> Expr] [ PGF.Tree -> PGF.Tree ]
-transferAll :: [ PGF.Tree -> PGF.Tree ]
--- transferAll = map (\y -> gf . y) $ map (\x -> x . fg) answers
+transferAll :: [Expr -> Expr] -- [ PGF.Tree -> PGF.Tree ]
 transferAll = map (gf .) $ map (. fg) answers
 
 answers :: [GQuestion -> GAnswer]
--- answers = [answer, vAnswer, cAnswer]
-answers = [answer, vAnswer]
+answers = [answer, vAnswer, cAnswer]
+-- answers = [answer, vAnswer]
 
 -- transfer :: Expr -> Expr
 transfer :: PGF.Tree -> PGF.Tree

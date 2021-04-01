@@ -8,8 +8,6 @@ main = do
   gr <- readPGF "Query.pgf"
   loop (translate transfer gr) (translate transfer2 gr) (translate transfer3 gr)
 
---TODO interact function
-
 loop :: (String -> String) -> (String -> String) -> (String -> String) -> IO ()
 loop trans trans2 trans3 = do
   s <- getLine
@@ -23,7 +21,4 @@ translate :: (Tree -> Tree) -> PGF -> String -> String
 translate tr gr s =
   case parseAllLang gr (startCat gr) s of
     (lg,t:_):_ -> linearize gr lg (tr t)
-    -- (lg,t:_):_ -> unlines [ linearize gr lg tree | tree <- transfers t]
     _ -> "NO PARSE"
-    -- where
-    --   transfers t = [tr | m <- [MNone, MAns]]

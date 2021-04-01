@@ -1,0 +1,16 @@
+is it the case that 3 is prime
+is it the case that 3 is prime and 4 is odd
+is it the case that 3 is prime or 4 is odd
+is it the case that it is not the case that 3 is prime
+is it the case that the sum of 3 , 4 and 5 is prime 
+is it the case that the sum of 3 , 4 and 5 is prime and 4 is odd
+is it the case that the sum of 3 , 4 and 10 is prime and 3 is odd
+is it the case that the sum of 3 and the sum of 4 and 5 is prime and 4 is odd
+is it the case that the sum of 3 and the sum of 4 and 10 is prime and 9999 is odd
+is it the case that 3 is prime and odd 
+is it the case that 3 is prime , odd and even
+is it the case that 3 is prime , odd or even
+is it the case that 3 is prime , odd and even or odd
+is it the case that if 3 is prime , odd and even then 4 is prime and even
+is it the case that if the sum of 3 , 4 and 5 is prime , odd and even then 4 is prime and even
+is it the case that 3 is prime and odd or 4 is even or odd

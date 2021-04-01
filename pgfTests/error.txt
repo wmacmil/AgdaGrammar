@@ -1,9 +1,0 @@
-is it the case that 3 is prime , odd and even
-  Simple:      no .
-  Verbose:     no . it is not the case that 3 is prime , odd and even .
-  Compressed:  no . it is not the case that 3 is prime , odd and even .
-is it the case that if 3 is prime , odd and even then 4 is prime and even
-  Simple:      yes .
-  Verbose:     yes . if 3 is prime and 3 is odd and 3 is even then 4 is prime and 4 is even .
-  Compressed:  yes . if 3 is prime , odd and even then 4 is prime and even .
-

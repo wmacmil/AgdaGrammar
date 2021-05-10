@@ -19,8 +19,6 @@ lincat
   Prop = { s : S ; c : Compl } ;
   [Prop] = { s : [S] ; c : Compl } ; --TODO add extra parameter
   -- [Prop] = { s : Compl => [S] ; c : Compl } ; -- add commas or bullets depending on the compl
-  -- look at the source of ConsS in resource grammar, conjunctionEng
-  -- coordination library
 
   Conj = { s : SyntaxEng.Conj ; c : S }  ;
 
@@ -124,7 +122,6 @@ lin
 
   BaseProp p q = {s = mkListS p.s q.s ; c = orC p.c q.c} ;
   ConsProp p ps = {s = mkListS p.s ps.s ; c = orC p.c ps.c} ;
-  -- should have 
 
   BaseNat = mkListNP ;
   ConsNat = mkListNP ;

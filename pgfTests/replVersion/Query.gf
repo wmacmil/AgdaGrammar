@@ -29,8 +29,6 @@ fun
   LstNumProp : Conj -> [NumPred] -> NumPred ; -- E
   LstProp : Conj  -> [Prop] -> Prop ; -- E
 
-  -- FOO : Conj -> [Nat] -> Nat
-
   If            : Prop -> Prop -> Prop ;
   Not           : Prop -> Prop ;
   PConj : Conj -> Prop -> Prop -> Prop ;

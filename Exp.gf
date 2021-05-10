@@ -1,8 +1,6 @@
 abstract Exp = {
 
 flags startcat = Decl ;
-
-
       -- note, cubical tt doesn't support inductive families, and therefore the datatype (& labels) need to be modified
 
 cat
@@ -82,7 +80,7 @@ fun
   -- x
   Univ : Exp ;
   -- Set
-  Refl : Exp ;
+  Refl : AIdent ; -- Exp ;
   -- refl
   --Hole : HoleIdent -> Exp ; -- need to add holes
 
@@ -120,7 +118,16 @@ fun
   Suc : AIdent ;
   EqualNat : AIdent ;
 
+
   Unit : AIdent ;
   Top : AIdent ;
-
+  Contr : AIdent ;
+  Fiber : AIdent ;
+  IsEquiv : AIdent ;
+  IdIsEquiv : AIdent ;
+  IdFun : AIdent ;
+  ContrSingl : AIdent ;
+  Equiv : AIdent ;
+  EqToIso : AIdent ;
+  UA : AIdent ;
 }

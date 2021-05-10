@@ -1,0 +1,205 @@
+
+Concrete syntaxes for
+- Hott Eng(with latex)
+- Hott Logic
+- cubicalTT 
+- agda
+
+--------
+
+ \textbf{Definition}:
+ A type $A$ is contractible, if there is $a : A$, called the center of contraction, such that for all $x : A$, $\equalH {a}{x}$.
+
+ -- Definition
+ (A : Type)=> Contractible A := exist ((a : A))((x : A)-> Id (a)(x)); ; CenterContraction ;
+
+isContr ( a : Set ) : Set = ( x : a ) * ( ( y : a ) -> a x == y )
+
+iscontr : (A : Set) → Set
+iscontr A =  Σ A λ a → (x : A) → (a ≡ x)
+
+--------
+
+fiber ( a b : Set ) ( f : a -> b ) ( y : b ) : Set = ( x : a ) * b y == ( f x )
+
+fiber : (A B : Set) (f : A -> B) (y : B) → Set
+fiber A B f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+
+--------
+
+ \textbf{Definition}:
+ A map $f : \arrowH {A}{B}$ is an equivalence, if for all $y : B$, its fiber, $\comprehensionH {x}{A}{\equalH {\appH {f}{x}}{y}}$, is contractible.
+ We write $\equivalenceH {A}{B}$, if there is an equivalence $\arrowH {A}{B}$.
+
+ -- Definition
+ (f : app (Map)(A -> B))=> Equivalence f := (y : B)-> (Contractible (fiber it)); ; ; fiber it := comprehension (x)(A)(Id (f (x))(y))
+ equivalence (A)(B):= Equivalence (A -> B);
+
+( f : app ( Map ) ( A -> B ) ) => Equivalence f := ( y : B ) -> ( Contractible ( fiber it ) ) ; ; ; fiber it := comprehension ( x ) ( A ) ( Id ( f ( x ) ) ( y ) )
+
+
+isEquiv ( a b : Set ) ( f : a -> b ) : Set = ( y : b ) -> isContr ( fiber a b f y )
+
+equiv ( a b : Set ) : Set = ( f : a -> b ) * isEquiv a b f
+
+isEquiv : (A B : Set) → (f : A → B) → Set
+isEquiv A B f = (y : B) → iscontr (fiber A B f y)
+
+equiv : ( a b : Set ) → Set
+equiv a b = Σ (a → b) λ f → isEquiv a b f
+
+--------
+
+ \textbf{Lemma}:
+ For each type $A$, the identity map, $\defineH {\idMapH {A}}{\typingH {\lambdaH {x}{A}{x}}{\arrowH {A}{A}}}$, is an equivalence.
+ 
+ \textbf{Proof}:
+ For each $y : A$, let $\defineH {\fiberH {y}{A}}{\comprehensionH {x}{A}{\equalH {x}{y}}}$ be its fiber with respect to $\idMapH {A}$ and let $\defineH {\barH {y}}{\typingH {\pairH {y}{\reflexivityH {A}{y}}}{\fiberH {y}{A}}}$.
+ As for all $y : A$, $\equalH {\pairH {y}{\reflexivityH {A}{y}}}{y}$, we may apply Id-induction on $y$, $\typingH {x}{A}$ and $\typingH {z}{\idPropH {x}{y}}$ to get that \[\equalH {\pairH {x}{z}}{y}\].
+ Hence, for $y : A$, we may apply $\Sigma$ -elimination on $\typingH {u}{\fiberH {y}{A}}$ to get that $\equalH {u}{y}$, so that $\fiberH {y}{A}$ is contractible.
+ Thus, $\typingH {\idMapH {A}}{\arrowH {A}{A}}$ is an equivalence.
+  $\Box$ 
+
+
+  -- Lemma
+ => (A : Type)-> (Equivalence (id)); ; ; id := idMap (A):= (\ x : A -> x): A -> A
+ 
+ -- Proof
+ <= (y : A)=> fiber (y)(A):= comprehension (x)(A)(Id (x)(y)):= fiber (idMap (A))it ; ; ; bar (y):= < y , refl (A)(y)> : fiber (y)(A)
+ => (y : A)-> Id (< y , refl (A)(y)>)(y)=> IdInd y x : A z : Id (x)(y): Id (< x , z >)(y);
+ => (y : A)=> SigmaEl u : fiber (y)(A): Id (u)(y); (Contractible (fiber (y)(A)));
+ => (Equivalence (idMap (A): A -> A));
+ QED
+
+
+idIsEquiv ( a : Set ) : isEquiv a a ( idfun a ) = \\ ( y : a ) -> ( ( y , refl ) , \\ ( x : fiber a a ( idfun a ) a ) -> contrSingl a y ( fst x ) ( snd x ) )
+
+--cubicaltt
+idIsEquiv : (A : Set) → isEquiv A A (id {A})
+idIsEquiv A y = (y , r) , λ x → contrSingl A y (fst x) (snd x)
+
+-- proof from Aarne
+idIsEquiv' : (A : Set) → isEquiv A A (id {A})
+idIsEquiv' A y = ybar , λ { (a , r) → r}
+  where
+    fib : Set
+    fib = Σ A (λ x → y ≡ x)
+    ybar : fib
+    ybar = y , r
+
+---------
+
+ \textbf{Corollary}:
+ If $U$ is a type universe, then, for $X , Y : U$, \[(*)\arrowH {\equalH {X}{Y}}{\equivalenceH {X}{Y}}\].
+ 
+ \textbf{Proof}:
+ We may apply the lemma to get that for $X : U$, $\equivalenceH {X}{X}$.
+ Hence, we may apply Id-induction on $\typingH {X , Y}{U}$ to get that $(*)$.
+  $\Box$ 
+
+ -- Corollary
+ => (U : Universe)-> (X , Y : U)-> Id (X)(Y)-> equivalence (X)(Y); it := Id (X)(Y)-> equivalence (X)(Y)
+ 
+ -- Proof
+ => Lemma : (X : U)-> equivalence (X)(X)
+ => IdInd X , Y : U : it
+ QED
+
+
+eqToIso ( a b : Set ) : Set a == b -> equiv a b = split refl -> ( idfun , idIsEquiv a )
+
+-- perhaps misformulated
+eqToIso : ( a b : Set ) → _≡_ {Set} a b → equiv a b
+eqToIso a .a r = id , idIsEquiv' a
+
+---------
+
+ 
+ \textbf{Definition}:
+ A type universe $U$ is univalent, if for $X , Y : U$, the map $\equivalenceMapH {X}{Y}: \arrowH {\equalH {X}{Y}}{\equivalenceH {X}{Y}}$ in $(*)$ is an equivalence.
+
+ -- Definition
+ (U : Universe)=> Univalent U := (X , Y : U)-> (Equivalence (((EqMap (X)(Y): app (Map)(Id (X)(Y)-> equivalence (X)(Y))): it)));
+
+-- from escardo , cant get this to run with agda wihtout his magic
+Id→Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
+Id→Eq X X (refl X) = id-≃ X
+
+is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id→Eq X Y)
+
+-- univalence axiom, cubicaltt not the same as a type being univalent
+ua ( a b : Set ) ( e : equiv a b ) : Set a == b = undefined
+
+---------
+
+--maybe local variables should be distinct from others so that we can do alpha conversion easier?
+
+-- from hottlexicon 
+
+l ((PredDefinition type_Sort A_Var contractible_Pred (ExistCalledProp a_Var (ExpSort (VarExp A_Var)) (FunInd centre_of_contraction_Fun) (ForAllProp (allUnivPhrase (BaseVar x_Var) (ExpSort (VarExp A_Var))) (ExpProp DollarMathEnv (equalExp (VarExp a_Var) (VarExp x_Var))))))) | p -cat=Definition | tt
+0 msec
+HottLexicon> * PredDefinition
+    * type_Sort
+      A_Var
+      contractible_Pred
+      ExistCalledProp
+        * a_Var
+          ExpSort
+            * VarExp
+                * A_Var
+          FunInd
+            * centre_of_contraction_Fun
+          ForAllProp
+            * allUnivPhrase
+                * BaseVar
+                    * x_Var
+                  ExpSort
+                    * VarExp
+                        * A_Var
+              ExpProp
+                * DollarMathEnv
+                  equalExp
+                    * VarExp
+                        * a_Var
+                      VarExp
+                        * x_Var
+
+
+--from cubicatt
+p "isContr ( a : Set ) : Set = ( x : a ) * ( ( y : a ) -> a x == y )" | tt
+0 msec
+
+Exp> 
+* DeclDef
+    * Contr
+      ConsTele
+        * TeleC
+            * A
+              BaseAIdent
+              Univ
+          BaseTele
+      Univ
+      NoWhere
+        * Sigma
+            * BasePTele
+                * PTeleC
+                    * Var
+                        * X
+                      Var
+                        * A
+              Pi
+                * BasePTele
+                    * PTeleC
+                        * Var
+                            * Y
+                          Var
+                            * A
+                  Id
+                    * Var
+                        * A
+                      Var
+                        * X
+                      Var
+                        * Y
+

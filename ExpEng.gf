@@ -43,19 +43,19 @@ lin
   Id e1 e2 e3 = mkPrec 3 (usePrec 4 e1 ++ usePrec 4 e2 ++ "==" ++ usePrec 3 e3) ;
 -- for an explicit vs implicit use of parameters, may have to use expressions as records, with a parameter is_implicit
   IdJ e1 e2 e3 e4 e5 = mkPrec 3 ("J" ++ usePrec 4 e1 ++ usePrec 4 e2 ++ usePrec 4 e3 ++ usePrec 4 e4 ++ usePrec 4 e5) ;
-  Fst e = mkPrec 4 ("fst" ++ usePrec 4 e) ;
-  Snd e = mkPrec 4 ("snd" ++ usePrec 4 e) ;
+  Fst e = mkPrec 4 ("proj1" ++ usePrec 4 e) ;
+  Snd e = mkPrec 4 ("proj2" ++ usePrec 4 e) ;
   Pair e1 e2 = mkPrec 5 ("(" ++ usePrec 0 e1 ++ "," ++ usePrec 0 e2 ++ ")") ;
   Var a = constant a ;
   Univ = constant "Set" ;
-  Refl = "refl" ; -- constant "refl" ;
+  Refl = constant "refl" ;
 
   BaseAIdent = "" ;
   ConsAIdent x xs = x ++ xs ;
 
   -- [Decl] only used in ExpWhere
   BaseDecl x = x ;
-  ConsDecl x xs = x ++ "^" ++ xs ;
+  ConsDecl x xs = x ++ "\n" ++ xs ;
 
   -- maybe accomodate so split on empty type just gives () 
   -- BaseBranch = "" ;
@@ -127,17 +127,6 @@ lin
 
   NegB = "negb" ;
 
-  -- everything below is for contractible proofs
-
-  Contr = "isContr" ;
-  Fiber = "fiber" ;
-  IsEquiv = "isEquiv" ;
-  IdIsEquiv = "idIsEquiv" ;
-  IdFun = "idfun" ;
-  ContrSingl = "contrSingl" ;
-  Equiv = "equiv" ;
-  EqToIso = "eqToIso" ;
-  UA = "ua" ;
   -- p "foo ( b : bool ) : bool = f b where f : bool -> bool = negb"
 
 }

@@ -1,0 +1,76 @@
+
+
+-- agda
+iscontr : (A : Set) → Set
+iscontr A =  Σ A λ a → (x : A) → (a ≡ x)
+
+
+foo ( b : bool ) : bool = let  t : bool  = true ^  f : bool  = false in t
+foo ( b : bool ) : bool = let ( t : bool ) = true in t
+
+-- START
+
+isContr ( a : Set ) : Set = ( x : a ) * ( ( y : a ) -> a x == y )
+
+fiber ( a b : Set ) ( f : a -> b ) ( y : b ) : Set = ( x : a ) * b y == ( f x )
+
+isEquiv ( a b : Set ) ( f : a -> b ) : Set = ( y : b ) -> isContr ( fiber a b f y )
+
+idIsEquiv ( a : Set ) : isEquiv a a ( idfun a ) = \\ ( y : a ) -> ( ( y , refl ) , \\ ( x : fiber a a ( idfun a ) a ) -> contrSingl a y ( fst x ) ( snd x ) )
+
+equiv ( a b : Set ) : Set = ( f : a -> b ) * isEquiv a b f
+
+eqToIso ( a b : Set ) : Set a == b -> equiv a b = split refl -> ( idfun , idIsEquiv a )
+
+ua ( a b : Set ) ( e : equiv a b ) : Set a == b = undefined
+
+-- END
+
+
+"eqToIso ( a b : Set ) : Set a == b -> equiv a b = undefined"
+
+eqToIso a .a r = id , idIsEquiv' a
+
+
+-- pattern matching on a record?
+-- this is copattern matching
+-- syntax needs support for record types
+
+contrSingl a y ( proj1 x ) ( proj2 x ) )
+split@
+
+-- no support for inline pattern matching
+
+-- Agda proof, refactored from proof from cubical notes
+idIsEquiv : (A : Set) → isEquiv A A (id {A})
+idIsEquiv A y = (y , r) , λ x → contrSingl A y (fst x) (snd x)
+
+
+-- cubicaltt
+isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
+
+
+-- The fiber/preimage of a map:
+fiber (A B : U) (f : A -> B) (y : B) : U =
+  (x : A) * Path B y (f x)
+
+-- A map is an equivalence if its fibers are contractible
+isEquiv (A B : U) (f : A -> B) : U =
+  (y : B) -> isContr (fiber A B f y)
+
+equiv (A B : U) : U = (f : A -> B) * isEquiv A B f
+
+-- Recall:
+-- contrSingl (A : U) (a b : A) (p : Path A a b) :
+--            Path (singl A a) (a,<i> a) (b,p) =
+
+-- The identity function is an equivalence
+idIsEquiv (A : U) : isEquiv A A (idfun A) =
+  \(a : A) -> ((a,<i> a),
+         \(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
+
+idEquiv (A : U) : equiv A A = (idfun A,idIsEquiv A)
+
+-- this is actually wrong because we need to pattern match to get the stuff right, seems unworkable in cubicaltt
+idIsEquiv ( a : Set ) : isEquiv a a ( idfun a ) = \\ ( y : a ) -> ( ( y , refl ) , \\ ( x : fiber a a ( idfun a ) a ) -> let f : a = fst x ^ g : b ( snd  
+

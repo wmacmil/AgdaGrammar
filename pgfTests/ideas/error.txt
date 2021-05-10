@@ -1,0 +1,77 @@
+
+
+so its not recognizing simp from the listprop with 
+
+p -cat=Prop "(if 9 is odd then 10 is even) , 10 is even or 11 is prime" 
+If (IsNumProp Odd (NatObj (Number 9))) (LstProp Or (ConsProp (IsNumProp Even (NatObj (Number 10))) (BaseProp (IsNumProp Even (NatObj (Number 10))) (IsNumProp Prime (NatObj (Number 11))))))
+
+only getting a single parse
+
+so whats happening
+
+the whole complicated parameter is to indicate that we want the bullet structure, but now its stopping parsing ambiguous phrases 
+
+wouldnt this better be dealt with by leaving it alone (i.e. allow the ambiguities) or to jo
+
+don't we want ambiguous parses for ambiguous sentences?
+
+
+l LstProp And (BaseProp (PConj Or (IsNumProp Prime (NatObj (Number 9))) (IsNumProp Prime (NatObj (Number 99)))) ((IsNumProp (LstNumProp And (BaseNumPred Prime Odd)) (NatObj (Number 999))) ))
+0 msec
+Query> all these hold : \item 9 is prime or 99 is prime \item 999 is prime and odd
+ 
+
+  p -cat=Prop "3 is prime , 4 is prime and 6 is prime"
+  LstProp And (ConsProp (IsNumProp Prime (NatObj (Number 3))) (BaseProp (IsNumProp Prime (NatObj (Number 4))) (IsNumProp Prime (NatObj (Number 6)))))
+
+
+questions: do we want this to be the case.  why not just do this at the AST level? 
+
+  LstProp Or (ConsProp (PConj Or (IsNumProp Odd (NatObj (Number 999))) (IsNumProp Prime (NatObj (Number 999)))) (BaseProp (IsNumProp Prime (NatObj (Number 999))) (IsNumProp Odd (NatObj (Number 999)))))
+
+
+so the error arrises when the consprop isn't simple
+
+  l LstProp Or (ConsProp ( (IsNumProp Prime (NatObj (Number 2)))) (BaseProp (IsNumProp Prime (NatObj (Number 399))) (IsNumProp Odd (NatObj (Number 499)))))
+  0 msec
+  Query> 2 is prime , 399 is prime or 499 is odd
+
+  0 msec
+  Query> 
+  l LstProp Or (ConsProp (PConj And (IsNumProp Odd (NatObj (Number 1))) (IsNumProp Prime (NatObj (Number 2)))) (BaseProp (IsNumProp Prime (NatObj (Number 399))) (IsNumProp Odd (NatObj (Number 499)))))
+  0 msec
+  Query> at least one of these holds : \item 1 is odd and 2 is prime , 399 is prime \item 499 is odd
+
+  l LstProp Or (ConsProp (IsNumProp Prime (NatObj (Number 399))) (BaseProp (PConj And (IsNumProp Odd (NatObj (Number 1))) (IsNumProp Prime (NatObj (Number 2)))) (IsNumProp Odd (NatObj (Number 499)))))
+
+change thoughts : how would I model this?   
+
+you want the comp case only when you have one of the following situations : 
+
+  _ and _ or _ 
+  _ or _ and _ 
+
+the LstProp function changes its behavior based off the complexity of its parts
+
+
+*the issue is arising with the interaction of LstProp and ConsProp, where one the ConsProp arguements is compl*
+
+
+--changes
+
+Change If to simp
+
+--additional ideas : 
+  * how to build & test grammars 'modularly', so that we can just isolate a single phenomena so that its easy to think about
+  * can we have the simple and the extended syntax as seperate ASTs (which to some degree intersect). this can make it easier not to have too many parses
+  , but how can haskell then translate between the AST representations?
+  * 2 and 2 is 4 
+    ** humans seem to navigate these language barriers easiliy
+
+
+remember consprop itself needs a baseprop
+
+
+idea, need two have a three valued param
+  And | Or | Neutr
+

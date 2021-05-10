@@ -2,7 +2,7 @@ module Main where
 
 import PGF
 import Answer (transferAll)
-
+  
 -- how to ignore comments and whitespace?
 -- algorithm : ignore whitespace, filter out comments but reinsert them after, 
 -- idea : each test should isolate unique functionality of

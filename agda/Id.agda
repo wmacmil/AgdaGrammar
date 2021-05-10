@@ -48,7 +48,7 @@ infixl 40 _∙_
 
 -- leftId : {A : Set} → (x y : A) → (p : I A x y) → I (I A x y) p (trans x x y r p)
 iₗ : {A : Set} {x y : A} (p : x ≡ y) → p ≡ r ∙ p
-iₗ {A} {x} {y} p = J D d x y p 
+iₗ {A} {x} {y} p = J D d x y p
   where
     D : (x y : A) → x ≡ y → Set
     D x y p = p ≡ r ∙ p
@@ -58,7 +58,7 @@ iₗ {A} {x} {y} p = J D d x y p
 
 -- similairlymeans uniformly substitute the commuted expression throughout the proof.  this applies to all of the proofs
 iᵣ : {A : Set} {x y : A} (p : x ≡ y) → p ≡ p ∙ r
-iᵣ {A} {x} {y} p = J D d x y p 
+iᵣ {A} {x} {y} p = J D d x y p
   where
     D : (x y : A) → x ≡ y → Set
     D x y p = p ≡ p ∙ r
@@ -66,7 +66,7 @@ iᵣ {A} {x} {y} p = J D d x y p
     d a = r
 
 
-leftInverse : {A : Set} {x y : A} (p : x ≡ y) → p ⁻¹ ∙ p ≡ r 
+leftInverse : {A : Set} {x y : A} (p : x ≡ y) → p ⁻¹ ∙ p ≡ r
 leftInverse {A} {x} {y} p = J D d x y p
   where
     D : (x y : A) → x ≡ y → Set
@@ -74,10 +74,10 @@ leftInverse {A} {x} {y} p = J D d x y p
     d : (x : A) → D x x r
     d x = r
 
--- lI : {A : Set} {x y : A} (p : x ≡ y) → p ⁻¹ ∙ p ≡ r 
+-- lI : {A : Set} {x y : A} (p : x ≡ y) → p ⁻¹ ∙ p ≡ r
 -- lI r = r
 
-rightInverse : {A : Set} {x y : A} (p : x ≡ y) → p ∙ p ⁻¹ ≡ r 
+rightInverse : {A : Set} {x y : A} (p : x ≡ y) → p ∙ p ⁻¹ ≡ r
 rightInverse {A} {x} {y} p = J D d x y p
   where
     D : (x y : A) → x ≡ y → Set
@@ -98,8 +98,8 @@ associativity {A} {x} {y} {z} {w} p q r' = J D₁ d₁ x y p z w q r'
   where
     D₁ : (x y : A) → x ≡ y → Set
     D₁ x y p = (z w : A) (q : y ≡ z) (r' : z ≡ w ) → p ∙ (q ∙ r') ≡ p ∙ q ∙ r'
-    -- d₁ : (x : A) → D₁ x x r 
-    -- d₁ x z w q r' = r -- why can it infer this 
+    -- d₁ : (x : A) → D₁ x x r
+    -- d₁ x z w q r' = r -- why can it infer this
     D₂ : (x z : A) → x ≡ z → Set
     D₂ x z q = (w : A) (r' : z ≡ w ) → r ∙ (q ∙ r') ≡ r ∙ q ∙ r'
     D₃ : (x w : A) → x ≡ w → Set
@@ -107,7 +107,7 @@ associativity {A} {x} {y} {z} {w} p q r' = J D₁ d₁ x y p z w q r'
     d₃ : (x : A) → D₃ x x r
     d₃ x = r
     d₂ : (x : A) → D₂ x x r
-    d₂ x w r' = J D₃ d₃ x w r' 
+    d₂ x w r' = J D₃ d₃ x w r'
     d₁ : (x : A) → D₁ x x r
     d₁ x z w q r' = J D₂ d₂ x z q w r'
 
@@ -142,7 +142,7 @@ _⋆'_ {A} {p = p} {s = s} α β =  (p ∙ₗ β) ∙ (α ∙ᵣ s)
 Ω {A} a = a ≡ a
 
 Ω² : {A : Set} (a : A) → Set
-Ω² {A} a = _≡_ {a ≡ a} r r 
+Ω² {A} a = _≡_ {a ≡ a} r r
 
 lem1 : {A : Set} → (a : A) → (α β : Ω² {A} a) → (α ⋆ β) ≡ (iᵣ r ⁻¹ ∙ α ∙ iᵣ r) ∙ (iₗ r ⁻¹ ∙ β ∙ iₗ r)
 lem1 a α β = r
@@ -157,7 +157,7 @@ apf {A} {B} {x} {y} f p = J D d x y p
     D : (x y : A) → x ≡ y → Set
     D x y p = {f : A → B} → f x ≡ f y
     d : (x : A) → D x x r
-    d = λ x → r 
+    d = λ x → r
 
 ap : {A B : Set} → {x y : A} → (f : A → B) → (x ≡ y) → f x ≡ f y
 ap f r = r
@@ -178,7 +178,7 @@ lem2' {A} a α β =  apf  (λ - → - ∙ (iᵣ r ⁻¹ ∙ α ∙ iᵣ r)) (lem
 ⋆≡∙ : {A : Set} → (a : A) → (α β : Ω² {A} a) → (α ⋆ β) ≡ (α ∙ β)
 ⋆≡∙ a α β = lem1 a α β ∙ lem2 a α β
 
--- proven similairly to above 
+-- proven similairly to above
 ⋆'≡∙ : {A : Set} → (a : A) → (α β : Ω² {A} a) → (α ⋆' β) ≡ (β ∙ α)
 ⋆'≡∙ a α β = lem1' a α β ∙ lem2' a α β
 
@@ -189,7 +189,7 @@ lem2' {A} a α β =  apf  (λ - → - ∙ (iᵣ r ⁻¹ ∙ α ∙ iᵣ r)) (lem
 --     D : (p q : a ≡ b) → p ≡ q → Set
 --     D p q α = (c : A) (r' s : b ≡ c) (β : r' ≡ s) → (α ⋆ β) ≡ (α ⋆' β)
 --     E : (r' s : b ≡ c) → r' ≡ s → Set
---     -- E p q β = (r ⋆ β) ≡ (r ⋆' β) 
+--     -- E p q β = (r ⋆ β) ≡ (r ⋆' β)
 --     E r' s β = (_⋆_ {A} {b = b} {c} {r} {r} {r' = r'} {s = s} r β) ≡ (r ⋆' β)
 --     e : ((s : b ≡ c) → E s s r)
 --     e r = r
@@ -208,8 +208,8 @@ lem2' {A} a α β =  apf  (λ - → - ∙ (iᵣ r ⁻¹ ∙ α ∙ iᵣ r)) (lem
 -- _⋆_ {A} {q = q} {r' = r'} α β = (α ∙ᵣ r') ∙ (q ∙ₗ β)
 
 
--- eckmannHilton : {A : Set} → (a : A) → (α β : Ω² {A} a) → α ∙ β ≡ β ∙ α 
--- eckmannHilton a α β = {!!} 
+-- eckmannHilton : {A : Set} → (a : A) → (α β : Ω² {A} a) → α ∙ β ≡ β ∙ α
+-- eckmannHilton a α β = {!!}
 --   where
 --     l0 : (α ⋆ β) ≡ α ∙ β
 --     l0 = ⋆≡∙ a α β
@@ -218,7 +218,7 @@ lem2' {A} a α β =  apf  (λ - → - ∙ (iᵣ r ⁻¹ ∙ α ∙ iᵣ r)) (lem
 
 
 
--- variable 
+-- variable
 --   A B C : Set
 --   x y z w : A
 --   f : A → B
@@ -266,7 +266,7 @@ apfId {A} {x} {y} p = J D d x y p
     D : (x y : A) → x ≡ y → Set
     D x y p = apf id p ≡ p
     d : (x : A) → D x x r
-    d = λ x → r 
+    d = λ x → r
 --     D x y p = {f : A → B} → apf f (p ⁻¹) ≡ (apf f p) ⁻¹
 
 -- apfHom : {A} {x y z} (p q) : apf (p ∙ q) ≡ apf p ∙ apf q
@@ -282,16 +282,16 @@ transport {A} {P} {x} {y} = J D d x y
 
 -- all from escardo
 -- trans' : {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
--- trans' {x = x} p q = transport {P = λ - → x ≡ - } q p 
+-- trans' {x = x} p q = transport {P = λ - → x ≡ - } q p
 
 -- trans' : {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
--- trans' {x = x} {y = y} {z = z} p q = transport {P = λ - → - ≡ z } (p ⁻¹) q 
+-- trans' {x = x} {y = y} {z = z} p q = transport {P = λ - → - ≡ z } (p ⁻¹) q
 
 -- i think this is the solution escardo's after
 -- trans' : {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
--- trans' {x = x} {y = y} {z = z} p q = transport {P = λ _ → x ≡ z } p (transport {P = λ - → x ≡ - } q p) 
+-- trans' {x = x} {y = y} {z = z} p q = transport {P = λ _ → x ≡ z } p (transport {P = λ - → x ≡ - } q p)
 
--- inv : {A : Set} {x y  : A} → x ≡ y → y ≡ x 
+-- inv : {A : Set} {x y  : A} → x ≡ y → y ≡ x
 -- inv {x = x} p = transport {P = λ - → - ≡ x} p r
 
 -- ap : {A B : Set} (f : A → B) (x y : A) → x ≡ y → f x ≡ f y
@@ -325,7 +325,7 @@ arrow = (A B : Set) {b : B} → ((x : A) → B)
 
 constDepType : (A B : Set) → (A → Set)
 constDepType A B = λ _ → B
-  
+
 -- transportArrow : {A B : Set} → {x y : A} (p : x ≡ y) → B → B
 -- transportArrow {A} {B} p = transport (constDepType A B) p
 
@@ -363,7 +363,7 @@ twothreenine : {A : Set} {P : A → Set} {x y z : A}  (p : x ≡ y) (q : y ≡ z
 -- twothreenine : {A : Set} {P : A → Set} {x y z : A}  (p : x ≡ y) (q : y ≡ z ) {u : P x} → ((q *) ((p *) {P = P} u)) ≡ (((p ∙ q) *) u)
 twothreenine r r = r
 
-twothreeten : {A B : Set} {f : A → B} {P : B → Set} {x y : A} (p : x ≡ y) {u : P (f x) }  → transport p u ≡ transport {P = P} (apf f p) u 
+twothreeten : {A B : Set} {f : A → B} {P : B → Set} {x y : A} (p : x ≡ y) {u : P (f x) }  → transport p u ≡ transport {P = P} (apf f p) u
 twothreeten r = r
 
 twothreeeleven : {A : Set} {P Q : A → Set} {f : (x : A) → P x → Q x} {x y : A} (p : x ≡ y) {u : P x} → transport {P = Q} p (f x u) ≡ f y (transport p u)
@@ -428,7 +428,7 @@ module ≡-Reasoning {A : Set} where
   _∎ : ∀ (x : A)
     -----
     → x ≡ x
-  x ∎  = r 
+  x ∎  = r
 
 open ≡-Reasoning
 
@@ -442,7 +442,7 @@ coroll {A} {f = f} {x = x} p H =
   ≡⟨ apf (λ - → H (f x) ∙ -) ll51 ⟩
     H (f x) ∙ (apf (λ z → z) (H x) ∙ H x ⁻¹ )
   ≡⟨ associativity (H (f x)) (apf (λ z → z) (H x)) ((H x ⁻¹)) ⟩
-    H (f x) ∙ apf (λ z → z) (H x) ∙ H x ⁻¹ 
+    H (f x) ∙ apf (λ z → z) (H x) ∙ H x ⁻¹
   ≡⟨ whisk ⟩
     apf f (H x) ∙ H (x) ∙ H x ⁻¹
   ≡⟨ associativity (apf f (H x)) (H (x)) (H x ⁻¹) ⁻¹ ⟩
@@ -451,7 +451,7 @@ coroll {A} {f = f} {x = x} p H =
     apf f (H x) ∙ r
   ≡⟨ translemma (apf f (H x)) ⟩
     apf f (H x) ∎
-  where 
+  where
     thatis : H (f x) ∙ apf (λ z → z) (H x) ≡ apf f (H x) ∙ H (x)
     thatis = hmtpyNatural (H x) H
     whisk : H (f x) ∙ apf (λ z → z) (H x) ∙ H x ⁻¹ ≡ apf f (H x) ∙ H (x) ∙ H x ⁻¹
@@ -463,7 +463,7 @@ coroll {A} {f = f} {x = x} p H =
 
 -- Defn. 2.4.6
 -- has-inverse in Reijke
-qinv : {A B : Set} → (f : A → B) → Set 
+qinv : {A B : Set} → (f : A → B) → Set
 qinv {A} {B} f = Σ (B → A) λ g → (f ∘ g ~ id {B}) ×  (g ∘ f ~ id {A})
 
 -- examples
@@ -475,14 +475,14 @@ qinvid = id , (λ x → r) , λ x → r
 
 -- 2.4.8
 
-p∙ : {A : Set} {x y z : A} (p : x ≡ y) → ((y ≡ z) → (x ≡ z)) 
+p∙ : {A : Set} {x y z : A} (p : x ≡ y) → ((y ≡ z) → (x ≡ z))
 p∙ p = λ - → p ∙ -
 
 qinvcomp : {A : Set} {x y z : A} (p : x ≡ y) → qinv (p∙ {A} {x} {y} {z} p)
 qinvcomp p = (λ - → p ⁻¹ ∙ -) , sec , retr
   where
     sec : (λ x → p∙ p (p ⁻¹ ∙ x)) ~ (λ z → z)
-    sec x = 
+    sec x =
       begin
         p∙ p (p ⁻¹ ∙ x)
       ≡⟨ associativity p (p ⁻¹) x ⟩
@@ -492,7 +492,7 @@ qinvcomp p = (λ - → p ⁻¹ ∙ -) , sec , retr
       ≡⟨ iₗ x ⁻¹ ⟩
         x ∎
     retr : (λ x → p ⁻¹ ∙ p∙ p x) ~ (λ z → z)
-    retr x = 
+    retr x =
       begin
         p ⁻¹ ∙ p∙ p x
       ≡⟨ associativity (p ⁻¹) p x ⟩
@@ -509,7 +509,7 @@ qinvtransp : {A : Set} {P : A → Set} {x y : A} (p : x ≡ y) → qinv (transpo
 qinvtransp {A} {P} {x} {y} p = transport (p ⁻¹) , sec , retr p
   where
     sec : (λ x₁ → transport p (transport (p ⁻¹) x₁)) ~ (λ z → z)
-    sec z = sec' p z 
+    sec z = sec' p z
             -- type inference not working, ugh.
             -- begin transport p (transport (p ⁻¹) z)
             -- ≡⟨ twothreenine (p ⁻¹) p ⟩
@@ -517,20 +517,20 @@ qinvtransp {A} {P} {x} {y} p = transport (p ⁻¹) , sec , retr p
             -- -- ≡⟨ apf {A = _ ≡ _} {B = P _} {x = p ⁻¹ ∙ p} {y = r} (λ - → (- *) z) (leftInverse p) ⟩
             -- ≡⟨ apf (λ - → (- *) z) (leftInverse p) ⟩
             -- -- ≡⟨ apf ? (leftInverse p) ⟩
-            -- (r *) z 
+            -- (r *) z
             -- ≡⟨ {!!} ⟩
             -- z ∎
     retr : (p : x ≡ y) → (λ x₁ → transport (p ⁻¹) (transport p x₁)) ~ (λ z → z)
     retr r z = r
 
-isequiv : {A B : Set} → (f : A → B) → Set 
+isequiv : {A B : Set} → (f : A → B) → Set
 isequiv {A} {B} f = Σ (B → A) λ g → (f ∘ g ~ id {B}) ×  Σ (B → A) λ g → (g ∘ f ~ id {A})
 
 qinv->isequiv : {A B : Set} → (f : A → B) → qinv f → isequiv f
 qinv->isequiv f (g , α , β) = g , α , g , β
 
 -- not the same is as the book, but I can't understand what the book is doing.  maybe this can be a feature
-isequiv->qinv : {A B : Set} → (f : A → B) →  isequiv f → qinv f 
+isequiv->qinv : {A B : Set} → (f : A → B) →  isequiv f → qinv f
 isequiv->qinv f (g , α , g' , β ) = (g' ∘ f ∘ g) , sec , retr
   where
     sec : (λ x → f (g' (f (g x)))) ~ (λ z → z)
@@ -549,11 +549,11 @@ isequiv->qinv f (g , α , g' , β ) = (g' ∘ f ∘ g) , sec , retr
       -- x ∎
 
 -- book defn, confusing because of the "let this be the composite homotopy" which mixes both human semantic content as well as formal typing information
-isequiv->qinv' : {A B : Set} → (f : A → B) →  isequiv f → qinv f 
+isequiv->qinv' : {A B : Set} → (f : A → B) →  isequiv f → qinv f
 isequiv->qinv' f (g , α , h , β ) = g , α , β'
   where
     -- γ : λ x → (trans~ ? ? ? ? ?) x -- trans~ g (g' ∘ f ∘ g) g' ? ? -- {!trans~ g (g' ∘ f ∘ g) g' ? ? !}
-    γ : (λ x → g x) ~ λ x → h x 
+    γ : (λ x → g x) ~ λ x → h x
     γ x = β (g x) ⁻¹ ∙ apf h (α x)
     β' : (λ x → g (f x)) ~ (λ z → z)
     β' x = (γ (f x)) ∙ β x
@@ -580,7 +580,7 @@ comm× (a , b) = (b , a)
 ≃sym (f , eqf) = f-1 , ef (f , comm× sndqf)
   where
     qf : isequiv f → qinv f
-    qf = isequiv->qinv f 
+    qf = isequiv->qinv f
     f-1 : _ → _
     f-1 = fst (qf eqf)
     sndqf : ((λ x → f (fst (isequiv->qinv f eqf) x)) ~ (λ z → z)) ×
@@ -600,7 +600,7 @@ comm× (a , b) = (b , a)
     qg = isequiv->qinv g
     g-1 = fst (qg eqg)
     sec : (λ x → g (f (f-1 (g-1 x)))) ~ (λ z → z)
-    sec x = 
+    sec x =
             begin g (f (f-1 (g-1 x)))
             ≡⟨ apf g (fst (snd (qf eqf)) (g-1 x)) ⟩
             g (g-1 x)
@@ -621,7 +621,7 @@ fprodId p = (apf fst p) , (apf snd p)
 -- fprodId r = r , r
 
 -- 2.6.2
-equivfprod : {A B : Set} (x y : A × B) → isequiv (fprodId {x = x} {y = y} ) 
+equivfprod : {A B : Set} (x y : A × B) → isequiv (fprodId {x = x} {y = y} )
 equivfprod (x1 , y1) (x2 , y2) = qinv->isequiv fprodId (sn , h1 , h2)
   where
     sn : (x1 ≡ x2) × (y1 ≡ y2) → (x1 , y1) ≡ (x2 , y2)
@@ -674,7 +674,7 @@ etaDprod z = r
 -- 2.7.4
 -- Σfam : {A : Set} {P : A → Set} (Q : Σ A (λ x → P x) → Set) → ((x : A) → Σ (P x) λ u → Q (x , u) )
 Σfam : {A : Set} {P : A → Set} (Q : Σ A (λ x → P x) → Set) → (A → Set)
-Σfam {P = P} Q x = Σ (P x) λ u → Q (x , u) 
+Σfam {P = P} Q x = Σ (P x) λ u → Q (x , u)
 
 dpair= : {A : Set} {P : A → Set} {w1 w1' : A} {w2 : P w1 } {w2' : P w1'} →  (p : Σ (w1 ≡ w1') (λ p → p* {p = p} w2 ≡ w2')) → (w1 , w2) ≡ (w1' , w2')
 dpair= (r  , r) = r
@@ -707,11 +707,11 @@ transportd A B (a , b) r = id
 
 -- ap2d : {A : Set} {x x' : A}  {P : A → Set} {y : P x} {y' : P x'} {C : (x : A)
 --   → P x → Set} (f : (x : A) → (y : P x) → C x y )
---   → (p : x ≡ x') → (q : p* {P = P} {p = p} y ≡ y') → 
+--   → (p : x ≡ x') → (q : p* {P = P} {p = p} y ≡ y') →
 --   p* {P = C x'} {p = q} (transportd P C (y , f x y) p (f x y)) ≡ f x' y'
 -- ap2d f r r = {!!}
 
--- functorDProdEq : {A A' : Set} {P : A → Set} {Q : A' → Set} (g : A → A') 
+-- functorDProdEq : {A A' : Set} {P : A → Set} {Q : A' → Set} (g : A → A')
 --                  (h : (a : A) →  P a → Q (g a))
 --                  → (x y : Σ A λ a → P a)
 --                  → (p : fst x ≡ fst y) (q : p* {p = p} (snd x) ≡ snd y)
@@ -787,6 +787,26 @@ inv_assoc r q = iᵣ (q ⁻¹)
 iscontr : (A : Set) → Set
 iscontr A =  Σ A λ a → (x : A) → (a ≡ x)
 
+-- May 7
+
+fiber : (A B : Set) (f : A -> B) (y : B) → Set
+fiber A B f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+
+isEquiv : (A B : Set) → (f : A → B) → Set
+isEquiv A B f = (y : B) → iscontr (fiber A B f y)  -- {!!} → {!!} -- ( y : b ) -> isContr ( fiber a b f y )
+
+idIsEquiv : (A : Set) → isEquiv A A (id {A})
+idIsEquiv A = {!!} -- : (A : Set) → isEquiv A A (idfun A)
+
+
+-- equivsAreEquiv : (A B : Set) (f : A → B) → isEquiv f → isequiv f
+-- equivsAreEquiv A B f x = {!!} , {!!}
+-- -- isequiv {A} {B} f = Σ (B → A) λ g → (f ∘ g ~ id {B}) ×  Σ (B → A) λ g → (g ∘ f ~ id {A})
+
+-- equivsAreEquiv' : (A B : Set) (f : A → B) → isequiv f → isEquiv f
+-- equivsAreEquiv' A B f (a , a' , b , b') y = ((a y) , sym~ (f ∘ a) id a' y) , λ x → {!!}
+-- -- sym~ (f ∘ a) id
+
 -- singind : {A : Set} → (Σ A λ a → {!(B : A → Set) → !})
 -- singind {A} = {!!}
 
@@ -805,7 +825,7 @@ ind-unit :  {P : ⊤ → Set} → P star → ((x : ⊤) → P x)
 ind-unit p star = p
 
 const :  (A B : Set) → (b : B) → A → B
-const A B b a = b 
+const A B b a = b
 
 ex51 :  {A : Set} {a : A} → ind-unit a ~ const ⊤ A a
 ex51 star = r
@@ -819,9 +839,9 @@ ex52 b x .x r = r
 
 invisequiv : {A : Set} (x y : A) → isequiv (_⁻¹ {x = x} {y = y})
 invisequiv x y = qinv->isequiv _⁻¹ (_⁻¹ , doubleInv ,  doubleInv )
--- invisequiv x y = _⁻¹ , doubleInv , _⁻¹ , doubleInv 
+-- invisequiv x y = _⁻¹ , doubleInv , _⁻¹ , doubleInv
 
--- p∙ : {A : Set} {x y z : A} (p : x ≡ y) → ((y ≡ z) → (x ≡ z)) 
+-- p∙ : {A : Set} {x y z : A} (p : x ≡ y) → ((y ≡ z) → (x ≡ z))
 -- p∙ p = λ - → p ∙ -
 
 -- qinvcomp : {A : Set} {x y z : A} (p : x ≡ y) → qinv (p∙ {A} {x} {y} {z} p)
@@ -911,7 +931,7 @@ notSurjNotEqv f p (f' , ff' , f'' , f''f) = truefalsebot truefalse
 data Nat : Set where
   zer : Nat
   suc : Nat → Nat
-  
+
 notsuczero : (x : Nat) → ¬ (suc x ≡ zer)
 notsuczero zer ()
 notsuczero (suc x) ()
@@ -930,7 +950,7 @@ commcommx (b , a) = r
 
 prodCommEqv : {A B : Set} → (A × B) ≃ (B × A)
 prodCommEqv = comm×  , (qinv->isequiv comm× (comm× , commcommx , commcommx ))
- 
+
 open import Data.Sum
 
 comm⊎ : {A B : Set} → (A ⊎ B) → (B ⊎ A)
@@ -945,7 +965,7 @@ summCommEqv : {A B : Set} → (A ⊎ B) ≃ (B ⊎ A)
 summCommEqv = comm⊎ , qinv->isequiv comm⊎ (comm⊎ , commcomm+ , commcomm+)
 
 _retractof_ : Set → Set → Set
-A retractof B = Σ (A → B) λ f → hasRetraction f -- hasRetraction 
+A retractof B = Σ (A → B) λ f → hasRetraction f -- hasRetraction
 
 -- here i has the retraction r'
 eight91 : {A B : Set} → (i : A → B) → (r' : B → A) → r' ∘ i ~ id → (x y : A) →  i x ≡ i y → x ≡ y

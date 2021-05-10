@@ -5,6 +5,9 @@ DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) U)) (ConsTele (T
 
 DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) Univ)) (ConsTele (TeleC Y BaseAIdent (App (Var X) (Var False))) (ConsTele (TeleC Z BaseAIdent (App (Var X) (Var True))) BaseTele))) (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (App (Var X) (Var B))) (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
 
+-- same as before
+
+DeclSplit IndBool (ConsTele (TeleC X BaseAIdent (Fun (Var Bool) Univ)) (ConsTele (TeleC Y BaseAIdent (App (Var X) (Var False))) (ConsTele (TeleC Z BaseAIdent (App (Var X) (Var True))) BaseTele))) (Pi (BasePTele (PTeleC (Var B) (Var Bool))) (App (Var X) (Var B))) (ConsBranch (OBranch False BaseAIdent (NoWhere (Var Y))) (BaseBranch (OBranch True BaseAIdent (NoWhere (Var Z)))))
 
 
 9 msec

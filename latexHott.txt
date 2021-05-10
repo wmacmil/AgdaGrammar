@@ -1,0 +1,31 @@
+
+load hottlexicon
+
+l ((PredDefinition type_Sort A_Var contractible_Pred (ExistCalledProp a_Var (ExpSort (VarExp A_Var)) (FunInd centre_of_contraction_Fun) (ForAllProp (allUnivPhrase (BaseVar x_Var) (ExpSort (VarExp A_Var))) (ExpProp DollarMathEnv (equalExp (VarExp a_Var) (VarExp x_Var))))))) | p -cat=Definition | tt
+
+* PredDefinition
+    * type_Sort
+      A_Var
+      contractible_Pred
+      ExistCalledProp
+        * a_Var
+          ExpSort
+            * VarExp
+                * A_Var
+          FunInd
+            * centre_of_contraction_Fun
+          ForAllProp
+            * allUnivPhrase
+                * BaseVar
+                    * x_Var
+                  ExpSort
+                    * VarExp
+                        * A_Var
+              ExpProp
+                * DollarMathEnv
+                  equalExp
+                    * VarExp
+                        * a_Var
+                      VarExp
+                        * x_Var
+

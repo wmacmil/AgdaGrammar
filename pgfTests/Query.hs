@@ -136,9 +136,9 @@ instance Gf GAnswer where
 
   fg t =
     case unApp t of
-      Just (i,[]) | i == mkCId "No" -> GNo 
+      Just (i,[]) | i == mkCId "No" -> GNo
       Just (i,[x1]) | i == mkCId "NoProp" -> GNoProp (fg x1)
-      Just (i,[]) | i == mkCId "Yes" -> GYes 
+      Just (i,[]) | i == mkCId "Yes" -> GYes
       Just (i,[x1]) | i == mkCId "YesProp" -> GYesProp (fg x1)
 
 
@@ -150,8 +150,8 @@ instance Gf GConj where
 
   fg t =
     case unApp t of
-      Just (i,[]) | i == mkCId "And" -> GAnd 
-      Just (i,[]) | i == mkCId "Or" -> GOr 
+      Just (i,[]) | i == mkCId "And" -> GAnd
+      Just (i,[]) | i == mkCId "Or" -> GOr
 
 
       _ -> error ("no Conj " ++ show t)
@@ -162,8 +162,8 @@ instance Gf GFun2 where
 
   fg t =
     case unApp t of
-      Just (i,[]) | i == mkCId "Plus" -> GPlus 
-      Just (i,[]) | i == mkCId "Times" -> GTimes 
+      Just (i,[]) | i == mkCId "Plus" -> GPlus
+      Just (i,[]) | i == mkCId "Times" -> GTimes
 
 
       _ -> error ("no Fun2 " ++ show t)
@@ -226,10 +226,10 @@ instance Gf GNumPred where
 
   fg t =
     case unApp t of
-      Just (i,[]) | i == mkCId "Even" -> GEven 
+      Just (i,[]) | i == mkCId "Even" -> GEven
       Just (i,[x1,x2]) | i == mkCId "LstNumProp" -> GLstNumProp (fg x1) (fg x2)
-      Just (i,[]) | i == mkCId "Odd" -> GOdd 
-      Just (i,[]) | i == mkCId "Prime" -> GPrime 
+      Just (i,[]) | i == mkCId "Odd" -> GOdd
+      Just (i,[]) | i == mkCId "Prime" -> GPrime
 
 
       _ -> error ("no NumPred " ++ show t)

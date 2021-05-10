@@ -1,0 +1,74 @@
+
+
+Idea : 
+
+
+p -cat=Prop "4 is prime , 5 is even and if 6 is odd then 7 is even"
+
+currently fails: 
+
+  l (LstProp Or (ConsProp (IsNumProp Prime (NatObj (Number 4))) (BaseProp (IsNumProp Even (NatObj (Number 5))) (If (IsNumProp Odd (NatObj (Number 6))) (IsNumProp Even (NatObj (Number 7)))))))
+at least one of these holds : \item 4 is prime , 5 is even \item if 6 is odd then 7 is even
+
+But works if we do the _ trick inari mentioned:
+
+  l (LstProp Or (ConsProp (IsNumProp Prime (NatObj (Number 4))) (BaseProp (IsNumProp Even (NatObj (Number 5))) (If (IsNumProp Odd (NatObj (Number 6))) (IsNumProp Even (NatObj (Number 7)))))))
+4 is prime , 5 is even or if 6 is odd then 7 is even
+
+if x then y or if x' then y 
+if x or x' then y
+
+if 4 is even then 5 is odd
+and
+if 5 is even then 5 is even
+
+
+Query> p -cat=Prop "3 , 4 or 5 is even"
+fails, so also wanna accomodate this
+
+also, how to deal with ambiguity (we naturally teach people to parse)
+
+3 times 4 plus 5 -- (3 * 4) + 5
+5 plus 3 times 4 -- 5 + (3 * 4)
+
+
+--so certain things work for arithmetic that don't for general logical assertions 
+if 4 isn't prime then 5 isn't odd
+
+it isn't the case that 3 is not prime 
+
+3 is even or 3 is odd
+
+3 or 6 is prime or odd
+-- 3 is prime or even
+or
+-- 6 is prime or even
+
+3 and 6 are prime or odd
+
+
+  2 and 2 is 4, and can be substituted for plus
+
+
+2 and 3 is odd
+
+forall x, if x = suc y then x or y is prime
+
+3 or 4 plus 6 is odd
+
+the sum of 3 and 4 and 6 is odd -- ambiguous
+
+the sum of 3 or 4 and 6 is odd -- ambiguous
+
+
+3 or 4 plus 6 is odd 
+3 plus 6 or 4 plus 6 is odd
+3 plus 6 is odd or 4 plus 6 is odd
+
+
+
+
+
+  l (LstProp Or (ConsProp (IsNumProp Prime (NatObj (Number 4))) (BaseProp (IsNumProp Even (NatObj (Number 5))) (If (IsNumProp Odd (NatObj (Number 6))) (IsNumProp Even (NatObj (Number 7)))))))
+  at least one of these holds : \item 4 is prime , 5 is even \item 6 is odd and 7 is even
+   

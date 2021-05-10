@@ -1,14 +1,10 @@
 {-# LANGUAGE GADTs, FlexibleInstances, KindSignatures, RankNTypes, TypeSynonymInstances #-}
-{-# LANGUAGE UndecidableInstances #-}
 module Answer where
 
 import qualified PGF (Tree, showExpr)
 -- import PGF (Expr)
 import PGF hiding (Tree, showExpr)
 import Query
-
-instance (Gf (Tree c)) => Show (Tree c) where
-  show = PGF.showExpr [] . gf
 
 -- for testing
 iden :: GQuestion -> GQuestion
@@ -19,16 +15,24 @@ transferAll = map (gf .) $ map (. fg) answers
 
 answers :: [GQuestion -> GAnswer]
 answers = [answer, vAnswer, cAnswer]
+-- answers = [answer, vAnswer]
+
+-- transfer :: Expr -> Expr
+transfer :: PGF.Tree -> PGF.Tree
+transfer = gf . answer . fg
 
 answer :: GQuestion -> GAnswer
 answer p = case p of
   GPropQuest prop -> testProp (evalProp prop)
 
-testProp :: Bool -> GAnswer
-testProp b = if b == True then GYes else GNo
-
 -- begin verbose
 
+transfer2 :: PGF.Tree -> PGF.Tree
+-- transfer2 = gf . iden . fg
+transfer2 = gf . vAnswer . fg
+
+--v as in verbose
+-- why did i have to do this
 vAnswer :: GQuestion -> GAnswer
 vAnswer q = case q of
   GPropQuest prop -> vTestProp (evalProp prop) (expandT prop)
@@ -43,7 +47,7 @@ vTestProp b prop =
 -- the composOp no longer works with this restricted type sig
 -- do really need expandNats everywhere
   -- ask aarne
-  -- GBinFun f x y -> GBinFun f (expandT x) (expandT y)
+  -- GBinFun f x y -> GBinFun f (expandT x) (expandT y) 
   -- GIsNumProp x n -> GIsNumProp x (expandT n)
 expandT :: Tree a -> Tree a
 expandT n = case n of
@@ -59,6 +63,11 @@ expandT n = case n of
 -- end verbose --
 -- begin compress --
 
+transfer3 :: PGF.Tree -> PGF.Tree
+transfer3 = gf . iden . fg
+-- transfer3 = gf . cAnswer . fg
+
+
 cAnswer :: GQuestion -> GAnswer
 cAnswer q = case q of
   GPropQuest prop -> cTestProp (evalProp prop) prop
@@ -69,88 +78,10 @@ cTestProp b prop =
   then GYesProp (composOp compressNat prop)
   else GNoProp (composOp compressNat prop)
 
--- so far this only works for lists of numbers
-
--- compress :: Tree a -> Tree a
--- compress (GBinFun f x y) = aggregateNat f $ compress $ mergeFun f x y
--- compress (GPConj c x y) = _ c $ compress $ mergeConj c x y
--- compress (GLstProp c xs) = _ c $ compress xs
-
-  -- GPConj co p q -> aggregate co $ optimize $ mergeConj co p q
-  -- GPConjs co p -> aggregate co $ optimize p
-
-
-aggregateProp :: GFun2 -> GListNat -> GNat
-aggregateProp f l = GLstFun f l
-
--- aggregate :: GConj -> GListProp -> GProp
--- aggregate co p@(GListProp ps) = case getPreds ps of
---   Just (fs,xs@(x:_)) | all (== x) xs -> GPAtom (GAPred1 (GConjPred1 co (GListPred1 fs)) x) -- arguements
---   Just (fs@(f:_),xs) | all (== f) fs -> GPAtom (GAPred1 f (GConjInd co (GListInd xs))) -- predicates
---   _ -> GPConjs co p
-
--- getPreds :: [GProp] -> Maybe ([GPred1],[GInd])
--- getPreds = fmap unzip . mapM getPred where
---   getPred :: GProp -> Maybe (GPred1,GInd)
---   getPred p = case p of
---     GPAtom (GAPred1 f x) ->  return (f,x)
---     _ -> Nothing
-
-mergeConj :: GConj -> GProp -> GProp -> GListProp
-mergeConj co p q = GListProp (getConj p ++ getConj q)
- where
-  getConj :: GProp -> [GProp]
-  getConj p = case p of
-    GPConj ko p1 p2 | ko == co -> getConj p1 ++ getConj p2
-    _ -> [p]
-
----- testing
-
-
-parseIn2Prop :: String -> IO GProp
-parseIn2Prop s =
-  do
-    gr <- readPGF "Query.pgf"
-    let pr = mkCId "Prop"
-    let catProp = (\x -> mkType [] x []) pr
-    return $ fg $ head $ head $ PGF.parseAll gr catProp s
-
-op456 :: IO GProp
-op456 =
-  do x <- tree456
-     return $ compressNat x
-
-tree456 :: IO GProp
-tree456 =
-  -- do x <- parseIn2Prop "the sum of the sume of 10 and 11 and the sum of the sum of 5 and 6 and 4 is prime"
-  -- do x <- parseIn2Prop "the sum of the sum of the sum of 1 and 2 and the sum of 11 and the sum of 12 and 13 and the sum of the sum of 5 and 6 and 4 is prime"
-  -- do x <- parseIn2Prop "the sum of 3 and the sum of 4 and 4 and the sum of 5 and 6 is prime"
-  do x <- parseIn2Prop "the sum of 3 and the sum of 4 and 5 is prime"
-     return x
-
--- >>> gr <- readPGF "Query.pgf"
--- >>> eng = head $ languages gr
--- >>> t345 <- op456
--- >>> linearize gr eng $ gf $ t345
--- "the sum of 3 , 4 and 5 is prime"
--- strex = "the sum of 3 and the sum of 4 and 4 and the sum of 5 and 6 is prime"
-
--- -- littleMain :: String -> IO _
--- -- littleMain :: String -> IO GProp
--- littleMain s =
---   do
---     gr <- readPGF "Query.pgf"
---     let eng = head $ languages gr
---     let pr = mkCId "Prop"
---     let catProp = (\x -> mkType [] x []) pr
---     let x = fg $ head $ head $ PGF.parseAll gr catProp s
---     let y = compressNat x
---     return $ linearize gr eng $ gf $ y
---   -- where parse1 x = fg $ head $ head $ PGF.parseAll gr catProp x
-
-
-
-----end testing
+compressNat :: Tree a -> Tree a
+compressNat n = case n of
+  GBinFun f x y -> aggregate f $ compressNat (mergeFun f x y)
+  x -> composOp compressNat x
 
 mergeFun :: GFun2 -> GNat -> GNat -> GListNat
 mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
@@ -160,15 +91,11 @@ mergeFun f1 n1 n2 = GListNat (getF n1 ++ getF n2)
       GBinFun f2 n1 n2 | f1 == f2 -> getF n1 ++ getF n2
       _ -> [n]
 
-aggregateNat :: GFun2 -> GListNat -> GNat
-aggregateNat f l = GLstFun f l
+aggregate :: GFun2 -> GListNat -> GNat
+aggregate f l = GLstFun f l
 
-compressNat :: Tree a -> Tree a
-compressNat n = case n of
-  GBinFun f x y -> aggregateNat f $ compressNat (mergeFun f x y)
-  x -> composOp compressNat x
-
---end compress--
+testProp :: Bool -> GAnswer
+testProp b = if b == True then GYes else GNo
 
 testB :: (Int -> Bool) -> GObject -> Bool
 testB f x = f (value x)

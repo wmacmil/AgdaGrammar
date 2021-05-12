@@ -1,14 +1,19 @@
+
 {-# OPTIONS --omega-in-omega --type-in-type #-}
+
+module ContrClean where
 
 open import Agda.Builtin.Sigma public
 
+variable
+  A B : Set
 
 data _≡_ {A : Set} (a : A) : A → Set where
   r : a ≡ a
 
 infix 20 _≡_
 
-id : {A : Set} → A → A
+id : A → A
 id = λ z → z
 
 iscontr : (A : Set) → Set
@@ -24,10 +29,13 @@ isEquiv : (A B : Set) → (f : A → B) → Set
 isEquiv A B f = (y : B) → iscontr (fiber A B f y)
 
 isEquiv' : (A B : Set) → (f : A → B) → Set
-isEquiv' A B f = (y : B) → iscontr (fiber' A B f y)
+isEquiv' A B f = (y : B) → iscontr (fiber' f y)
   where
-    fiber' : (A B : Set) (f : A -> B) (y : B) → Set
-    fiber' A B f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+    fiber' : (f : A -> B) (y : B) → Set
+    fiber' f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+
+-- Equivalence ( f : A -> B ) : Set = ( y : B ) -> ( isContr ( fiber it ) ) ; ; ; fiber it : Set = ( x : A ) ( * ) ( Id ( f ( x ) ) ( y ) )
+
 
 singl : (A : Set) (a : A) → Set
 singl A a = Σ A (λ x → a ≡ x) -- = (x : A) * Path A a x
@@ -46,9 +54,11 @@ idIsEquiv A y = (y , r) , λ x → contrSingl A y (fst x) (snd x)
 idIsEquiv' : (A : Set) → isEquiv A A (id {A})
 idIsEquiv' A y = ybar , λ { (a , r) → r}
   where
+    fib' : Set
+    fib' = fiber A A id y
     fib : Set
     fib = Σ A (λ x → y ≡ x)
-    ybar : fib
+    ybar : fib'
     ybar = y , r
 
 -- before pattern matching b : y ≡ id a
@@ -94,51 +104,3 @@ Id→Eq X .X r = (λ z → z) , idIsEquiv X
 -- idIsEquiv A y = (y , r) , λ x → contrSingl A y (fst x) (snd x)
 -- idIsEquiv A y = (y , r) , λ x → let fs = fst x ; sn = snd x in contrSingl A y fs sn --contrSingl A y (fst x) (snd x)
 
-
---fucking around
-
-
-record Σ' (A : Set) (B : A → Set) : Set where
-  -- constructor _,'_
-  field
-    fst' : A
-    snd' : B fst'
-
-open Σ'
-
--- Σ'->Σ : (A : Set) (B : A → Set) → Σ' A B → Σ A B
--- Σ'->Σ a b s = let fs = fst' s
---                   sn = snd' s
---                   in {!!} -- fs , sn
-
--- Σ'->Σ : (A : Set) (B : A → Set) → Σ' A B → Σ A B
--- Σ'->Σ a b s = fst' s , snd' s
-
--- Σ'->Σ : (A : Set) (B : A → Set) → Σ' A B → Σ A B
--- Σ'->Σ a b record { fst = fst ; snd = snd } = fst , snd
-
--- Σ'->Σ : (A : Set) (B : A → Set) → Σ' A B → Σ A B
--- Σ'->Σ A B (fst₁ ,' snd₁) = fst₁ , snd₁
-
-
-
---cant do without insane amoutns of work
--- -- proof from Aarne
--- idIsEquiv'' : (A : Set) → isEquiv A A (id {A})
--- idIsEquiv'' A y = ybar , λ { (a , b) → {!!}} -- helper
---   where
---     fib : Set
---     fib = Σ A (λ x → y ≡ x)
---     ybar : fib
---     ybar = y , r
---     helper : (x : fiber A A id y) → ybar ≡ x
---     -- helper (a , r) = r
---     -- helper x = let fs = fst x ; sn = snd x in {!helper2 !} -- contrSingl A y fs sn --r
---     helper x =  {!helper2 !} -- contrSingl A y fs sn --r
---       where
---         fs : A
---         fs = fst x
---         sn : y ≡ id fs
---         sn = snd x
---         helper2 : ybar ≡ x
---         helper2 = {!!}

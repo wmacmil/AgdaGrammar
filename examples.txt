@@ -7,11 +7,16 @@ Concrete syntaxes for
 
 --------
 
+-- easiest solution is just to have an untyped and typed ast node
+
  \textbf{Definition}:
  A type $A$ is contractible, if there is $a : A$, called the center of contraction, such that for all $x : A$, $\equalH {a}{x}$.
 
  -- Definition
  (A : Type)=> Contractible A := exist ((a : A))((x : A)-> Id (a)(x)); ; CenterContraction ;
+
+--updated Definition
+isContr ( A : Set ) : Set = ( a : A ) ( * ) ( ( x : A ) -> Id ( a ) ( x ) )
 
 isContr ( a : Set ) : Set = ( x : a ) * ( ( y : a ) -> a x == y )
 
@@ -34,19 +39,41 @@ fiber A B f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
  -- Definition
  (f : app (Map)(A -> B))=> Equivalence f := (y : B)-> (Contractible (fiber it)); ; ; fiber it := comprehension (x)(A)(Id (f (x))(y))
  equivalence (A)(B):= Equivalence (A -> B);
+ 
+DefinitionParagraph (PropExpDefinition DollarMathEnv (equivalenceExp (VarExp A_Var) (VarExp B_Var)) (ExistSortProp (equivalenceSort (mapExp (VarExp A_Var) (VarExp B_Var))))) 
 
-( f : app ( Map ) ( A -> B ) ) => Equivalence f := ( y : B ) -> ( Contractible ( fiber it ) ) ; ; ; fiber it := comprehension ( x ) ( A ) ( Id ( f ( x ) ) ( y ) )
+Why ExistSortProp doesn't have an exist? needs to be adjusted
+the PL perspective is that we can test if a grammar build around NL is logically sound - this is to be judged by the machine
+the NL perspective is that we can see if the code written is actually readable - this is to be judged by a human
 
+
+--1054
+Equivalence ( f : A -> B ) : Set = ( y : B ) -> ( isContr ( fiber it ) ) ; ; ; fiber it : Set = ( x : A ) ( * ) ( Id ( f ( x ) ) ( y ) )
+
+so this can either come out as post processing or ?
 
 isEquiv ( a b : Set ) ( f : a -> b ) : Set = ( y : b ) -> isContr ( fiber a b f y )
+
+DeclDef IsEquiv (ConsTele (TeleC A (ConsAIdent B BaseAIdent) Univ) (ConsTele (TeleC F BaseAIdent (Fun (Var A) (Var B))) BaseTele)) Univ (NoWhere (Pi (BasePTele (PTeleC (Var Y) (Var B))) (App (Var Contr) (App (App (App (App (Var Fiber) (Var A)) (Var B)) (Var F)) (Var Y)))))
 
 equiv ( a b : Set ) : Set = ( f : a -> b ) * isEquiv a b f
 
 isEquiv : (A B : Set) → (f : A → B) → Set
 isEquiv A B f = (y : B) → iscontr (fiber A B f y)
 
+
+-- alternatively
+isEquiv' : (A B : Set) → (f : A → B) → Set
+isEquiv' A B f = (y : B) → iscontr (fiber' f y)
+  where
+    fiber' : (f : A -> B) (y : B) → Set
+    fiber' f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+
+
 equiv : ( a b : Set ) → Set
 equiv a b = Σ (a → b) λ f → isEquiv a b f
+
+
 
 --------
 
@@ -137,9 +164,21 @@ ua ( a b : Set ) ( e : equiv a b ) : Set a == b = undefined
 
 -- from hottlexicon 
 
+isContr ( a : Set ) : Set = ( x : a ) * ( ( y : a ) -> a x == y )
+
+-- new isContr ( A : Set ) : Set = ( a : A ) ( * ) ( ( x : A ) -> Id ( a ) ( x ) )
+
+
+iscontr : (A : Set) → Set
+iscontr A =  Σ A λ a → (x : A) → (a ≡ x)
+
+ -- Definition
+ (A : Type)=> Contractible A := exist ((a : A))((x : A)-> Id (a)(x)); ; CenterContraction ;
+
 l ((PredDefinition type_Sort A_Var contractible_Pred (ExistCalledProp a_Var (ExpSort (VarExp A_Var)) (FunInd centre_of_contraction_Fun) (ForAllProp (allUnivPhrase (BaseVar x_Var) (ExpSort (VarExp A_Var))) (ExpProp DollarMathEnv (equalExp (VarExp a_Var) (VarExp x_Var))))))) | p -cat=Definition | tt
 0 msec
-HottLexicon> * PredDefinition
+  HottLexicon> *
+PredDefinition
     * type_Sort
       A_Var
       contractible_Pred

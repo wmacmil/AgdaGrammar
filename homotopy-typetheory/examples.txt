@@ -1,0 +1,19 @@
+PropParagraph  NoConclusionPhrase (ForAllProp (eachUnivPhrase (BaseVar A_Var) type_Sort) (PredProp equivalence_Pred (AliasInd (FunInd identity_map_Fun) (FunInd (ExpFun (DefExp (identityMapExp (VarExp A_Var)) (TypedExp (BaseExp (lambdaExp x_Var (VarExp A_Var) (VarExp x_Var))) (mapExp (VarExp A_Var) (VarExp A_Var)))))))))
+
+FormatParagraph EmptyLineFormat
+
+TitleParagraph ProofTitle
+
+AssumptionParagraph (ConsAssumption (ForAllAssumption (eachUnivPhrase (BaseVar y_Var) (ExpSort (VarExp A_Var))) (LetAssumption (FunInd (ExpFun (DefExp (fiberExp (VarExp y_Var) (VarExp A_Var)) (ComprehensionExp x_Var (VarExp A_Var) (equalExp (VarExp x_Var) (VarExp y_Var)))))) (AppFunItInd (fiberWrt_Fun (FunInd (ExpFun (identityMapExp (VarExp A_Var)))))))) (BaseAssumption (LetExpAssumption (barExp (VarExp y_Var)) (TypedExp (BaseExp (pairExp (VarExp y_Var) (reflexivityExp (VarExp A_Var) (VarExp y_Var)))) (fiberExp (VarExp y_Var) (VarExp A_Var))))))
+
+ConclusionParagraph NoConclusionPhrase (AsConclusion (ForAllProp (allUnivPhrase (BaseVar y_Var) (ExpSort (VarExp A_Var))) (ExpProp DollarMathEnv (equalExp (pairExp (VarExp y_Var) (reflexivityExp (VarExp A_Var) (VarExp y_Var))) (VarExp y_Var)))) (ApplyLabelConclusion id_induction_Label (ConsInd (FunInd (ExpFun (VarExp y_Var))) (ConsInd (FunInd (ExpFun (TypedExp (BaseExp (VarExp x_Var)) (VarExp A_Var)))) (ConsInd (FunInd (ExpFun (TypedExp (BaseExp (VarExp z_Var)) (idPropExp (VarExp x_Var) (VarExp y_Var))))) BaseInd))) (ExpProp DisplayMathEnv (equalExp (pairExp (VarExp x_Var) (VarExp z_Var)) (VarExp y_Var)))))
+
+SoThatParagraph henceConclusionPhrase (ForAllConclusion (plainUnivPhrase (BaseVar y_Var) (ExpSort (VarExp A_Var))) (ApplyLabelConclusion sigma_elimination_Label (ConsInd (FunInd (ExpFun (TypedExp (BaseExp (VarExp u_Var)) (fiberExp (VarExp y_Var) (VarExp A_Var))))) BaseInd) (ExpProp DollarMathEnv (equalExp (VarExp u_Var) (VarExp y_Var))))) (PredProp contractible_Pred (FunInd (ExpFun (fiberExp (VarExp y_Var) (VarExp A_Var)))))
+
+PropParagraph thusConclusionPhrase (PredProp equivalence_Pred (FunInd (ExpFun (TypedExp (BaseExp (identityMapExp (VarExp A_Var))) (mapExp (VarExp A_Var) (VarExp A_Var))))))
+
+QEDParagraph
+
+FormatParagraph EmptyLineFormat
+
+

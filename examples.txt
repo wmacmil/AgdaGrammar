@@ -52,6 +52,14 @@ Equivalence ( f : A -> B ) : Set = ( y : B ) -> ( isContr ( fiber it ) ) ; ; ; f
 
 so this can either come out as post processing or ?
 
+where does the comprehension come into play? -- i'm assuming this is what the side effect is
+
+l (ComprehensionExp x_Var (VarExp A_Var) (equalExp (AppExp f_Var (VarExp x_Var)) (VarExp y_Var)))
+( x : A ) ( * ) ( Id ( f ( x ) ) ( y ) )
+
+HottLexicon> l (PredProp contractible_Pred (AliasInd (AppFunItInd fiber_Fun) (FunInd (ExpFun (ComprehensionExp x_Var (VarExp A_Var) (equalExp (AppExp f_Var (VarExp x_Var)) (VarExp y_Var)))))))
+( isContr ( fiber it ) )
+
 isEquiv ( a b : Set ) ( f : a -> b ) : Set = ( y : b ) -> isContr ( fiber a b f y )
 
 DeclDef IsEquiv (ConsTele (TeleC A (ConsAIdent B BaseAIdent) Univ) (ConsTele (TeleC F BaseAIdent (Fun (Var A) (Var B))) BaseTele)) Univ (NoWhere (Pi (BasePTele (PTeleC (Var Y) (Var B))) (App (Var Contr) (App (App (App (App (Var Fiber) (Var A)) (Var B)) (Var F)) (Var Y)))))

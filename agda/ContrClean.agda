@@ -29,10 +29,16 @@ isEquiv : (A B : Set) → (f : A → B) → Set
 isEquiv A B f = (y : B) → iscontr (fiber A B f y)
 
 isEquiv' : (A B : Set) → (f : A → B) → Set
-isEquiv' A B f = (y : B) → iscontr (fiber' f y)
+isEquiv' A B f = (y : B) → iscontr (fiber' y)
   where
-    fiber' : (f : A -> B) (y : B) → Set
-    fiber' f y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+    fiber' : (y : B) → Set
+    fiber' y = Σ A (λ x → y ≡ f x) -- (x : A) * Path B y (f x)
+
+-- its fiber, the fiber of f at/over y, the preimage of f at y
+
+-- f's fibers
+-- its fibers, = { fiber f y }
+-- its fiber = fiber f y
 
 -- Equivalence ( f : A -> B ) : Set = ( y : B ) -> ( isContr ( fiber it ) ) ; ; ; fiber it : Set = ( x : A ) ( * ) ( Id ( f ( x ) ) ( y ) )
 

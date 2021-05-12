@@ -1,0 +1,122 @@
+
+
+
+Three grammars :
+
+  Hott '14  | NL with support for embedded formal language 
+  Cade '11  | Logic as a NL
+  Cubicaltt | PL (as a NL)
+
+Relations :
+
+  Cade '11  <-> HoTT '14  : Types <-> NL + Some Types + some propositions
+  CubicalTT <-> Cade '11 : Types <-> Propositions(Curry Howard)
+  CubicalTT <-> HoTT '14 : Types <-> NL + Some propositions + some types
+
+Breakdown :
+
+Hott 2014
+
+Pros
+* Supports real mathematics text
+
+Cons
+- complicated, ad hoc Abstract syntax, difficult to backtrace
+- overgenerates when parsing PL - but this could be a good thing?
+
+Cade 2011 Logic Grammar
+
+Pros :
+
+* Back-end PGF , core vs. extended
+* Syntactic Nuance 
+* fairly simple
+
+Cons :
+*   
+*
+
+TODO : 
+* Try to have it parse PLs
+* Add decls, function definitons,
+* support other logics, for instance, modalities
+
+CubicalTT
+
+Pros 
+* Isomorphic with BNFC grammar used for real PL (test cases)
+* Easily extend to support cubical (and, therefore, synthetic Homotopy theory)
+* Unique Parses (? -- presumed) 
+* (weakly?) Equivalent to Agda (type-in-type)
+
+Cons
+* Hard to extend to syntactic nuance
+* how to do deal with real mathematics
+
+TODO
+* Extend to other PLs  (Coq, Isabelle, Lean..)
+* NL extension
+* Add records for "classical math" , like groups, etc
+  ** co-pattern matching
+
+Goals for the summer :
+
+Scope of thesis work, now thru September 2021, I propose making this thesis a comparative piece of work, examining three distinct grammars used for parsing mathematics.  Now that I have both sufficient practice with various aspects the goal over the summer will to synthesize the knowledge of these three programming languages, with an ongoing blog that will more or less serve as a draft space for the actual thesis itself.
+
+There are two perspectives on mathematics, and the process of doing math, that is, definition (collapsed in the PL case), theorem , proof , and I will explore these interrelations. Given the three grammars, we should ask if we can build a master grammar that maximizes pros, minimizes cons, and extends TODOs of all three grammars (of course, some of the TODOs of one grammar are already contained in another).  Can you have your cake and eat it? Unlikely, but we want to ask the degree to which we can! 
+
+Sometimes the type is isomorphic to the program - one offers key insights into the other - the type guides the program construction. This isn't always the case, one can easily formulate the twin prime conjecture in Agda (see escardo).  But the type theorist may remain skeptical, perhaps the twin-prime conjecture hasn't been giving an equivalent but more insightful type.  Fermat's last theorem required significantly more machinery than its type might indicate.
+
+While mathematics often lets the reader infer details (proof left as exercise for the reader), it is oftentimes redundant (stating in natural language what is written in a formula).  While the programmer or type theorist may leave details missing in a specification, the program is worthless if it doesn't typecheck or evaluate (and other pass other tests in non-dependently typed languages). The redundant details for the programmer may be offered as comments in the code, or natural language descriptions in the paper.
+
+While the typechecking and evaluation of a program is a blessing in that it (i) gives the programmer assurances and (ii) actually does something useful, it is also a curse. The software development cycle leaves the program contingent on outside resources (libraries, PL updates, OS, etc) which are constantly changing, and constantly breaking the code.  This makes it frustrating, because it is often impossible to deal with at a later date for what may turn out to be trivial reasons. 
+
+Mathematics on the other hand, is less sensitive to external resource issues - papers can still be read from 50 or 100 years ago (although for various reasons, they may not always be as readable as contemporary ones).
+
+The propositions as types paradigm attempts to break walls between the programmer and mathematician, but these boundaries are not so simple to deconstruct.  ;These differenc
+
+Tradeoffs
+
+Math :
+
+
+Possibilities :
+- write semantic translations between these via some PGF transformations
+
+Get it to parse real agda (pre-post process between cubicaltt and agda code), supporting 
+Gain understanding of propositions vs proofs (from the perspective of this project, proofs seem much harder)
+
+Use real world example (some of these may be infeasible) :
+* my agda hott library
+* escardo's hott library 
+  - if successful on mine, with universe support
+  - mix of latex, agda code , and natural language 
+* dummy example for non-hott math (spivak et al, type-in-type)
+* alternatively, trying digging in the mountain at the other end, and try extedning ad-hoc grammar with various syntactic nuance
+* Latex & Unicode support  - 
+* Degenerate cases
+  - find examples which are unable to be supported by this grammar, explain why and offer future possible patches
+
+Prior / Related work :
+
+- Mizar 
+- Szegedy et al. - machine learning for proofs   
+- Josef Urban et al.
+  * NNs to translate between latex and formal proofs
+- Hales : Formal Abstracts
+- Hott/Cubical attempt to reformulate foundations of mathematics
+- Aarne's Prior work and prior references
+- Coq (MIT student?) blog work
+
+
+----LONG TERM GOALS---- (outside the scope of the thesis)
+* Support for cs math - e.g. specifications of algorithms and their actual implementations
+* Alternative syntaxes - graphical languages like grasshopper
+* user interface
+  - QA
+  - Hoogle for proofs
+* NL semantics (the semantic content is precisely the formal statements)
+* Comparison / integration with ML approaches
+* studies in concerete syntax -Harper psychology {\intersect} programming
+
+
